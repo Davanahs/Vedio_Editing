@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    /* ── Hook card ── */
+    #hook-card {
+      position: absolute;
+      top: 120px;
+      left: 140px;
+      width: 800px;
+      text-align: center;
+      background: rgba(255, 230, 0, 0.9);
+      border-radius: 20px;
+      padding: 22px 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      color: #0D0E13;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+    }
+
+    .top-hook {
+      position: absolute;
+      top: 240px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 860px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      border-radius: 9999px;
+      background: rgba(255, 230, 0, 0.15);
+      border: 1px solid #FFE600;
+      color: #FFE600;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .social-comment-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 22px;
+      padding: 16px 26px;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      max-width: 840px;
+    }
+
+    .social-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF007A, #7928CA);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 26px;
+    }
+
+    .social-text {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .social-meta {
+      font-size: 24px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .floating-badge {
+      position: absolute;
+      border-radius: 20px;
+      padding: 14px 26px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+    }
+
+    .badge-insta {
+      top: 390px;
+      right: 70px;
+      background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF);
+      color: white;
+      font-size: 28px;
+      transform: rotate(4deg);
+    }
+
+    .badge-shy {
+      top: 980px;
+      left: 80px;
+      background: #FFFFFF;
+      color: #111;
+      font-size: 28px;
+      transform: rotate(-5deg);
+    }
+
+    .badge-unlocked {
+      top: 390px;
+      left: 80px;
+      background: #FFE600;
+      color: #000;
+      font-size: 28px;
+      transform: rotate(-3deg);
+    }
+
+    < !-- Support CTA banner: 44.50s–46.60s --><div data-hf-id="hf-cta" id="support-cta" class="clip" data-start="44.50" data-duration="2.10" data-layout-allow-safe-zone="true">👇 FOLLOW FOR MORE </div></div><div id="badge-insta" class="floating-badge badge-insta clip" data-start="3.8" data-duration="4.5"
+    data-layout-allow-safe-zone="true"><span>📸 Instagram Post</span></div><div id="badge-shy" class="floating-badge badge-shy clip" data-start="26.0" data-duration="6.0"
+    data-layout-allow-safe-zone="true"><span>🫣 Introvert Era</span></div><div id="badge-unlocked" class="floating-badge badge-unlocked clip" data-start="38.0" data-duration="5.5"
+
+    data-layout-allow-safe-zone="true"><span>✦ Shell Broken</span></div><div id="outro-cta" class="outro-cta clip" data-start="43.5" data-duration="3.1" data-layout-allow-safe-zone="true"><div class="cta-pill">Follow & Support ✦</div><div class="cta-sub">Tap follow to watch the creator journey</div></div></div><script>const tl=gsap.timeline({
+      paused: true
+    });
+
+    tl.fromTo("#top-hook",
+      {
+      opacity: 0, y: -40
+    }
+
+    ,
+    {
+    opacity: 1, y: 0, duration: 0.6, ease: "power3.out"
+    }
+
+    ,
+    0.1);
+
+    tl.fromTo("#badge-insta",
+      {
+      opacity: 0, scale: 0.6, rotate: -10
+    }
+
+    ,
+    {
+    opacity: 1, scale: 1, rotate: 4, duration: 0.35, ease: "back.out(2)"
+    }
+
+    ,
+    3.8);
+
+    tl.to("#badge-insta", {
+      opacity: 0, scale: 0.8, duration: 0.3
+    }
+
+    , 8.0);
+
+    // ── Support CTA: slide up from bottom
+    tl.fromTo("#support-cta",
+      {
+      opacity: 0, y: 120
+    }
+
+    ,
+    {
+    opacity: 1, y: 0, duration: 0.4, ease: "power3.out"
+    }
+
+    ,
+    44.50);
+
+    tl.to("#support-cta",
+      {
+      opacity: 0, y: 60, duration: 0.1, ease: "power2.in"
+    }
+
+    ,
+    46.55);
+
+    tl.fromTo("#badge-unlocked",
+      {
+      opacity: 0, scale: 0.6, rotate: -12
+    }
+
+    ,
+    {
+    opacity: 1, scale: 1, rotate: -3, duration: 0.35, ease: "back.out(2)"
+    }
+
+    ,
+    38.0);
+
+    tl.to("#badge-unlocked", {
+      opacity: 0, scale: 0.8, duration: 0.3
+    }
+
+    , 43.5);
+
+    tl.fromTo("#outro-cta",
+      {
+      opacity: 0, scale: 0.8, y: 30
+    }
+
+    ,
+    {
+    opacity: 1, scale: 1.0, y: 0, duration: 0.5, ease: "back.out(1.8)"
+    }
+
+    ,
+    43.5);
+
+    window.__timelines=window.__timelines || {}
+
+    ;
+    window.__timelines["overlays"]=tl;
+    tl.seek(0);
+    </script></body></html>

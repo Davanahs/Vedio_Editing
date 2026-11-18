@@ -1,0 +1,107 @@
+# ========================================================
+# Git Ignore Configuration for ClipForge / Reel Editor AI
+# ========================================================
+
+# --------------------------------------------------------
+# Environment & Secrets (NEVER COMMIT SENSITIVE KEYS)
+# --------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# --------------------------------------------------------
+# Python Bytecode, Caching & Virtual Environments
+# --------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --------------------------------------------------------
+# Node.js & HyperFrames Caches
+# --------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+my-video/.hyperframes/
+my-video/.thumbnails/
+my-video/.transcode-cache/
+my-video/.waveform-cache/
+
+# --------------------------------------------------------
+# Media, Temporary Files & Large Binaries
+# --------------------------------------------------------
+# Ignore raw videos, exports and temp audio
+Raw Footage/*
+!Raw Footage/.gitkeep
+Export/*
+!Export/.gitkeep
+Export/.temp/
+engine/temp/*
+!engine/temp/.gitkeep
+
+# Ignore loose heavy media & archives
+*.zip
+*.tar.gz
+*.7z
+*.rar
+Style Reference/*.mp4
+reel-editor-v2.zip
+
+# Preserve core SFX audio and SVG logo assets
+!assets/sfx/*.wav
+!assets/cache/logos/*.svg
+
+# --------------------------------------------------------
+# Databases & Containers
+# --------------------------------------------------------
+postgres-data/
+redis-data/
+ollama-data/
+*.sqlite3
+*.db
+
+# --------------------------------------------------------
+# Operating System & IDE Artifacts
+# --------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+*.log
+.vscode/
+.idea/
+*.swp
+*~

@@ -1,0 +1,43 @@
+{
+  "version": "1.1",
+  "logos": {
+    "instagram": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "instagram", "color": "#E4405F", "file": "instagram.svg"},
+    "youtube": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "youtube", "color": "#FF0000", "file": "youtube.svg"},
+    "chatgpt": {"type": "svg", "source": "local", "slug": "openai", "color": "#10A37F", "file": "openai.svg"},
+    "tiktok": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "tiktok", "color": "#010101", "file": "tiktok.svg"},
+    "python": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "python", "color": "#3776AB", "file": "python.svg"},
+    "react": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "react", "color": "#61DAFB", "file": "react.svg"},
+    "nodejs": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "nodedotjs", "color": "#5FA04E", "file": "nodejs.svg"}
+  },
+  "stickers": {
+    "gamepad": {"type": "emoji", "char": "🎮"},
+    "money": {"type": "emoji", "char": "💰"},
+    "cash": {"type": "emoji", "char": "💵"},
+    "scissors": {"type": "emoji", "char": "✂️"},
+    "comment": {"type": "emoji", "char": "💬"},
+    "bell": {"type": "emoji", "char": "🔔"},
+    "robot": {"type": "emoji", "char": "🤖"},
+    "fire": {"type": "emoji", "char": "🔥"},
+    "sparkles": {"type": "emoji", "char": "✨"},
+    "point_up": {"type": "emoji", "char": "👆"},
+    "point_down": {"type": "emoji", "char": "👇"},
+    "celebration": {"type": "emoji", "char": "🎉"},
+    "wave": {"type": "emoji", "char": "👋"},
+    "rocket": {"type": "emoji", "char": "🚀"},
+    "kinetic_title": {"type": "title", "char": "⚡"},
+    "shy": {"type": "emoji", "char": "😊"},
+    "shell": {"type": "emoji", "char": "🐚"}
+  },
+  "sfx": {
+    "vine_boom": {"type": "sfx", "file": "vine_boom.wav", "description": "Vine boom bass drop"},
+    "bruh": {"type": "sfx", "file": "bruh.wav", "description": "Bruh sound effect"},
+    "bubble_pop": {"type": "sfx", "file": "bubble_pop.wav", "description": "Light bubble pop"},
+    "cash_register": {"type": "sfx", "file": "cash_register.wav", "description": "Cash register ching"},
+    "whoosh": {"type": "sfx", "file": "whoosh.wav", "description": "Fast whoosh"},
+    "bell_chime": {"type": "sfx", "file": "bell_chime.wav", "description": "Notification bell"},
+    "level_up": {"type": "sfx", "file": "level_up.wav", "description": "Video game level up"},
+    "sad_trombone": {"type": "sfx", "file": "sad_trombone.wav", "description": "Wah wah wah"},
+    "pop": {"type": "sfx", "file": "pop.wav", "description": "Light pop"},
+    "ding": {"type": "sfx", "file": "ding.wav", "description": "Ding chime"}
+  }
+}

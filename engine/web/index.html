@@ -3,29 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClipForge ✦ AI Video Studio</title>
+  <title>Aura ✦ AI Creative Video Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================================
+       AURA AI CREATIVE STUDIO — DESIGN SYSTEM
+       Aesthetic Scrapbook & Glassmorphism Editorial Theme
+       ========================================================================== */
     :root {
-      --bg-app: #0B0D14;
-      --bg-panel: #111420;
-      --bg-card: #171B2B;
-      --bg-card-hover: #1E2338;
-      --border-subtle: #1F2539;
-      --border-active: #7C3AED;
-      --primary-purple: #7C3AED;
-      --primary-purple-hover: #6D28D9;
-      --primary-purple-glow: rgba(124, 58, 237, 0.4);
-      --accent-yellow: #FFE600;
-      --accent-yellow-hover: #EAB308;
-      --accent-cyan: #06B6D4;
-      --accent-pink: #EC4899;
-      --accent-emerald: #10B981;
+      /* Backgrounds & Canvas */
+      --bg-canvas: #090A0F;
+      --bg-panel: #10121A;
+      --bg-card: #161925;
+      --bg-card-hover: #1E2235;
+      --bg-card-active: #252A42;
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --bg-glass-heavy: rgba(16, 18, 26, 0.85);
+
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-light: rgba(255, 255, 255, 0.14);
+      --border-accent: rgba(168, 85, 247, 0.5);
+
+      /* Studio Brand Palette */
+      --brand-primary: #A855F7;
+      --brand-primary-hover: #9333EA;
+      --brand-glow: rgba(168, 85, 247, 0.35);
+      --brand-pink: #EC4899;
+      --brand-rose: #FB7185;
+      --brand-cyan: #22D3EE;
+      --brand-yellow: #FFE600;
+      --brand-lime: #D9F99D;
+      --brand-emerald: #10B981;
+
+      /* Typography */
       --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --text-dim: #64748B;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --text-dim: #475569;
+
+      /* Radii */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.45);
+      --shadow-glass: 0 16px 40px rgba(0, 0, 0, 0.6);
+      --shadow-glow-purple: 0 0 25px rgba(168, 85, 247, 0.3);
+      --shadow-glow-cyan: 0 0 25px rgba(34, 211, 238, 0.3);
     }
 
     * {
@@ -33,34 +63,27 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      user-select: none;
     }
 
     body {
-      background-color: var(--bg-app);
+      background-color: var(--bg-canvas);
       color: var(--text-main);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      user-select: none;
     }
 
     /* Scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #2D3748;
-      border-radius: 4px;
-    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-    /* ========================================================
-       TOP HEADER BAR
-       ======================================================== */
+    /* ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== */
     header {
       height: 56px;
       background: var(--bg-panel);
@@ -68,741 +91,909 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
+      padding: 0 20px;
       z-index: 100;
       flex-shrink: 0;
     }
 
-    .brand-section {
+    .brand-wrap {
       display: flex;
       align-items: center;
       gap: 12px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       cursor: pointer;
     }
 
-    .brand-logo-icon {
-      width: 28px;
-      height: 28px;
-      background: var(--accent-yellow);
-      border-radius: 7px;
+    .brand-icon-box {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #A855F7, #EC4899);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 12px rgba(255, 230, 0, 0.4);
+      box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);
     }
 
-    .brand-logo-icon svg {
-      width: 14px;
-      height: 14px;
-      fill: #000;
-      margin-left: 2px;
+    .brand-icon-box svg {
+      width: 16px;
+      height: 16px;
+      fill: #FFFFFF;
     }
 
-    .brand-title {
-      font-size: 19px;
+    .brand-name {
+      font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: #FFFFFF;
+      background: linear-gradient(to right, #FFFFFF, #E2E8F0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .badge-ai-studio {
-      background: rgba(124, 58, 237, 0.2);
-      border: 1px solid rgba(124, 58, 237, 0.4);
-      color: #C4B5FD;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
+    .brand-tag {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #DDD6FE;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
-    /* Center Global Search / Prompt Bar */
-    .header-prompt-bar {
-      flex: 1;
-      max-width: 580px;
-      margin: 0 20px;
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .header-prompt-input {
-      width: 100%;
-      height: 38px;
-      background: #181C2C;
-      border: 1px solid #283049;
-      border-radius: 20px;
-      padding: 0 42px 0 38px;
-      color: #FFFFFF;
-      font-size: 13px;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .header-prompt-input:focus {
-      border-color: var(--primary-purple);
-      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
-      background: #1C2237;
-    }
-
-    .header-prompt-input::placeholder {
-      color: #64748B;
-    }
-
-    .header-prompt-icon {
-      position: absolute;
-      left: 12px;
-      color: #A855F7;
-      font-size: 15px;
-      pointer-events: none;
-    }
-
-    .header-prompt-btn {
-      position: absolute;
-      right: 6px;
-      background: var(--primary-purple);
-      border: none;
-      color: white;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 12px;
-      transition: transform 0.15s ease;
-    }
-    .header-prompt-btn:hover {
-      transform: scale(1.08);
-      background: var(--primary-purple-hover);
-    }
-
-    /* Header Right Actions */
     .header-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .btn-header-dropdown {
-      background: #181C2C;
-      border: 1px solid #283049;
-      color: #E2E8F0;
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .status-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .status-dot-pulse {
+      width: 7px;
+      height: 7px;
+      background: var(--brand-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--brand-emerald);
+    }
+
+    .btn-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
       padding: 6px 14px;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
-    }
-    .btn-header-dropdown:hover {
-      background: #232A42;
-      border-color: #384366;
+      transition: all 0.15s;
     }
 
-    .avatar-circle {
+    .btn-header:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+    }
+
+    .user-avatar {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #7C3AED, #A855F7);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, #A855F7, #3B82F6);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 800;
+      color: white;
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
     }
 
-    /* ========================================================
-       MAIN APP WORKSPACE (Rail + Left + Center + Right)
-       ======================================================== */
-    .app-body {
+    /* ==========================================================================
+       MAIN APP WORKSPACE (THREE-PANEL LAYOUT)
+       ========================================================================== */
+    .app-workspace {
       flex: 1;
       display: flex;
       overflow: hidden;
       position: relative;
     }
 
-    /* 1. Left Icon Rail */
-    .nav-rail {
-      width: 68px;
-      background: #0E1019;
-      border-right: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0;
-      flex-shrink: 0;
-      justify-content: space-between;
-    }
-
-    .rail-top-nav {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-    }
-
-    .rail-btn {
-      width: 52px;
-      height: 48px;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      color: #64748B;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 10px;
-      font-weight: 600;
-      border: 1px solid transparent;
-      background: transparent;
-    }
-
-    .rail-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-    }
-
-    .rail-btn:hover {
-      color: #E2E8F0;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .rail-btn.active {
-      background: rgba(124, 58, 237, 0.25);
-      border-color: rgba(124, 58, 237, 0.6);
-      color: #C4B5FD;
-      box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
-    }
-
-    .rail-footer-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 8px 6px;
-      color: var(--accent-yellow);
-      font-size: 9px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    /* 2. Left Panel: Script & Edits */
-    .left-panel {
-      width: 380px;
+    /* --------------------------------------------------------------------------
+       1. LEFT PANEL: RESOURCES & MEDIA MANAGEMENT
+       -------------------------------------------------------------------------- */
+    .panel-resources {
+      width: 360px;
       background: var(--bg-panel);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
       flex-shrink: 0;
-      padding: 16px;
-      gap: 14px;
+      overflow-y: auto;
+      padding: 18px;
+      gap: 16px;
     }
 
-    .panel-tabs {
-      display: flex;
-      background: #0E1019;
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .panel-tab {
-      flex: 1;
-      padding: 8px 12px;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      color: #64748B;
-      cursor: pointer;
-      border-radius: 7px;
-      transition: all 0.15s ease;
+    .section-header {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
 
-    .panel-tab.active {
-      background: #1F253C;
-      color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    .section-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.12);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
     }
 
-    /* Input Video Card */
-    .input-video-card {
+    /* Video Upload Dropzone */
+    .upload-box-primary {
+      border: 2px dashed rgba(168, 85, 247, 0.3);
+      background: rgba(168, 85, 247, 0.03);
+      border-radius: var(--radius-md);
+      padding: 20px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .upload-box-primary:hover,
+    .upload-box-primary.drag-over {
+      border-color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.08);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    }
+
+    .upload-box-icon {
+      font-size: 30px;
+      margin-bottom: 2px;
+    }
+
+    .upload-box-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .upload-box-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Active Video Meta Card */
+    .video-loaded-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       padding: 12px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-loaded-card.visible {
+      display: flex;
+    }
+
+    .video-preview-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-sm);
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-preview-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-meta-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .video-meta-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-meta-details {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+    }
+
+    .btn-action-icon {
+      background: var(--bg-card-hover);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-action-icon:hover {
+      background: var(--bg-card-active);
+      color: var(--text-main);
+    }
+
+    /* Multi-Asset Resource Uploader (Images, Audio, Logos, Graphics) */
+    .resources-uploader-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .resource-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    .resource-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .resource-tab-btn.active {
+      background: var(--bg-panel);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .dropzone-compact {
+      border: 1px dashed var(--border-light);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius-sm);
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .dropzone-compact:hover {
+      border-color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.05);
+      color: var(--text-main);
+    }
+
+    .uploaded-assets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .asset-thumb-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .asset-thumb-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .asset-thumb-card.selected {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    }
+
+    .asset-thumb-img {
+      width: 100%;
+      height: 60px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .asset-thumb-audio-icon {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: linear-gradient(135deg, #1E1B4B, #311042);
+      color: #DDD6FE;
+    }
+
+    .asset-thumb-footer {
+      padding: 4px 6px;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .asset-delete-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0, 0, 0, 0.7);
+      border: none;
+      color: #FFFFFF;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .asset-thumb-card:hover .asset-delete-btn {
+      opacity: 1;
+    }
+
+    /* Project History Shelf */
+    .history-card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .history-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .history-row:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+    }
+
+    .history-row-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-row-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* --------------------------------------------------------------------------
+       2. CENTER PANEL: VIDEO PREVIEW STUDIO
+       -------------------------------------------------------------------------- */
+    .panel-center-studio {
+      flex: 1;
+      background: var(--bg-canvas);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Studio Header Controls Bar */
+    .studio-top-bar {
+      width: 100%;
+      max-width: 720px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      z-index: 10;
     }
 
-    .video-card-meta {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .video-card-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #FFFFFF;
-      word-break: break-all;
-    }
-
-    .video-card-specs {
-      font-size: 11px;
-      color: #64748B;
+    .studio-pill-group {
       display: flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-emerald);
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 6px var(--accent-emerald);
-    }
-
-    .btn-change-video {
-      background: #232A42;
-      border: 1px solid #384366;
-      color: #E2E8F0;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 7px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .btn-change-video:hover {
-      background: #2E3757;
-      color: #FFFFFF;
-    }
-
-    /* AI Chat / Prompt Drawer inside Left Panel */
-    .ai-chat-card {
-      background: #141829;
-      border: 1px solid #232A40;
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
       gap: 8px;
-    }
-
-    .ai-chat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      color: #C4B5FD;
-    }
-
-    .ai-prompt-box {
-      width: 100%;
-      height: 60px;
-      background: #0E1019;
-      border: 1px solid #262E48;
-      border-radius: 8px;
-      padding: 8px 10px;
-      color: #FFFFFF;
-      font-size: 12px;
-      resize: none;
-      outline: none;
-    }
-    .ai-prompt-box:focus {
-      border-color: var(--primary-purple);
-    }
-
-    .quick-chips-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .chip-btn {
-      background: #1A2035;
-      border: 1px solid #283250;
-      color: #94A3B8;
-      font-size: 10px;
-      font-weight: 600;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-full);
+    }
+
+    .mode-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
       cursor: pointer;
       transition: all 0.15s;
     }
-    .chip-btn:hover {
-      background: var(--primary-purple);
+
+    .mode-toggle-btn.active {
+      background: var(--brand-primary);
       color: #FFFFFF;
-      border-color: var(--primary-purple);
+      box-shadow: 0 0 12px var(--brand-glow);
     }
 
-    /* Suggestions List */
-    .suggestions-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 4px;
-    }
-
-    .suggestions-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #CBD5E1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .suggestions-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .suggestion-card {
-      background: var(--bg-card);
+    .ratio-dropdown {
+      background: var(--bg-panel);
       border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 8px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .sugg-num {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #252D48;
-      color: #94A3B8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .sugg-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .sugg-text {
+      color: var(--text-main);
       font-size: 11px;
-      font-weight: 600;
-      color: #F1F5F9;
-    }
-
-    .sugg-time {
-      font-size: 10px;
-      color: #64748B;
-    }
-
-    /* iOS Style Toggle Switch */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 34px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #2D3748;
-      transition: .2s;
-      border-radius: 20px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 12px;
-      width: 12px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .2s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: var(--primary-purple);
-      box-shadow: 0 0 8px rgba(124, 58, 237, 0.5);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(16px);
-    }
-
-    /* Big Action Button */
-    .btn-generate-reel {
-      background: linear-gradient(135deg, #7C3AED, #9333EA);
-      border: none;
-      color: #FFFFFF;
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: 13px;
       font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
-      transition: all 0.2s ease;
-      margin-top: 4px;
+      outline: none;
     }
 
-    /* 3. Center Player Stage */
-    .center-stage {
-      flex: 1;
-      background: #0B0D14;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .player-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      max-height: calc(100vh - 280px);
-      width: 100%;
-    }
-
-    /* Live Video Canvas */
-    .video-canvas-wrapper {
+    /* Video Frame & Viewport */
+    .video-viewport-wrapper {
       position: relative;
       background: #000000;
-      border-radius: 14px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      border-radius: var(--radius-lg);
       overflow: hidden;
+      box-shadow: var(--shadow-glass);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: width 0.3s ease, height 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.25s ease;
-      border: 1px solid #1E2538;
     }
 
-    .canvas-9-16 {
-      width: 290px;
-      height: 515px;
-    }
-    .canvas-16-9 {
-      width: 680px;
-      height: 382px;
-    }
-    .canvas-1-1 {
-      width: 440px;
-      height: 440px;
-    }
+    .canvas-9-16 { width: 300px; height: 533px; }
+    .canvas-16-9 { width: 680px; height: 382px; }
+    .canvas-1-1  { width: 440px; height: 440px; }
 
     #mainVideo {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      background: #000;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: #000000;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
     }
 
-    /* Zoom Punch-In on Major Spoken Beats (Style Sheet Section 4) */
+    /* Dynamic Zoom Punch */
     .punch-zoom #mainVideo {
       transform: scale(1.18);
     }
 
-    /* Outline Glow (Style Sheet Section 5) */
-    .glow-yellow #mainVideo {
-      filter: drop-shadow(0 0 10px rgba(255, 230, 0, 0.8)) drop-shadow(0 0 20px rgba(124, 58, 237, 0.4));
+    /* White Subject Outline Glow (Ref 1 Pinterest Style) */
+    .outline-white #mainVideo {
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 16px rgba(168, 85, 247, 0.35));
     }
-    .glow-white #mainVideo {
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 20px rgba(124, 58, 237, 0.4));
+    .outline-yellow #mainVideo {
+      filter: drop-shadow(0 0 10px rgba(255, 230, 0, 0.8)) drop-shadow(0 0 18px rgba(168, 85, 247, 0.4));
     }
 
-    /* ── Top Hook Pill (Style Sheet Section 6 & 8) ── */
-    .top-hook-pill {
+    /* ==========================================================================
+       AESTHETIC REFERENCE COMPOSITION OVERLAYS
+       ========================================================================== */
+
+    /* A. Pinterest Scrapbook: Polaroid Cards (Ref 1) */
+    .polaroid-card {
       position: absolute;
-      top: 14px;
+      background: #FFFFFF;
+      padding: 6px 6px 18px 6px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 24;
+      pointer-events: none;
+      display: none;
+      animation: springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 2px;
+    }
+
+    .polaroid-top-left {
+      top: 14%;
+      left: 6%;
+      transform: rotate(-7deg);
+      width: 110px;
+    }
+
+    .polaroid-bottom-right {
+      bottom: 18%;
+      right: 6%;
+      transform: rotate(8deg);
+      width: 118px;
+    }
+
+    .polaroid-img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      background: #E2E8F0;
+    }
+
+    .polaroid-tape {
+      position: absolute;
+      top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--accent-yellow);
-      color: #000000;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 0.8px;
-      padding: 4px 16px;
-      border-radius: 30px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-      z-index: 30;
-      white-space: nowrap;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      animation: popInBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width: 45px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(2px);
     }
 
-    /* ── Floating Social Comment Card (Style Sheet Section 5) ── */
-    .social-comment-popup {
+    /* B. Retro Camera Viewfinder Overlay (Ref 1) */
+    .retro-camera-overlay {
       position: absolute;
-      top: 28%;
+      top: 10%;
+      right: 5%;
+      width: 130px;
+      background: rgba(240, 240, 245, 0.95);
+      border-radius: 8px;
+      padding: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 25;
+      display: none;
+      pointer-events: none;
+      transform: rotate(-3deg);
+      animation: springIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .camera-screen {
+      width: 100%;
+      height: 70px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .camera-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-lens-dot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 4px;
+      font-size: 8px;
+      color: #64748B;
+      font-weight: 700;
+    }
+
+    /* C. Floating Music Player Card (Ref 2) */
+    .floating-music-card {
+      position: absolute;
+      bottom: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 86%;
+      max-width: 320px;
+      background: rgba(22, 25, 37, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), var(--shadow-glow-cyan);
+      z-index: 28;
+      display: none;
+      pointer-events: none;
+      animation: springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .music-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .music-card-album {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #EC4899, #8B5CF6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .music-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .music-track-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-artist-name {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .music-progress-bar {
+      margin-top: 8px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .music-progress-fill {
+      width: 48%;
+      height: 100%;
+      background: linear-gradient(to right, #A855F7, #22D3EE);
+      border-radius: 2px;
+    }
+
+    .music-controls-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    /* D. Floating Glassmorphism Orbit Cards (Ref 3) */
+    .orbit-glass-card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      color: #FFFFFF;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(34, 211, 238, 0.25);
+      z-index: 26;
+      display: none;
+      pointer-events: none;
+      animation: springIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .orbit-card-1 {
+      top: 18%;
+      right: 8%;
+      width: 140px;
+    }
+
+    .orbit-card-2 {
+      bottom: 26%;
+      left: 8%;
+      width: 135px;
+    }
+
+    /* E. Scrapbook Decorative Stickers (Stars, Flowers, Cute badges) */
+    .scrapbook-sticker {
+      position: absolute;
+      z-index: 30;
+      pointer-events: none;
+      display: none;
+      animation: springIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .sticker-star {
+      top: 16%;
+      right: 18%;
+      font-size: 26px;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+
+    .sticker-flower {
+      bottom: 15%;
+      left: 12%;
+      font-size: 28px;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+
+    .sticker-love {
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-style: italic;
+      color: #FFB5C5;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 10px rgba(236, 72, 153, 0.5);
+    }
+
+    /* F. Spoken Keyword Popups & Social Question Card */
+    .social-question-card {
+      position: absolute;
+      top: 24%;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(255, 255, 255, 0.96);
-      color: #111111;
-      border-radius: 16px;
-      padding: 10px 16px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-      z-index: 35;
+      color: #0F172A;
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+      z-index: 32;
       display: none;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       max-width: 85%;
       pointer-events: none;
       animation: springIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .comment-avatar {
-      width: 32px;
-      height: 32px;
+    .question-avatar {
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       background: linear-gradient(135deg, #EC4899, #8B5CF6);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       flex-shrink: 0;
     }
 
-    .comment-bubble-text {
-      font-size: 12px;
+    .question-body {
+      font-size: 11px;
       font-weight: 700;
       line-height: 1.3;
     }
 
-    /* ── Dynamic Floating Pop-Up Badges (Style Sheet Section 5) ── */
-    .floating-popup-badge {
+    /* G. Dynamic Spoken Badges */
+    .spoken-badge {
       position: absolute;
-      z-index: 36;
-      border-radius: 12px;
-      padding: 8px 14px;
-      font-family: 'Arial Black', sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.5px;
+      z-index: 33;
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 800;
       display: none;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       pointer-events: none;
       animation: springIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .badge-gaming {
-      bottom: 48%;
-      right: 14px;
-      background: linear-gradient(135deg, #FFE600, #F59E0B);
-      color: #000;
-    }
+    .badge-pos-gaming { bottom: 45%; right: 10px; background: linear-gradient(135deg, #FFE600, #F59E0B); color: #000; }
+    .badge-pos-money  { bottom: 45%; left: 10px; background: #10B981; color: #FFF; }
+    .badge-pos-link   { bottom: 45%; right: 10px; background: #EF4444; color: #FFF; }
+    .badge-pos-comment{ bottom: 45%; left: 10px; background: #3B82F6; color: #FFF; }
 
-    .badge-money {
-      bottom: 48%;
-      left: 14px;
-      background: #10B981;
-      color: #FFF;
-    }
-
-    .badge-link {
-      bottom: 48%;
-      right: 14px;
-      background: #EF4444;
-      color: #FFF;
-    }
-
-    .badge-comment {
-      bottom: 48%;
-      left: 14px;
-      background: #3B82F6;
-      color: #FFF;
-    }
-
-    @keyframes springIn {
-      0% { transform: scale(0.6) translateY(20px); opacity: 0; }
-      100% { transform: scale(1) translateY(0); opacity: 1; }
-    }
-
-    @keyframes popInBounce {
-      0% { transform: translateX(-50%) scale(0.7); opacity: 0; }
-      100% { transform: translateX(-50%) scale(1); opacity: 1; }
-    }
-
-    /* ── Signature Two-Tone Dynamic Captions (Style Sheet Section 6) ── */
-    .signature-captions-box {
+    /* H. Top Hook Banner */
+    .top-hook-banner {
       position: absolute;
-      bottom: 15%;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--brand-yellow);
+      color: #000000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.8px;
+      padding: 4px 16px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      z-index: 35;
+      white-space: nowrap;
+      pointer-events: none;
+      display: none;
+      animation: springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* I. Signature Two-Tone Dynamic Captions */
+    .dynamic-captions-box {
+      position: absolute;
+      bottom: 12%;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
       text-align: center;
-      z-index: 30;
+      z-index: 34;
       pointer-events: none;
       display: flex;
       flex-direction: column;
@@ -810,264 +1001,539 @@
       gap: 3px;
     }
 
-    .cap-lead-text {
-      font-size: 16px;
+    .caption-lead-word {
+      font-size: 15px;
       font-weight: 700;
       color: #FFFFFF;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 1px 1px 0 #000;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 1px 1px 0 #000;
       background: rgba(0, 0, 0, 0.65);
-      padding: 3px 10px;
+      padding: 2px 10px;
       border-radius: 6px;
-      display: inline-block;
+      display: none;
     }
 
-    .cap-keyword-text {
+    .caption-keyword-punch {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 38px;
       letter-spacing: 1px;
-      color: var(--accent-yellow);
-      text-shadow: 0 0 14px rgba(255, 230, 0, 0.7), 2px 2px 0 #000000;
+      color: var(--brand-yellow);
+      text-shadow: 0 0 16px rgba(255, 230, 0, 0.7), 2px 2px 0 #000000;
       text-transform: uppercase;
       line-height: 1;
-      animation: popInBounce 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: none;
+      animation: springIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Unmute Banner Overlay if Browser blocks audio */
-    .unmute-callout-overlay {
+    /* Unmute Banner Overlay */
+    .unmute-callout-box {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(124, 58, 237, 0.95);
+      background: rgba(168, 85, 247, 0.95);
       color: #FFFFFF;
-      padding: 14px 24px;
-      border-radius: 30px;
-      font-size: 14px;
+      padding: 12px 22px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
       font-weight: 800;
       display: none;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       z-index: 50;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     }
 
-    /* Player Controls Bar */
-    .player-controls-bar {
-      margin-top: 14px;
+    /* Interactive Player Transport Controls Bar */
+    .studio-player-controls {
+      width: 100%;
+      max-width: 680px;
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .scrubber-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .scrubber-fill {
+      height: 100%;
+      background: linear-gradient(to right, #A855F7, #EC4899);
+      border-radius: 3px;
+      width: 0%;
+      position: relative;
+    }
+
+    .scrubber-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: -3px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .scrubber-track:hover .scrubber-fill::after {
+      opacity: 1;
+    }
+
+    .transport-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      width: 100%;
-      max-width: 680px;
+      gap: 12px;
     }
 
-    .transport-buttons {
+    .transport-left,
+    .transport-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .btn-player-transport {
+    .btn-transport-tool {
       background: transparent;
       border: none;
-      color: #94A3B8;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      color: var(--text-secondary);
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       font-size: 13px;
-    }
-    .btn-player-transport:hover {
-      color: #FFFFFF;
-      background: #232A42;
+      transition: all 0.15s;
     }
 
-    .btn-play-pause-main {
-      background: var(--primary-purple);
+    .btn-transport-tool:hover {
+      background: rgba(255, 255, 255, 0.06);
       color: #FFFFFF;
+    }
+
+    .btn-play-hero {
       width: 36px;
       height: 36px;
-      border-radius: 50%;
+      background: var(--brand-primary);
+      color: #FFFFFF;
       border: none;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 14px;
-      box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+      font-size: 15px;
+      box-shadow: 0 0 16px var(--brand-glow);
+      transition: all 0.15s;
     }
 
-    .timecode-display {
-      font-family: monospace;
-      font-size: 12px;
-      color: #E2E8F0;
+    .btn-play-hero:hover {
+      background: var(--brand-primary-hover);
+      transform: scale(1.06);
     }
 
-    /* High-Priority Audio Volume Control */
-    .audio-player-widget {
+    .timecode-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .volume-widget {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #0E111C;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.25);
       padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid #232A42;
+      border-radius: var(--radius-sm);
     }
 
-    .player-volume-slider {
-      width: 70px;
+    .volume-slider-bar {
+      width: 60px;
       height: 4px;
-      accent-color: var(--accent-yellow);
+      accent-color: var(--brand-primary);
       cursor: pointer;
     }
 
-    .select-pill {
-      background: #111422;
-      border: 1px solid #283250;
-      color: #E2E8F0;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      outline: none;
+    .volume-badge-status {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--brand-emerald);
     }
 
-    /* 4. Right Panel: Style, Effects, Stickers, SFX */
-    .right-panel {
-      width: 320px;
+    /* --------------------------------------------------------------------------
+       3. RIGHT PANEL: AI CREATIVE DIRECTOR
+       -------------------------------------------------------------------------- */
+    .panel-director {
+      width: 400px;
       background: var(--bg-panel);
       border-left: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
       flex-shrink: 0;
-      padding: 16px;
+      overflow-y: auto;
+      padding: 18px;
       gap: 16px;
     }
 
-    .right-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 2px;
-      gap: 14px;
-    }
-
-    .right-tab {
-      font-size: 12px;
-      font-weight: 700;
-      color: #64748B;
-      padding-bottom: 8px;
-      cursor: pointer;
-      position: relative;
-    }
-    .right-tab.active {
-      color: #FFFFFF;
-    }
-    .right-tab.active:after {
-      content: "";
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--primary-purple);
-    }
-
-    .presets-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .preset-card {
-      background: #171B2B;
+    /* Natural Language Prompt Area */
+    .prompt-studio-card {
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 8px 4px;
+      border-radius: var(--radius-md);
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .preset-card.active {
-      border-color: var(--primary-purple);
-      background: rgba(124, 58, 237, 0.15);
+      gap: 10px;
     }
 
-    /* Feature Toggles List */
-    .feature-toggles-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    .toggle-row {
+    .prompt-box-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .toggle-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #E2E8F0;
+    .director-badge-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #DDD6FE;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    /* ========================================================
-       BOTTOM MULTI-TRACK TIMELINE
-       ======================================================== */
-    .timeline-container {
-      height: 175px;
-      background: #0E1019;
+    .director-textarea {
+      width: 100%;
+      min-height: 70px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      color: #FFFFFF;
+      font-size: 12px;
+      resize: vertical;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color 0.15s;
+    }
+
+    .director-textarea:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 2px var(--brand-glow);
+    }
+
+    .director-textarea::placeholder {
+      color: var(--text-dim);
+    }
+
+    .attached-resources-pill {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.1);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quick-style-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .style-chip-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .style-chip-btn:hover {
+      background: var(--brand-primary);
+      color: #FFFFFF;
+      border-color: var(--brand-primary);
+    }
+
+    /* Style Explorer (8+ Visual Styles) */
+    .style-cards-scroller {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .aesthetic-style-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .aesthetic-style-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .aesthetic-style-card.selected {
+      border-color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.1);
+      box-shadow: 0 0 16px var(--brand-glow);
+    }
+
+    .style-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .style-card-icon {
+      font-size: 20px;
+    }
+
+    .style-card-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      color: white;
+      font-size: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .aesthetic-style-card.selected .style-card-check {
+      display: flex;
+    }
+
+    .style-card-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .style-card-desc {
+      font-size: 9px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Creative Elements Capability Preview Panel */
+    .capability-elements-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .capability-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .capability-item:hover {
+      border-color: var(--brand-primary);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .capability-icon {
+      font-size: 16px;
+    }
+
+    .capability-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* Multi-Stage AI Processing Overlay Card */
+    .ai-processing-box {
+      background: var(--bg-card);
+      border: 1px solid var(--brand-primary);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      animation: springIn 0.3s ease;
+    }
+
+    .ai-processing-box.active {
+      display: flex;
+    }
+
+    .processing-header-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #DDD6FE;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stage-item-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .stage-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .stage-indicator-dot.active {
+      background: var(--brand-primary);
+      box-shadow: 0 0 8px var(--brand-primary);
+      animation: pulseAnim 1s infinite;
+    }
+
+    .stage-indicator-dot.done {
+      background: var(--brand-emerald);
+    }
+
+    /* Generate Edit Hero Action Button */
+    .btn-generate-hero {
+      background: linear-gradient(135deg, #A855F7, #EC4899);
+      border: none;
+      color: #FFFFFF;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-generate-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(168, 85, 247, 0.55);
+    }
+
+    .btn-generate-hero:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Editing Results Experience Box */
+    .results-summary-card {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .results-summary-card.visible {
+      display: flex;
+    }
+
+    .results-badge-header {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--brand-emerald);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .results-text-body {
+      font-size: 11px;
+      color: #E2E8F0;
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       BOTTOM TIMELINE & EXPORT CONTROLS
+       ========================================================================== */
+    footer.app-timeline-bar {
+      height: 160px;
+      background: var(--bg-panel);
       border-top: 1px solid var(--border-subtle);
       display: flex;
       flex-shrink: 0;
-      z-index: 50;
+      z-index: 40;
     }
 
-    .timeline-track-headers {
+    .timeline-headers-col {
       width: 110px;
-      background: #0B0D14;
+      background: var(--bg-canvas);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
     }
 
-    .ruler-header-spacer {
+    .timeline-header-spacer {
       height: 24px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
-    .track-header-item {
-      height: 28px;
-      border-bottom: 1px solid #171B2B;
+    .timeline-track-title {
+      height: 26px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       display: flex;
       align-items: center;
       gap: 6px;
       padding: 0 10px;
       font-size: 10px;
       font-weight: 700;
-      color: #94A3B8;
+      color: var(--text-muted);
     }
 
-    .timeline-scroll-area {
+    .timeline-canvas-scroll {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -1076,70 +1542,66 @@
       overflow-y: hidden;
     }
 
-    .time-ruler {
+    .timeline-ruler-row {
       height: 24px;
-      background: #111422;
+      background: rgba(0, 0, 0, 0.3);
       border-bottom: 1px solid var(--border-subtle);
       position: relative;
-      display: flex;
-      align-items: center;
-      width: 2000px;
+      width: 2400px;
     }
 
-    .ruler-mark {
+    .ruler-tick-mark {
       position: absolute;
-      font-family: monospace;
-      font-size: 10px;
-      color: #64748B;
-      border-left: 1px solid #283250;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
       height: 100%;
       padding-left: 4px;
       display: flex;
       align-items: center;
     }
 
-    .tracks-canvas {
+    .timeline-tracks-area {
       position: relative;
-      width: 2000px;
+      width: 2400px;
       height: calc(100% - 24px);
     }
 
-    .timeline-track-row {
-      height: 28px;
-      border-bottom: 1px solid #151928;
+    .timeline-row {
+      height: 26px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
       position: relative;
       width: 100%;
-      display: flex;
-      align-items: center;
     }
 
-    .timeline-clip {
+    .timeline-clip-bubble {
       position: absolute;
-      height: 22px;
+      height: 20px;
       border-radius: 4px;
       display: flex;
       align-items: center;
-      padding: 0 8px;
+      padding: 0 6px;
       font-size: 9px;
       font-weight: 700;
-      color: #000;
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;
+      top: 3px;
     }
 
-    .clip-caption-yellow { background: var(--accent-yellow); color: #000; }
-    .clip-caption-purple { background: #A855F7; color: #FFF; }
-    .clip-caption-blue { background: #38BDF8; color: #000; }
-    .clip-graphic { background: #10B981; color: #FFF; }
-    .clip-sfx { background: #EC4899; color: #FFF; border-radius: 12px; height: 20px; padding: 0 6px; }
+    .clip-type-caption-a { background: var(--brand-yellow); color: #000; }
+    .clip-type-caption-b { background: #A855F7; color: #FFF; }
+    .clip-type-graphic   { background: #10B981; color: #FFF; }
+    .clip-type-sfx       { background: #EC4899; color: #FFF; border-radius: 10px; height: 18px; top: 4px; }
 
-    .music-track-bar {
+    .mastered-music-bar {
       position: absolute;
       left: 0;
       width: 100%;
-      height: 22px;
-      background: linear-gradient(90deg, rgba(124, 58, 237, 0.4), rgba(168, 85, 247, 0.6));
+      top: 3px;
+      height: 20px;
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.3), rgba(34, 211, 238, 0.35));
       border-radius: 4px;
       display: flex;
       align-items: center;
@@ -1148,7 +1610,7 @@
       color: #E2E8F0;
     }
 
-    .playhead-needle {
+    .timeline-needle {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -1156,22 +1618,22 @@
       background: #A855F7;
       z-index: 60;
       pointer-events: none;
-      box-shadow: 0 0 8px #A855F7;
+      box-shadow: 0 0 10px #A855F7;
     }
 
-    .playhead-head {
+    .needle-cap {
       position: absolute;
       top: 0;
-      left: -6px;
-      width: 14px;
-      height: 12px;
+      left: -5px;
+      width: 12px;
+      height: 10px;
       background: #A855F7;
       clip-path: polygon(0 0, 100% 0, 50% 100%);
     }
 
     .timeline-actions-dock {
       width: 200px;
-      background: #0B0D14;
+      background: var(--bg-canvas);
       border-left: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
@@ -1184,11 +1646,11 @@
 
     .btn-timeline-preview {
       width: 100%;
-      background: #171B2B;
-      border: 1px solid #283049;
-      color: #E2E8F0;
-      padding: 8px 12px;
-      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 8px;
+      border-radius: var(--radius-sm);
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
@@ -1200,11 +1662,11 @@
 
     .btn-timeline-export {
       width: 100%;
-      background: var(--accent-yellow);
+      background: linear-gradient(135deg, #A855F7, #EC4899);
       border: none;
-      color: #000000;
-      padding: 10px 12px;
-      border-radius: 8px;
+      color: #FFFFFF;
+      padding: 10px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
@@ -1212,20 +1674,36 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      box-shadow: 0 0 14px rgba(255, 230, 0, 0.35);
-    }
-    .btn-timeline-export:hover {
-      background: var(--accent-yellow-hover);
+      box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
     }
 
-    /* Modal Overlay */
-    .modal-overlay {
+    .btn-timeline-download {
+      display: none;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .btn-download-inner {
+      width: 100%;
+      background: var(--brand-emerald);
+      border: none;
+      color: #000000;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Modal Dropzone */
+    .modal-scrim {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
       z-index: 200;
       display: none;
@@ -1233,470 +1711,701 @@
       justify-content: center;
     }
 
-    .modal-box {
-      width: 520px;
-      background: #141829;
-      border: 1px solid #2A3350;
-      border-radius: 14px;
+    .modal-scrim.visible {
+      display: flex;
+    }
+
+    .modal-box-card {
+      width: 500px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
       padding: 24px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      box-shadow: var(--shadow-card);
     }
 
-    .modal-dropzone {
-      border: 2px dashed #3B4668;
-      border-radius: 12px;
-      padding: 32px 20px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .toast-pill {
+    /* Toast Notification */
+    .toast-capsule {
       position: fixed;
-      bottom: 190px;
+      bottom: 180px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1E253C;
-      border: 1px solid var(--primary-purple);
+      background: var(--bg-card);
+      border: 1px solid var(--brand-primary);
       color: #FFFFFF;
       padding: 8px 18px;
-      border-radius: 20px;
+      border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 600;
       display: none;
-      z-index: 150;
+      z-index: 300;
       align-items: center;
       gap: 8px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .toast-capsule.visible {
+      display: flex;
+      animation: springIn 0.25s ease;
+    }
+
+    @keyframes springIn {
+      0% { transform: scale(0.7) translateY(10px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* ==========================================================================
+       RESPONSIVENESS (DESKTOP -> TABLET -> MOBILE)
+       ========================================================================== */
+    @media (max-width: 1280px) {
+      .panel-resources { width: 300px; }
+      .panel-director { width: 340px; }
+    }
+
+    @media (max-width: 980px) {
+      .app-workspace { flex-direction: column; overflow-y: auto; }
+      .panel-resources { width: 100%; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+      .panel-director { width: 100%; border-left: none; border-top: 1px solid var(--border-subtle); }
+      .panel-center-studio { min-height: 600px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ========================================================
-       TOP HEADER BAR
-       ======================================================== -->
+  <!-- ==========================================================================
+       TOP APP HEADER
+       ========================================================================== -->
   <header>
-    <div class="brand-section">
-      <div class="brand-logo" onclick="seekVideo(0)">
-        <div class="brand-logo-icon">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="brand-title">ClipForge</div>
+    <div class="brand-wrap" onclick="seekVideo(0)">
+      <div class="brand-icon-box">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </div>
-      <div class="badge-ai-studio">
-        <span>✦</span> AI Video Studio
-      </div>
+      <span class="brand-name">Aura</span>
+      <span class="brand-tag">✦ AI CREATIVE STUDIO</span>
     </div>
 
-    <!-- Center Prompt Input Bar -->
-    <div class="header-prompt-bar">
-      <span class="header-prompt-icon">✦</span>
-      <input type="text" class="header-prompt-input" id="globalPromptInput" 
-             placeholder="Turn your idea into a viral reel (e.g. Add PS5 popup, white outline, loud meme sounds)..." 
-             onkeydown="if(event.key==='Enter') executeAIPrompt()">
-      <button class="header-prompt-btn" onclick="executeAIPrompt()" title="Apply AI Instructions">
-        ➔
-      </button>
-    </div>
-
-    <!-- Right Header Controls -->
     <div class="header-actions">
-      <button class="btn-header-dropdown" onclick="openUploadModal()">
-        <span>Project ⌵</span>
-      </button>
-      <button class="btn-header-dropdown" onclick="testAudioSound()">
+      <div class="status-pill" onclick="testAudioSound()">
         <span>🔊 Test Audio</span>
+      </div>
+      <div class="status-pill" id="pillGroq">
+        <span class="status-dot-pulse"></span> Groq Whisper
+      </div>
+      <div class="status-pill" id="pillAI">
+        <span class="status-dot-pulse"></span> OpenRouter AI
+      </div>
+      <button class="btn-header" onclick="openUploadModal()">
+        <span>📁 Change Video</span>
       </button>
-      <div class="avatar-circle">D</div>
+      <div class="user-avatar" title="Creative Producer">D</div>
     </div>
   </header>
 
-  <!-- ========================================================
-       MAIN APP WORKSPACE
-       ======================================================== -->
-  <div class="app-body">
+  <!-- ==========================================================================
+       MAIN THREE-PANEL CREATIVE WORKSPACE
+       ========================================================================== -->
+  <div class="app-workspace">
 
-    <!-- 1. Left Nav Rail -->
-    <nav class="nav-rail">
-      <div class="rail-top-nav">
-        <button class="rail-btn active" title="Home Studio">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-          Home
-        </button>
-        <button class="rail-btn" onclick="switchRightTab('style')" title="Templates">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect></svg>
-          Templates
-        </button>
-        <button class="rail-btn" onclick="switchRightTab('sfx')" title="SFX Library">
-          <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"></path></svg>
-          SFX
-        </button>
-        <button class="rail-btn" onclick="openUploadModal()" title="History">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          History
-        </button>
-      </div>
+    <!-- ------------------------------------------------------------------------
+         1. LEFT PANEL: RESOURCES & MEDIA MANAGEMENT
+         ------------------------------------------------------------------------ -->
+    <aside class="panel-resources">
 
-      <div class="rail-footer-badge">
-        ⚡
-        <div>Mastered<br>Style Sheet</div>
-      </div>
-    </nav>
-
-    <!-- 2. Left Panel: Script & Edits -->
-    <aside class="left-panel">
-      <!-- Tabs -->
-      <div class="panel-tabs">
-        <div class="panel-tab active" id="tabScriptBtn" onclick="setLeftTab('script')">
-          <span>✏️</span> Script & Edits
+      <!-- Section: Source Video -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Source Footage</span>
+          <span class="section-badge" id="sourceBadge">READY</span>
         </div>
-        <div class="panel-tab" id="tabStyleBtn" onclick="setLeftTab('style')">
-          <span>🎨</span> Style Guide
-        </div>
-      </div>
 
-      <!-- Active Video Card -->
-      <div class="input-video-card">
-        <div class="video-card-meta">
-          <div class="video-card-title" id="activeVideoName">Input Video</div>
-          <div class="video-card-specs">
-            <span id="activeVideoSpecs">46.5s • 848 × 478</span>
-            <span class="status-dot"></span>
+        <div class="upload-box-primary" id="videoDropzone" onclick="document.getElementById('hiddenVideoInput').click()">
+          <span class="upload-box-icon">🎬</span>
+          <div class="upload-box-title">Drop your raw video here</div>
+          <div class="upload-box-sub">MP4, MOV, or WEBM • Up to 500MB</div>
+          <input type="file" id="hiddenVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
+        </div>
+
+        <div class="video-loaded-card" id="videoLoadedCard">
+          <div class="video-preview-thumb">
+            <video id="miniThumbVideo" muted playsinline></video>
           </div>
-        </div>
-        <button class="btn-change-video" onclick="openUploadModal()">
-          ⇄ Change
-        </button>
-      </div>
-
-      <!-- AI Prompt / Instruction Card -->
-      <div class="ai-chat-card">
-        <div class="ai-chat-header">
-          <span>✦ AI Director Chat</span>
-          <span style="font-size: 10px; color: #10B981;">Online</span>
-        </div>
-        <textarea class="ai-prompt-box" id="leftPromptBox" 
-                  placeholder="Type style instructions (e.g. Add PS5 popup, white outline, loud sound effects, horizontal ratio)..."></textarea>
-        <div class="quick-chips-row">
-          <button class="chip-btn" onclick="insertPrompt('🎮 GTA & Gaming popup with level up sound')">🎮 GTA / Gaming</button>
-          <button class="chip-btn" onclick="insertPrompt('💰 Earn money sticker with cash register')">💰 Earn Money</button>
-          <button class="chip-btn" onclick="insertPrompt('✨ White outline glow around speaker')">✨ White Outline</button>
-          <button class="chip-btn" onclick="insertPrompt('🔥 Viral TikTok style with popups')">🔥 Viral Style</button>
-        </div>
-      </div>
-
-      <!-- AI Suggestions List -->
-      <div class="suggestions-header">
-        <div class="suggestions-title">
-          <span>✦</span> AI Editor Suggestions
-        </div>
-      </div>
-
-      <div class="suggestions-list" id="suggestionsContainer">
-        <!-- Rendered dynamically -->
-      </div>
-
-      <!-- Generate Reel Button -->
-      <button class="btn-generate-reel" onclick="executeAIPrompt()">
-        <span>✦</span> Generate Reel + ➔
-      </button>
-    </aside>
-
-    <!-- 3. Center Player Stage -->
-    <main class="center-stage" onclick="unmuteAudioNow()">
-      <div class="player-container">
-        
-        <!-- Video Canvas with Overlays -->
-        <div class="video-canvas-wrapper canvas-16-9 glow-yellow" id="videoCanvasWrapper">
-          
-          <!-- Primary Video Element -->
-          <video id="mainVideo" playsinline preload="auto" crossorigin="anonymous"></video>
-
-          <!-- Fallback Click-to-Unmute Banner if Browser Muted Video -->
-          <div class="unmute-callout-overlay" id="unmuteCallout" onclick="unmuteAudioNow()">
-            <span>🔊 Click to Enable Audio</span>
-          </div>
-
-          <!-- Top Hook Banner (Style Sheet Section 6 & 8) -->
-          <div class="top-hook-pill" id="topHookPill">
-            <span>⚡ GTA 6 CLIPS • EARN MONEY 💰</span>
-          </div>
-
-          <!-- Floating Social Comment Question Card (Style Sheet Section 5) -->
-          <div class="social-comment-popup" id="socialCommentPopup">
-            <div class="comment-avatar">💬</div>
-            <div class="comment-bubble-text">
-              <span style="color:#6B7280; font-size:11px; display:block;">@alex_clips</span>
-              "Wait, can you actually make money from GTA 6 clips?"
+          <div class="video-meta-body">
+            <div class="video-meta-name" id="loadedVideoTitle">No video loaded</div>
+            <div class="video-meta-details">
+              <span id="loadedVideoSpecs">0.0s • 1080p</span>
+              <span class="status-dot-pulse"></span>
             </div>
           </div>
+          <button class="btn-action-icon" onclick="openUploadModal()">⇄</button>
+        </div>
+      </div>
 
-          <!-- Dynamic Spoken Pop-Up Badges -->
-          <div class="floating-popup-badge badge-gaming" id="badgeGaming">
-            <span>🎮 PS5 / GTA 6 GAME</span>
-          </div>
-
-          <div class="floating-popup-badge badge-money" id="badgeMoney">
-            <span>💰 EARN $1,000+ CASH</span>
-          </div>
-
-          <div class="floating-popup-badge badge-link" id="badgeLink">
-            <span>🔴 YOUTUBE CHANNEL LINK</span>
-          </div>
-
-          <div class="floating-popup-badge badge-comment" id="badgeComment">
-            <span>💬 COMMENT 'LINK' BELOW</span>
-          </div>
-
-          <!-- Signature Dual-Size Captions (Style Sheet Section 6) -->
-          <div class="signature-captions-box" id="captionsBox">
-            <div class="cap-lead-text" id="capLead"></div>
-            <div class="cap-keyword-text" id="capKeyword"></div>
-          </div>
-
+      <!-- Section: Additional Creative Resources -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Creative Resources</span>
+          <span class="section-badge" id="resourcesCountBadge">0 Assets</span>
         </div>
 
-        <!-- Controls Bar -->
-        <div class="player-controls-bar">
-          <div class="transport-buttons">
-            <button class="btn-player-transport" onclick="seekRelative(-5)">⏮</button>
-            <button class="btn-play-pause-main" id="btnPlayMain" onclick="toggleMainPlay()">▶</button>
-            <button class="btn-player-transport" onclick="seekRelative(5)">⏭</button>
+        <div class="resources-uploader-card">
+          <!-- Resource Category Filter Tabs -->
+          <div class="resource-tabs">
+            <button class="resource-tab-btn active" onclick="switchResourceTab('all', this)">All</button>
+            <button class="resource-tab-btn" onclick="switchResourceTab('images', this)">Photos</button>
+            <button class="resource-tab-btn" onclick="switchResourceTab('audio', this)">Audio</button>
+            <button class="resource-tab-btn" onclick="switchResourceTab('graphics', this)">Graphics</button>
           </div>
 
-          <div class="timecode-display">
-            <span id="curTimeLabel">00:00.0</span> / <span id="durTimeLabel">00:46.5</span>
+          <!-- Quick Dropzone for Images / Audio / Graphics -->
+          <div class="dropzone-compact" onclick="document.getElementById('hiddenResourceInput').click()">
+            <span>➕ Upload Photos, Audio or Logos</span>
+            <input type="file" id="hiddenResourceInput" multiple accept="image/*,audio/*,.svg" style="display:none" onchange="handleResourceUpload(event)">
           </div>
 
-          <!-- Audio Volume & Unmute -->
-          <div class="audio-player-widget">
-            <button style="background:transparent; border:none; cursor:pointer; font-size:14px; color:#FFE600;" 
-                    id="btnAudioMute" onclick="toggleMute()">
-              🔊
-            </button>
-            <input type="range" class="player-volume-slider" id="playerVolumeSlider" 
-                   min="0" max="100" value="100" oninput="setPlayerVolume(this.value)">
-            <span style="font-size: 10px; color: #10B981; font-weight: 700;" id="audioStatusBadge">AUDIO 100%</span>
+          <!-- Uploaded Resource Thumbnails Grid -->
+          <div class="uploaded-assets-grid" id="uploadedAssetsGrid">
+            <!-- Populated dynamically via /api/resources -->
           </div>
+        </div>
+      </div>
 
-          <!-- Aspect Ratio Selector -->
-          <select class="select-pill" id="aspectRatioSelect" onchange="changeCanvasRatio(this.value)">
-            <option value="16:9" selected>16:9 Horizontal ⌵</option>
-            <option value="9:16">9:16 Vertical (Reel)</option>
-            <option value="1:1">1:1 Square</option>
-          </select>
+      <!-- Section: Project History -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Recent Project Videos</span>
+        </div>
+        <div class="history-card-list" id="recentVideosHistory">
+          <!-- Loaded from /api/status -->
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ------------------------------------------------------------------------
+         2. CENTER PANEL: VIDEO PREVIEW STUDIO
+         ------------------------------------------------------------------------ -->
+    <main class="panel-center-studio" onclick="unmuteAudioNow()">
+
+      <!-- Studio Header Controls -->
+      <div class="studio-top-bar">
+        <!-- View Mode: Original vs AI Edit -->
+        <div class="studio-pill-group">
+          <button class="mode-toggle-btn active" id="btnModeEdited" onclick="setViewMode('edited')">✦ AI Creative Edit</button>
+          <button class="mode-toggle-btn" id="btnModeOriginal" onclick="setViewMode('original')">Original Footage</button>
+        </div>
+
+        <!-- Overlays Toggle Pill -->
+        <div class="studio-pill-group">
+          <label style="font-size:11px; font-weight:700; color:var(--text-secondary); display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="chkShowOverlays" checked onchange="toggleOverlaysVisibility(this.checked)">
+            Show Aesthetic Overlays
+          </label>
+        </div>
+
+        <!-- Aspect Ratio Selection -->
+        <select class="ratio-dropdown" id="aspectRatioSelect" onchange="changeCanvasAspect(this.value)">
+          <option value="9:16" selected>9:16 Vertical Reel</option>
+          <option value="16:9">16:9 Landscape</option>
+          <option value="1:1">1:1 Square</option>
+        </select>
+      </div>
+
+      <!-- Primary Video Canvas Viewport -->
+      <div class="video-viewport-wrapper canvas-9-16 outline-white" id="videoCanvasWrapper">
+
+        <!-- Main Video Element -->
+        <video id="mainVideo" playsinline preload="auto" crossorigin="anonymous"></video>
+
+        <!-- Unmute Warning Callout if Browser Mutes Autoplay -->
+        <div class="unmute-callout-box" id="unmuteCallout" onclick="unmuteAudioNow()">
+          <span>🔊 Click to Enable Sound</span>
+        </div>
+
+        <!-- OVERLAY A: Pinterest Scrapbook Polaroid Frames (Ref 1) -->
+        <div class="polaroid-card polaroid-top-left" id="polaroidCard1">
+          <div class="polaroid-tape"></div>
+          <img class="polaroid-img" id="polaroidImg1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%236366F1'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2FF'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%234F46E5'%3EAesthetic%3C/text%3E%3C/svg%3E" alt="Polaroid">
+        </div>
+
+        <div class="polaroid-card polaroid-bottom-right" id="polaroidCard2">
+          <div class="polaroid-tape"></div>
+          <img class="polaroid-img" id="polaroidImg2" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23EC4899'%3E%3Crect width='100%25' height='100%25' fill='%23FDF2F8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23DB2777'%3EVibes%3C/text%3E%3C/svg%3E" alt="Polaroid">
+        </div>
+
+        <!-- OVERLAY B: Retro Digital Camera Overlay (Ref 1) -->
+        <div class="retro-camera-overlay" id="cameraOverlay">
+          <div class="camera-screen">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='70' fill='%2310B981'%3E%3Crect width='100%25' height='100%25' fill='%23ECFDF5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='10' fill='%23059669'%3EREC [00:46]%3C/text%3E%3C/svg%3E" alt="Digicam">
+          </div>
+          <div class="camera-lens-dot">
+            <span>● 4K 30FPS</span>
+            <span>BAT 98%</span>
+          </div>
+        </div>
+
+        <!-- OVERLAY C: Floating Music Player Card (Ref 2) -->
+        <div class="floating-music-card" id="floatingMusicCard">
+          <div class="music-card-header">
+            <div class="music-card-album">🎵</div>
+            <div class="music-card-info">
+              <div class="music-track-name" id="musicCardTitle">Dangerous (Aura AI Edit)</div>
+              <div class="music-artist-name">Kardinal Offishall, Akon</div>
+            </div>
+            <div style="font-size:14px; color:#A855F7;">⏸</div>
+          </div>
+          <div class="music-progress-bar">
+            <div class="music-progress-fill" id="musicCardProgress"></div>
+          </div>
+          <div class="music-controls-row">
+            <span>0:14</span>
+            <span>iPhone ▾</span>
+            <span>3:43</span>
+          </div>
+        </div>
+
+        <!-- OVERLAY D: Orbiting Glassmorphism Mini Cards (Ref 3) -->
+        <div class="orbit-glass-card orbit-card-1" id="orbitCard1">
+          <div style="font-size:9px; color:#22D3EE; font-weight:800;">SPOTIFY NOW PLAYING</div>
+          <div style="font-size:11px; font-weight:700; margin-top:2px;">Phantom Esdeekid</div>
+        </div>
+
+        <div class="orbit-glass-card orbit-card-2" id="orbitCard2">
+          <div style="font-size:9px; color:#EC4899; font-weight:800;">AESTHETIC VIBES</div>
+          <div style="font-size:11px; font-weight:700; margin-top:2px;">LV Sandals • 4 Raws</div>
+        </div>
+
+        <!-- OVERLAY E: Scrapbook Stickers (Stars, Flowers, Love) -->
+        <div class="scrapbook-sticker sticker-star" id="stickerStar">⭐</div>
+        <div class="scrapbook-sticker sticker-flower" id="stickerFlower">🌸</div>
+        <div class="scrapbook-sticker sticker-love" id="stickerLove">Love</div>
+
+        <!-- OVERLAY F: Top Hook Pill -->
+        <div class="top-hook-banner" id="topHookBanner">
+          <span>⚡ GTA 6 CLIPS • EARN MONEY 💰</span>
+        </div>
+
+        <!-- OVERLAY G: Social Question Popup -->
+        <div class="social-question-card" id="socialQuestionCard">
+          <div class="question-avatar">💬</div>
+          <div class="question-body">
+            <span style="color:#64748B; font-size:10px; display:block;">@alex_clips</span>
+            "Wait, can you actually make money from GTA 6 clips?"
+          </div>
+        </div>
+
+        <!-- OVERLAY H: Dynamic Spoken Badges -->
+        <div class="spoken-badge badge-pos-gaming" id="badgeGaming">🎮 PS5 / GTA 6 GAME</div>
+        <div class="spoken-badge badge-pos-money"  id="badgeMoney">💰 EARN $1,000+ CASH</div>
+        <div class="spoken-badge badge-pos-link"   id="badgeLink">🔴 YOUTUBE CHANNEL LINK</div>
+        <div class="spoken-badge badge-pos-comment"id="badgeComment">💬 COMMENT 'LINK' BELOW</div>
+
+        <!-- OVERLAY I: Dynamic Two-Tone Captions -->
+        <div class="dynamic-captions-box" id="dynamicCaptionsBox">
+          <div class="caption-lead-word" id="captionLeadWord"></div>
+          <div class="caption-keyword-punch" id="captionKeywordPunch"></div>
         </div>
 
       </div>
+
+      <!-- Studio Video Player Controls Bar -->
+      <div class="studio-player-controls">
+        <div class="scrubber-track" id="scrubberTrack" onclick="handleScrubberClick(event)">
+          <div class="scrubber-fill" id="scrubberFill"></div>
+        </div>
+
+        <div class="transport-row">
+          <div class="transport-left">
+            <button class="btn-transport-tool" onclick="seekRelative(-5)">⏮</button>
+            <button class="btn-play-hero" id="btnPlayHero" onclick="togglePlayPause()">▶</button>
+            <button class="btn-transport-tool" onclick="seekRelative(5)">⏭</button>
+            <span class="timecode-label">
+              <span id="labelCurrentTime">00:00.0</span> / <span id="labelTotalDuration">00:46.5</span>
+            </span>
+          </div>
+
+          <div class="transport-right">
+            <!-- Volume Widget with Unmute Insurance -->
+            <div class="volume-widget">
+              <button style="background:transparent; border:none; cursor:pointer; font-size:13px; color:#FFE600;" 
+                      id="btnMuteToggle" onclick="toggleMuteAudio()">
+                🔊
+              </button>
+              <input type="range" class="volume-slider-bar" id="volumeSliderBar" min="0" max="100" value="100" oninput="setAudioVolume(this.value)">
+              <span class="volume-badge-status" id="volumeBadgeStatus">100%</span>
+            </div>
+
+            <!-- Outline Style Selector -->
+            <button class="btn-action-icon" id="btnToggleOutline" onclick="cycleOutlineStyle()" title="Cycle Subject Outline Color">
+              ✨ Outline
+            </button>
+          </div>
+        </div>
+      </div>
+
     </main>
 
-    <!-- 4. Right Panel: Style, Effects, SFX -->
-    <aside class="right-panel">
-      <div class="right-tabs">
-        <div class="right-tab active" id="tabStyleRight" onclick="switchRightTab('style')">Style</div>
-        <div class="right-tab" id="tabSfxRight" onclick="switchRightTab('sfx')">SFX Library</div>
-      </div>
+    <!-- ------------------------------------------------------------------------
+         3. RIGHT PANEL: AI CREATIVE DIRECTOR
+         ------------------------------------------------------------------------ -->
+    <aside class="panel-director">
 
-      <!-- Tab Content: Style -->
-      <div id="contentRightStyle" style="display: flex; flex-direction: column; gap: 16px;">
-        <div style="font-size: 12px; font-weight: 700; color: #E2E8F0;">Theme Presets (Style Sheet)</div>
-        <div class="presets-grid">
-          <div class="preset-card active" onclick="selectTheme('creator', this)">
-            <span style="font-size: 20px;">👑</span>
-            <span style="font-size: 9px; font-weight: 700;">Creator</span>
+      <!-- Section: Prompt Instruction Box -->
+      <div class="prompt-studio-card">
+        <div class="prompt-box-header">
+          <div class="director-badge-label">
+            <span style="color:#A855F7;">✦</span> AI Creative Director
           </div>
-          <div class="preset-card" onclick="selectTheme('cinematic', this)">
-            <span style="font-size: 20px;">🎬</span>
-            <span style="font-size: 9px; font-weight: 700;">Cinema</span>
-          </div>
-          <div class="preset-card" onclick="selectTheme('tech', this)">
-            <span style="font-size: 20px;">⚡</span>
-            <span style="font-size: 9px; font-weight: 700;">Tech</span>
-          </div>
-          <div class="preset-card" onclick="selectTheme('vibes', this)">
-            <span style="font-size: 20px;">😎</span>
-            <span style="font-size: 9px; font-weight: 700;">Vibes</span>
-          </div>
+          <span style="font-size:10px; color:#10B981; font-weight:700;">● Model Active</span>
         </div>
 
-        <div style="font-size: 12px; font-weight: 700; color: #E2E8F0;">Feature Toggles</div>
-        <div class="feature-toggles-list">
-          <div class="toggle-row">
-            <div class="toggle-label">Subject Outline Glow</div>
-            <label class="switch">
-              <input type="checkbox" id="toggleSubjectOutline" checked onchange="toggleSubjectOutlineEffect(this.checked)">
-              <span class="slider"></span>
-            </label>
-          </div>
+        <textarea class="director-textarea" id="directorPromptInput" 
+                  placeholder="Describe your creative vision (e.g. Create a Pinterest aesthetic edit with scrapbook Polaroids, white outlines, and chill background vibes)..."></textarea>
 
-          <div class="toggle-row">
-            <div class="toggle-label">Dynamic Punch-In Zooms</div>
-            <label class="switch">
-              <input type="checkbox" id="toggleZooms" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div class="toggle-row">
-            <div class="toggle-label">Animated Pop-Up Messages</div>
-            <label class="switch">
-              <input type="checkbox" id="togglePopups" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
+        <div class="attached-resources-pill" id="attachedResourcesPill">
+          <span>📎 Attached:</span>
+          <span id="attachedResourcesText">0 custom photos/audio attached</span>
         </div>
 
-        <div style="font-size: 12px; font-weight: 700; color: #E2E8F0;">Glow Outline Color</div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn-change-video" onclick="setGlowColor('yellow')">🟡 Neon Yellow</button>
-          <button class="btn-change-video" onclick="setGlowColor('white')">⚪ Clean White</button>
+        <!-- Quick Style Chips -->
+        <div class="quick-style-chips">
+          <button class="style-chip-btn" onclick="applyQuickPrompt('📸 Aesthetic scrapbook with Polaroid cutouts and white outlines')">📸 Scrapbook</button>
+          <button class="style-chip-btn" onclick="applyQuickPrompt('🎵 Floating Spotify music cards with perspective shadow')">🎵 Music Card</button>
+          <button class="style-chip-btn" onclick="applyQuickPrompt('✨ Clean white outline glow around speaker')">✨ White Outline</button>
+          <button class="style-chip-btn" onclick="applyQuickPrompt('🔥 Viral reel with pop-ups and gaming level-up SFX')">🔥 Viral Reel</button>
         </div>
       </div>
 
-      <!-- Tab Content: SFX Library -->
-      <div id="contentRightSfx" style="display: none; flex-direction: column; gap: 10px;">
-        <div style="font-size: 12px; font-weight: 700; color: #E2E8F0;">Click Any SFX to Test Audio</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <button class="btn-change-video" onclick="playSfx('vine_boom')">💥 Vine Boom</button>
-          <button class="btn-change-video" onclick="playSfx('cash_register')">💰 Cash Register</button>
-          <button class="btn-change-video" onclick="playSfx('level_up')">🎮 Level Up</button>
-          <button class="btn-change-video" onclick="playSfx('bell_chime')">🔔 Bell Chime</button>
-          <button class="btn-change-video" onclick="playSfx('whoosh')">💨 Fast Whoosh</button>
-          <button class="btn-change-video" onclick="playSfx('pop')">🎈 Pop</button>
+      <!-- Section: Creative Style Explorer (8+ Visual Styles) -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Creative Style Explorer</span>
+        </div>
+
+        <div class="style-cards-scroller">
+          <!-- 1. Aesthetic Scrapbook -->
+          <div class="aesthetic-style-card selected" onclick="chooseCreativeStyle('scrapbook', this)" data-prompt="Aesthetic scrapbook composition with Polaroid photo frames, hand-drawn white subject outlines, floating stars, flowers, and handwritten typography.">
+            <div class="style-card-top">
+              <span class="style-card-icon">📸</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Aesthetic Scrapbook</div>
+            <div class="style-card-desc">Polaroid layers, white outline, stars & flowers</div>
+          </div>
+
+          <!-- 2. Pinterest Lifestyle -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('pinterest', this)" data-prompt="Pinterest lifestyle aesthetic with soft warm tone, pastel stickers, and elegant cutouts.">
+            <div class="style-card-top">
+              <span class="style-card-icon">🌸</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Pinterest Lifestyle</div>
+            <div class="style-card-desc">Dreamy filters, pastel stickers, lifestyle cuts</div>
+          </div>
+
+          <!-- 3. Floating Music Player -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('music_player', this)" data-prompt="Music-player-inspired composition with floating Apple/Spotify style cards, realistic ground shadows, and playback graphics.">
+            <div class="style-card-top">
+              <span class="style-card-icon">🎵</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Music Player</div>
+            <div class="style-card-desc">Perspective player cards & album art</div>
+          </div>
+
+          <!-- 4. Glassmorphism -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('glassmorphism', this)" data-prompt="Translucent floating glass cards orbiting speaker, frosted-glass panels with pink and cyan glow trails.">
+            <div class="style-card-top">
+              <span class="style-card-icon">🔮</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Glassmorphism</div>
+            <div class="style-card-desc">Orbiting frosted glass & cyan light trails</div>
+          </div>
+
+          <!-- 5. Retro Digital Camera -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('retrocamer', this)" data-prompt="Y2K retro digital camera viewfinder overlay with REC indicator, timestamp, and nostalgic flash.">
+            <div class="style-card-top">
+              <span class="style-card-icon">📷</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Retro Digicam</div>
+            <div class="style-card-desc">Y2K camera viewfinder & timestamp</div>
+          </div>
+
+          <!-- 6. Playful Collage -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('collage', this)" data-prompt="Playful collage with multi-photo cutouts, washi tape, and layered depth.">
+            <div class="style-card-top">
+              <span class="style-card-icon">🎨</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Playful Collage</div>
+            <div class="style-card-desc">Multi-cutout photos with washi tape</div>
+          </div>
+
+          <!-- 7. Dreamy Pastel -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('pastel', this)" data-prompt="Dreamy pastel with soft color grading, floating sparkle stickers, and gentle kinetic text.">
+            <div class="style-card-top">
+              <span class="style-card-icon">☁️</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Dreamy Pastel</div>
+            <div class="style-card-desc">Soft dreamy aura & floating sparkles</div>
+          </div>
+
+          <!-- 8. Cinematic Creative -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('cinematic', this)" data-prompt="Cinematic dramatic reel with punch zooms, film grain, and letterboxed composition.">
+            <div class="style-card-top">
+              <span class="style-card-icon">🎬</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Cinematic Creative</div>
+            <div class="style-card-desc">Film punch cuts & editorial typography</div>
+          </div>
+
+          <!-- 9. Auto Creative (AI Decides) -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('auto', this)" data-prompt="" style="grid-column: span 2;">
+            <div class="style-card-top">
+              <span class="style-card-icon">🤖</span>
+              <span class="style-card-check">✓</span>
+            </div>
+            <div class="style-card-name">Auto Creative (AI Decides)</div>
+            <div class="style-card-desc">AI analyzes video transcript and assets to compose the best aesthetic</div>
+          </div>
         </div>
       </div>
+
+      <!-- Section: Creative Elements Capability Preview Panel -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Creative Elements</span>
+        </div>
+        <div class="capability-elements-grid">
+          <div class="capability-item" onclick="previewCapability('Polaroids')">
+            <span class="capability-icon">🖼</span>
+            <span class="capability-label">Polaroids</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('White Outline')">
+            <span class="capability-icon">✨</span>
+            <span class="capability-label">Outlines</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('Music Cards')">
+            <span class="capability-icon">🎵</span>
+            <span class="capability-label">Music Card</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('Digicam')">
+            <span class="capability-icon">📷</span>
+            <span class="capability-label">Digicam</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('Stickers')">
+            <span class="capability-icon">🌸</span>
+            <span class="capability-label">Stickers</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('Glass Panels')">
+            <span class="capability-icon">🔮</span>
+            <span class="capability-label">Glass UI</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('Typography')">
+            <span class="capability-icon">🔤</span>
+            <span class="capability-label">Kinetic Text</span>
+          </div>
+          <div class="capability-item" onclick="previewCapability('SFX Mastery')">
+            <span class="capability-icon">🔊</span>
+            <span class="capability-label">SFX Chimes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Stage AI Processing Overlay Card -->
+      <div class="ai-processing-box" id="aiProcessingBox">
+        <div class="processing-header-title">
+          <span>⏳</span> Processing AI Creative Composition...
+        </div>
+        <div class="stage-item-row" id="stage1"><span class="stage-indicator-dot"></span> 1. Analysing source video</div>
+        <div class="stage-item-row" id="stage2"><span class="stage-indicator-dot"></span> 2. Understanding editing prompt</div>
+        <div class="stage-item-row" id="stage3"><span class="stage-indicator-dot"></span> 3. Reviewing uploaded resources</div>
+        <div class="stage-item-row" id="stage4"><span class="stage-indicator-dot"></span> 4. Planning visual compositions</div>
+        <div class="stage-item-row" id="stage5"><span class="stage-indicator-dot"></span> 5. Generating creative assets</div>
+        <div class="stage-item-row" id="stage6"><span class="stage-indicator-dot"></span> 6. Applying animations & effects</div>
+        <div class="stage-item-row" id="stage7"><span class="stage-indicator-dot"></span> 7. Compositing video layers</div>
+        <div class="stage-item-row" id="stage8"><span class="stage-indicator-dot"></span> 8. Preparing live preview</div>
+      </div>
+
+      <!-- Primary Action: Generate Edit Button -->
+      <button class="btn-generate-hero" id="btnGenerateHero" onclick="executeAICreativeEdit()">
+        <span>✦</span> Generate Creative Edit ➔
+      </button>
+
+      <!-- Section: Editing Results Experience -->
+      <div class="results-summary-card" id="resultsSummaryCard">
+        <div class="results-badge-header">
+          <span>✅</span> AI Creative Edit Applied!
+        </div>
+        <div class="results-text-body" id="resultsSummaryText">
+          Tailored composition generated with kinetic captions, visual triggers, and sound design.
+        </div>
+      </div>
+
     </aside>
 
   </div>
 
-  <!-- ========================================================
-       BOTTOM MULTI-TRACK TIMELINE
-       ======================================================== -->
-  <footer class="timeline-container">
-    <div class="timeline-track-headers">
-      <div class="ruler-header-spacer"></div>
-      <div class="track-header-item"><span>👁</span> Captions</div>
-      <div class="track-header-item"><span>🖼</span> Graphics</div>
-      <div class="track-header-item"><span>🔊</span> SFX ⚙</div>
-      <div class="track-header-item"><span>🎵</span> Music</div>
+  <!-- ==========================================================================
+       BOTTOM TIMELINE & EXPORT BAR
+       ========================================================================== -->
+  <footer class="app-timeline-bar">
+    <div class="timeline-headers-col">
+      <div class="timeline-header-spacer"></div>
+      <div class="timeline-track-title"><span>👁</span> Captions</div>
+      <div class="timeline-track-title"><span>🖼</span> Scrapbook</div>
+      <div class="timeline-track-title"><span>🔊</span> SFX Hits</div>
+      <div class="timeline-track-title"><span>🎵</span> Music Master</div>
     </div>
 
-    <div class="timeline-scroll-area" id="timelineScrollArea" onclick="handleTimelineClick(event)">
-      <div class="time-ruler" id="timeRuler"></div>
+    <div class="timeline-canvas-scroll" id="timelineScrollArea" onclick="handleTimelineCanvasClick(event)">
+      <!-- Ruler -->
+      <div class="timeline-ruler-row" id="timelineRulerRow"></div>
 
-      <div class="tracks-canvas" id="tracksCanvas">
-        <div class="playhead-needle" id="playheadNeedle" style="left: 0px;">
-          <div class="playhead-head"></div>
+      <!-- Tracks Canvas -->
+      <div class="timeline-tracks-area" id="timelineTracksArea">
+        <div class="timeline-needle" id="timelineNeedle" style="left:0px;">
+          <div class="needle-cap"></div>
         </div>
-        <div class="timeline-track-row" id="trackCaptions"></div>
-        <div class="timeline-track-row" id="trackGraphics"></div>
-        <div class="timeline-track-row" id="trackSfx"></div>
-        <div class="timeline-track-row" id="trackMusic">
-          <div class="music-track-bar"><span>Mastered Track • Style Sheet Standards</span></div>
+
+        <div class="timeline-row" id="tlTrackCaptions"></div>
+        <div class="timeline-row" id="tlTrackGraphics"></div>
+        <div class="timeline-row" id="tlTrackSfx"></div>
+        <div class="timeline-row" id="tlTrackMusic">
+          <div class="mastered-music-bar">✦ -14 LUFS Mastered Audio Track • Sidechain Ducking Active</div>
         </div>
       </div>
     </div>
 
+    <!-- Timeline Action Dock -->
     <div class="timeline-actions-dock">
-      <button class="btn-timeline-preview" id="btnTimelinePreview" onclick="toggleMainPlay()">
+      <button class="btn-timeline-preview" id="btnTimelinePreview" onclick="togglePlayPause()">
         <span>▶</span> Preview
       </button>
 
-      <button class="btn-timeline-export" id="btnExportReel" onclick="renderVideoExport()">
+      <button class="btn-timeline-export" id="btnExportVideo" onclick="exportVideoFile()">
         <span>🚀</span> Export Reel
       </button>
 
-      <div style="font-size: 10px; color: #64748B;">⏱ ~ 25s render</div>
+      <div style="font-size:10px; color:var(--text-muted);">⏱ ~20s render</div>
 
-      <a id="btnDownloadExport" href="#" download style="display:none; width: 100%; text-decoration: none;">
-        <button class="btn-timeline-preview" style="background: #10B981; color: #fff; border:none; margin-top: 4px;">
-          ⬇ Download MP4
-        </button>
+      <a id="btnDownloadLink" class="btn-timeline-download" href="#" download>
+        <button class="btn-download-inner">⬇ Download MP4</button>
       </a>
     </div>
   </footer>
 
-  <!-- Modal for Upload / New Project -->
-  <div class="modal-overlay" id="uploadModal" onclick="if(event.target===this) closeUploadModal()">
-    <div class="modal-box">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="font-size: 16px; font-weight: 800;">Upload Video / New Project</h3>
-        <button style="background:transparent; border:none; color:#64748B; font-size:18px; cursor:pointer;" onclick="closeUploadModal()">✕</button>
+  <!-- Modal: Video Upload & Selector -->
+  <div class="modal-scrim" id="uploadModalScrim" onclick="if(event.target===this) closeUploadModal()">
+    <div class="modal-box-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-size:16px; font-weight:800;">Upload or Pick Video</h3>
+        <button style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;" onclick="closeUploadModal()">✕</button>
       </div>
 
-      <div class="modal-dropzone" onclick="document.getElementById('hiddenFileInput').click()">
-        <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
-        <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">Drop your raw video here</div>
-        <div style="font-size: 11px; color: #94A3B8;">MP4, MOV, or WEBM (Clean project isolation)</div>
-        <input type="file" id="hiddenFileInput" accept="video/*" style="display:none;" onchange="handleFileSelect(event)">
+      <div class="upload-box-primary" onclick="document.getElementById('modalVideoInput').click()">
+        <span class="upload-box-icon">📁</span>
+        <div class="upload-box-title">Choose from your computer</div>
+        <div class="upload-box-sub">MP4, MOV, or WEBM</div>
+        <input type="file" id="modalVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
       </div>
 
-      <div style="font-size: 12px; font-weight: 700; color: #CBD5E1;">Or pick an existing video:</div>
-      <div id="existingVideosList" style="display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto;"></div>
+      <div style="font-size:12px; font-weight:700; color:var(--text-secondary);">Or pick an existing video:</div>
+      <div class="history-card-list" id="modalExistingVideosList" style="max-height:160px;"></div>
     </div>
   </div>
 
-  <div class="toast-pill" id="toastPill">
+  <!-- Toast Capsule -->
+  <div class="toast-capsule" id="toastCapsule">
     <span id="toastIcon">✨</span>
-    <span id="toastMessage">Reel updated!</span>
+    <span id="toastMessage">Ready</span>
   </div>
 
-  <!-- ========================================================
-       CORE SCRIPT: REAL-TIME ENGINE & AUDIO ARCHITECTURE
-       ======================================================== -->
+  <!-- ==========================================================================
+       CORE CLIENT CONTROLLER & AUDIO/PREVIEW ENGINE
+       ========================================================================== -->
   <script>
     // State
-    let currentVideoFile = "WhatsApp_Video_2026-11-18_at_12.36.59.mp4";
-    let videoDuration = 46.49;
-    let currentAspectRatio = "16:9";
+    let activeVideo = "WhatsApp_Video_2026-11-18_at_12.36.59.mp4";
+    let activeDuration = 46.49;
+    let currentAspect = "9:16";
+    let currentOutline = "white";
+    let activeStylePreset = "scrapbook";
+    let viewMode = "edited"; // "edited" | "original"
     let edlData = null;
     let audioUnlocked = false;
-    let sfxAudioCache = {};
-    let playedSfxTimes = new Set();
-    let currentGlowColor = "yellow";
+    let isProcessing = false;
+    let sfxAudioPool = {};
+    let triggeredSfxTimes = new Set();
+    let attachedResources = [];
 
-    // DOM Elements
+    // DOM Cache
     const video = document.getElementById('mainVideo');
+    const miniThumbVideo = document.getElementById('miniThumbVideo');
     const videoCanvasWrapper = document.getElementById('videoCanvasWrapper');
-    const playheadNeedle = document.getElementById('playheadNeedle');
-    const curTimeLabel = document.getElementById('curTimeLabel');
-    const durTimeLabel = document.getElementById('durTimeLabel');
-    const btnPlayMain = document.getElementById('btnPlayMain');
+    const timelineNeedle = document.getElementById('timelineNeedle');
+    const scrubberFill = document.getElementById('scrubberFill');
+    const labelCurrentTime = document.getElementById('labelCurrentTime');
+    const labelTotalDuration = document.getElementById('labelTotalDuration');
+    const btnPlayHero = document.getElementById('btnPlayHero');
     const btnTimelinePreview = document.getElementById('btnTimelinePreview');
-    const capLead = document.getElementById('capLead');
-    const capKeyword = document.getElementById('capKeyword');
-    const topHookPill = document.getElementById('topHookPill');
-    const socialCommentPopup = document.getElementById('socialCommentPopup');
+    const volumeSliderBar = document.getElementById('volumeSliderBar');
+    const btnMuteToggle = document.getElementById('btnMuteToggle');
+    const volumeBadgeStatus = document.getElementById('volumeBadgeStatus');
+    const unmuteCallout = document.getElementById('unmuteCallout');
+    const directorPromptInput = document.getElementById('directorPromptInput');
+    const chkShowOverlays = document.getElementById('chkShowOverlays');
+
+    // Overlays DOM
+    const polaroidCard1 = document.getElementById('polaroidCard1');
+    const polaroidCard2 = document.getElementById('polaroidCard2');
+    const cameraOverlay = document.getElementById('cameraOverlay');
+    const floatingMusicCard = document.getElementById('floatingMusicCard');
+    const musicCardProgress = document.getElementById('musicCardProgress');
+    const orbitCard1 = document.getElementById('orbitCard1');
+    const orbitCard2 = document.getElementById('orbitCard2');
+    const stickerStar = document.getElementById('stickerStar');
+    const stickerFlower = document.getElementById('stickerFlower');
+    const stickerLove = document.getElementById('stickerLove');
+    const topHookBanner = document.getElementById('topHookBanner');
+    const socialQuestionCard = document.getElementById('socialQuestionCard');
     const badgeGaming = document.getElementById('badgeGaming');
     const badgeMoney = document.getElementById('badgeMoney');
     const badgeLink = document.getElementById('badgeLink');
     const badgeComment = document.getElementById('badgeComment');
-    const playerVolumeSlider = document.getElementById('playerVolumeSlider');
-    const btnAudioMute = document.getElementById('btnAudioMute');
-    const unmuteCallout = document.getElementById('unmuteCallout');
+    const captionLeadWord = document.getElementById('captionLeadWord');
+    const captionKeywordPunch = document.getElementById('captionKeywordPunch');
 
     // Preload SFX
-    const sfxList = ['vine_boom', 'cash_register', 'level_up', 'bell_chime', 'whoosh', 'pop', 'ding'];
-    sfxList.forEach(s => {
+    ['vine_boom', 'cash_register', 'level_up', 'bell_chime', 'whoosh', 'pop', 'ding', 'bruh', 'bubble_pop', 'sad_trombone'].forEach(s => {
       const a = new Audio(`/media/sfx/${s}.wav`);
       a.preload = "auto";
-      sfxAudioCache[s] = a;
+      sfxAudioPool[s] = a;
     });
 
-    // ── FOOLPROOF AUDIO UNLOCKER ──
+    // ── FOOLPROOF AUDIO SYSTEM ──
     function unmuteAudioNow() {
       unmuteCallout.style.display = "none";
       video.muted = false;
-      video.volume = parseFloat(playerVolumeSlider.value) / 100;
+      video.volume = parseFloat(volumeSliderBar.value) / 100;
       audioUnlocked = true;
-      btnAudioMute.innerText = "🔊";
-      document.getElementById('audioStatusBadge').innerText = `AUDIO ${playerVolumeSlider.value}%`;
-      document.getElementById('audioStatusBadge').style.color = "#10B981";
+      btnMuteToggle.innerText = "🔊";
+      volumeBadgeStatus.innerText = `${volumeSliderBar.value}%`;
+      volumeBadgeStatus.style.color = "var(--brand-emerald)";
 
-      // Unlock SFX audio pool
-      Object.values(sfxAudioCache).forEach(a => {
+      // Unlock SFX pool
+      Object.values(sfxAudioPool).forEach(a => {
         a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
       });
     }
@@ -1704,257 +2413,464 @@
     function testAudioSound() {
       unmuteAudioNow();
       playSfx('cash_register');
-      showToast("Testing audio: Cash register sound playing!", "🔊");
+      showToast("Testing audio — cash register playing!", "🔊");
     }
 
     function playSfx(id) {
       unmuteAudioNow();
-      const a = sfxAudioCache[id] || new Audio(`/media/sfx/${id}.wav`);
+      const a = sfxAudioPool[id] || new Audio(`/media/sfx/${id}.wav`);
       a.currentTime = 0;
-      a.volume = 0.9;
-      a.play().catch(e => console.log("SFX play err:", e));
+      a.volume = 0.85;
+      a.play().catch(e => console.log("SFX err:", e));
     }
 
-    function toggleMute() {
+    function toggleMuteAudio() {
       unmuteAudioNow();
       video.muted = !video.muted;
-      btnAudioMute.innerText = video.muted ? "🔇" : "🔊";
-      document.getElementById('audioStatusBadge').innerText = video.muted ? "MUTED" : `AUDIO ${playerVolumeSlider.value}%`;
-      document.getElementById('audioStatusBadge').style.color = video.muted ? "#EF4444" : "#10B981";
+      btnMuteToggle.innerText = video.muted ? "🔇" : "🔊";
+      volumeBadgeStatus.innerText = video.muted ? "MUTED" : `${volumeSliderBar.value}%`;
+      volumeBadgeStatus.style.color = video.muted ? "#EF4444" : "var(--brand-emerald)";
     }
 
-    function setPlayerVolume(val) {
+    function setAudioVolume(val) {
       unmuteAudioNow();
       const vol = parseFloat(val) / 100;
       video.volume = vol;
       video.muted = (vol === 0);
-      btnAudioMute.innerText = (vol === 0) ? "🔇" : "🔊";
-      document.getElementById('audioStatusBadge').innerText = (vol === 0) ? "MUTED" : `AUDIO ${val}%`;
-      document.getElementById('audioStatusBadge').style.color = (vol === 0) ? "#EF4444" : "#10B981";
+      btnMuteToggle.innerText = (vol === 0) ? "🔇" : "🔊";
+      volumeBadgeStatus.innerText = (vol === 0) ? "MUTED" : `${val}%`;
+      volumeBadgeStatus.style.color = (vol === 0) ? "#EF4444" : "var(--brand-emerald)";
     }
 
-    // Initialize
+    // ── INITIALIZATION ──
     window.addEventListener('DOMContentLoaded', () => {
-      buildTimeRuler();
-      loadVideo(currentVideoFile);
-      fetchSystemStatus();
+      buildTimelineRuler();
+      fetchStudioStatus();
+      loadResourcesList();
+      setupDragDropListeners();
 
-      // Ensure any page interaction un-mutes
       document.body.addEventListener('click', () => {
         if (!audioUnlocked) unmuteAudioNow();
       }, { once: true });
     });
 
-    function loadVideo(filename, duration = 46.49, width = 848, height = 478) {
-      currentVideoFile = filename;
-      videoDuration = duration;
-      playedSfxTimes.clear();
-
-      if (width >= height) {
-        changeCanvasRatio("16:9");
-      } else {
-        changeCanvasRatio("9:16");
-      }
-
-      document.getElementById('activeVideoName').innerText = filename;
-      document.getElementById('activeVideoSpecs').innerText = `${duration.toFixed(1)}s • ${width} × ${height}`;
-
-      video.src = `/media/raw/${filename}`;
-      video.load();
-
-      // Check if browser muted playback
-      video.onplay = () => {
-        if (video.muted) {
-          unmuteCallout.style.display = "flex";
+    function setupDragDropListeners() {
+      const dropzone = document.getElementById('videoDropzone');
+      ['dragenter', 'dragover'].forEach(name => {
+        dropzone.addEventListener(name, e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropzone.addEventListener(name, e => { e.preventDefault(); dropzone.classList.remove('drag-over'); });
+      });
+      dropzone.addEventListener('drop', e => {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('video/')) {
+          uploadVideoFile(file);
         }
-      };
-
-      requestDynamicEDL();
+      });
     }
 
-    function changeCanvasRatio(ratio) {
-      currentAspectRatio = ratio;
+    // ── VIDEO LOADING & SWITCHING ──
+    function loadVideo(filename, duration = 46.49, width = 848, height = 478) {
+      activeVideo = filename;
+      activeDuration = duration;
+      triggeredSfxTimes.clear();
+
+      document.getElementById('loadedVideoTitle').innerText = filename;
+      document.getElementById('loadedVideoSpecs').innerText = `${duration.toFixed(1)}s • ${width} × ${height}`;
+      document.getElementById('videoLoadedCard').classList.add('visible');
+
+      video.src = `/media/raw/${filename}`;
+      miniThumbVideo.src = `/media/raw/${filename}`;
+      video.load();
+
+      video.onplay = () => {
+        if (video.muted) unmuteCallout.style.display = "flex";
+      };
+
+      video.onloadedmetadata = () => {
+        activeDuration = video.duration || duration;
+        labelTotalDuration.innerText = formatTimecode(activeDuration);
+      };
+
+      // Auto-detect optimal aspect ratio
+      if (width >= height) {
+        changeCanvasAspect("16:9");
+      } else {
+        changeCanvasAspect("9:16");
+      }
+
+      // Request initial dynamic edit plan
+      requestDynamicCreativeEdit();
+    }
+
+    function changeCanvasAspect(ratio) {
+      currentAspect = ratio;
       document.getElementById('aspectRatioSelect').value = ratio;
-      videoCanvasWrapper.className = "video-canvas-wrapper";
+      videoCanvasWrapper.className = "video-viewport-wrapper";
       if (ratio === "16:9") videoCanvasWrapper.classList.add("canvas-16-9");
       else if (ratio === "9:16") videoCanvasWrapper.classList.add("canvas-9-16");
       else videoCanvasWrapper.classList.add("canvas-1-1");
 
-      setGlowColor(currentGlowColor);
+      applyOutlineFilter();
     }
 
-    function setGlowColor(color) {
-      currentGlowColor = color;
-      videoCanvasWrapper.classList.remove("glow-yellow", "glow-white");
-      if (document.getElementById('toggleSubjectOutline').checked) {
-        videoCanvasWrapper.classList.add(color === "white" ? "glow-white" : "glow-yellow");
+    function cycleOutlineStyle() {
+      currentOutline = (currentOutline === "white") ? "yellow" : (currentOutline === "yellow" ? "none" : "white");
+      applyOutlineFilter();
+      showToast(`Outline Style: ${currentOutline.toUpperCase()}`, "✨");
+    }
+
+    function applyOutlineFilter() {
+      videoCanvasWrapper.classList.remove("outline-white", "outline-yellow");
+      if (currentOutline === "white") videoCanvasWrapper.classList.add("outline-white");
+      else if (currentOutline === "yellow") videoCanvasWrapper.classList.add("outline-yellow");
+    }
+
+    // ── VIEW MODE (BEFORE / AFTER COMPARISON) ──
+    function setViewMode(mode) {
+      viewMode = mode;
+      document.getElementById('btnModeEdited').classList.toggle('active', mode === 'edited');
+      document.getElementById('btnModeOriginal').classList.toggle('active', mode === 'original');
+      chkShowOverlays.checked = (mode === 'edited');
+      toggleOverlaysVisibility(mode === 'edited');
+      showToast(mode === 'edited' ? "Viewing AI Creative Edit" : "Viewing Raw Footage", mode === 'edited' ? "✦" : "📹");
+    }
+
+    function toggleOverlaysVisibility(visible) {
+      const displayStyle = visible ? "" : "none";
+      if (!visible) {
+        [polaroidCard1, polaroidCard2, cameraOverlay, floatingMusicCard, orbitCard1, orbitCard2,
+         stickerStar, stickerFlower, stickerLove, topHookBanner, socialQuestionCard,
+         badgeGaming, badgeMoney, badgeLink, badgeComment, captionLeadWord, captionKeywordPunch].forEach(el => {
+          if (el) el.style.display = "none";
+        });
       }
     }
 
-    function toggleSubjectOutlineEffect(checked) {
-      if (checked) setGlowColor(currentGlowColor);
-      else videoCanvasWrapper.classList.remove("glow-yellow", "glow-white");
+    // ── RESOURCE ASSET MANAGEMENT (PHOTOS, AUDIO, GRAPHICS) ──
+    async function handleResourceUpload(e) {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+
+      showToast(`Uploading ${files.length} creative resource(s)...`, "⏳");
+      for (const file of files) {
+        const fd = new FormData();
+        fd.append("file", file);
+        try {
+          const res = await fetch("/api/upload-resource", { method: "POST", body: fd });
+          const data = await res.json();
+          if (data.success) {
+            attachedResources.push(data.filename);
+          }
+        } catch (err) {
+          console.error("Resource upload error:", err);
+        }
+      }
+      showToast("Creative resources uploaded!", "✅");
+      loadResourcesList();
+      updateAttachedResourcesLabel();
     }
 
-    // Call Backend for Style Sheet EDL
-    async function requestDynamicEDL(customPrompt = "") {
-      showToast("✦ Directing video via Style Sheet Master Spec...", "✨");
+    async function loadResourcesList() {
       try {
+        const res = await fetch("/api/resources");
+        const data = await res.json();
+        const grid = document.getElementById('uploadedAssetsGrid');
+        grid.innerHTML = "";
+
+        if (data.resources && data.resources.length > 0) {
+          document.getElementById('resourcesCountBadge').innerText = `${data.resources.length} Assets`;
+          data.resources.forEach(r => {
+            const isImg = r.category === "images";
+            const card = document.createElement('div');
+            card.className = "asset-thumb-card selected";
+            card.onclick = () => toggleResourceAttachment(r.filename, card);
+
+            if (isImg) {
+              card.innerHTML = `
+                <img class="asset-thumb-img" src="${r.url}" alt="${r.filename}">
+                <div class="asset-thumb-footer">${r.filename}</div>
+                <button class="asset-delete-btn" onclick="deleteResourceItem(event, '${r.category}', '${r.filename}')">✕</button>
+              `;
+            } else {
+              card.innerHTML = `
+                <div class="asset-thumb-audio-icon">${r.category === 'audio' ? '🎵' : '🎨'}</div>
+                <div class="asset-thumb-footer">${r.filename}</div>
+                <button class="asset-delete-btn" onclick="deleteResourceItem(event, '${r.category}', '${r.filename}')">✕</button>
+              `;
+            }
+            grid.appendChild(card);
+          });
+        } else {
+          document.getElementById('resourcesCountBadge').innerText = "0 Assets";
+          grid.innerHTML = `<div style="grid-column: span 3; font-size: 10px; color: var(--text-dim); text-align: center; padding: 12px;">No resources uploaded yet. Drop photos to turn into Polaroids!</div>`;
+        }
+      } catch (e) {
+        console.error("Load resources err:", e);
+      }
+    }
+
+    async function deleteResourceItem(event, category, filename) {
+      event.stopPropagation();
+      try {
+        await fetch(`/api/resource/${category}/${filename}`, { method: "DELETE" });
+        attachedResources = attachedResources.filter(name => name !== filename);
+        loadResourcesList();
+        updateAttachedResourcesLabel();
+        showToast(`Removed ${filename}`, "🗑");
+      } catch (e) {}
+    }
+
+    function toggleResourceAttachment(filename, cardEl) {
+      if (attachedResources.includes(filename)) {
+        attachedResources = attachedResources.filter(f => f !== filename);
+        cardEl.classList.remove('selected');
+      } else {
+        attachedResources.push(filename);
+        cardEl.classList.add('selected');
+      }
+      updateAttachedResourcesLabel();
+    }
+
+    function updateAttachedResourcesLabel() {
+      const el = document.getElementById('attachedResourcesText');
+      if (attachedResources.length === 0) {
+        el.innerText = "0 custom photos/audio attached";
+      } else {
+        el.innerText = `${attachedResources.length} attached: ${attachedResources.join(', ')}`;
+      }
+    }
+
+    function switchResourceTab(cat, btn) {
+      document.querySelectorAll('.resource-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Filter grid cards
+      const cards = document.querySelectorAll('.asset-thumb-card');
+      cards.forEach(c => {
+        if (cat === 'all') c.style.display = "flex";
+        else {
+          const hasImg = c.querySelector('img');
+          if (cat === 'images') c.style.display = hasImg ? "flex" : "none";
+          else c.style.display = !hasImg ? "flex" : "none";
+        }
+      });
+    }
+
+    // ── VIDEO UPLOAD (FROM DROPDOWN OR HERO ZONE) ──
+    function handleVideoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      closeUploadModal();
+      uploadVideoFile(file);
+    }
+
+    async function uploadVideoFile(file) {
+      showToast(`Uploading ${file.name}...`, "⏳");
+      const fd = new FormData();
+      fd.append("file", file);
+
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (data.success) {
+          loadVideo(data.filename, data.duration, data.width, data.height);
+          showToast(`Loaded ${data.filename}`, "✅");
+          fetchStudioStatus();
+        }
+      } catch (err) {
+        showToast("Upload failed", "❌");
+      }
+    }
+
+    // ── CREATIVE STYLE EXPLORER SELECTION ──
+    function chooseCreativeStyle(preset, cardEl) {
+      activeStylePreset = preset;
+      document.querySelectorAll('.aesthetic-style-card').forEach(c => c.classList.remove('selected'));
+      cardEl.classList.add('selected');
+
+      const promptTemplate = cardEl.dataset.prompt;
+      if (promptTemplate) {
+        directorPromptInput.value = promptTemplate;
+      }
+      showToast(`Style: ${cardEl.querySelector('.style-card-name').innerText}`, "🎨");
+    }
+
+    function applyQuickPrompt(p) {
+      directorPromptInput.value = p;
+      executeAICreativeEdit();
+    }
+
+    function previewCapability(name) {
+      showToast(`AI Capability: ${name} will be composed dynamically!`, "✦");
+    }
+
+    // ── AI CREATIVE DIRECTOR PIPELINE ──
+    async function executeAICreativeEdit() {
+      if (isProcessing) return;
+      isProcessing = true;
+      document.getElementById('btnGenerateHero').disabled = true;
+
+      const userPrompt = directorPromptInput.value.trim();
+      const processingBox = document.getElementById('aiProcessingBox');
+      processingBox.classList.add('active');
+
+      // Detect outline or aspect ratio in prompt
+      const lower = userPrompt.toLowerCase();
+      if (lower.includes("white outline")) currentOutline = "white";
+      if (lower.includes("yellow outline")) currentOutline = "yellow";
+      if (lower.includes("horizontal") || lower.includes("16:9")) changeCanvasAspect("16:9");
+      if (lower.includes("vertical") || lower.includes("9:16")) changeCanvasAspect("9:16");
+      if (lower.includes("square") || lower.includes("1:1")) changeCanvasAspect("1:1");
+      applyOutlineFilter();
+
+      try {
+        animateProcessingStage(1); // Analysing
+        await sleep(350);
+        animateProcessingStage(2); // Understanding prompt
+        await sleep(350);
+        animateProcessingStage(3); // Reviewing resources
+        await sleep(300);
+
         const res = await fetch("/api/chat-edit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            filename: currentVideoFile,
-            prompt: customPrompt,
-            aspect_ratio: currentAspectRatio
+            filename: activeVideo,
+            prompt: userPrompt,
+            aspect_ratio: currentAspect,
+            style_preset: activeStylePreset,
+            resources: attachedResources
           })
         });
 
+        animateProcessingStage(4); // Planning compositions
+        await sleep(250);
+        animateProcessingStage(5); // Generating creative assets
+        await sleep(250);
+
         const data = await res.json();
         if (data.success && data.edl) {
+          animateProcessingStage(6); // Applying animations
+          await sleep(250);
+          animateProcessingStage(7); // Compositing layers
+          await sleep(250);
+          animateProcessingStage(8); // Ready
+          await sleep(300);
+
           edlData = data.edl;
-          renderSuggestions(edlData);
-          renderTimelineTracks(edlData);
-          showToast(`✦ Edit plan loaded: ${data.caption_count} captions, ${data.graphics_count} pop-ups!`, "✅");
+          renderTimelineClips(edlData);
+
+          // Update Summary Card
+          document.getElementById('resultsSummaryCard').classList.add('visible');
+          document.getElementById('resultsSummaryText').innerText = data.ai_response || 
+            `Composed aesthetic reel in ${currentAspect} with ${data.caption_count} dynamic captions, ${data.graphics_count} visual pop-ups, and ${data.sfx_count} SFX hits.`;
+
+          showToast("Creative edit generated!", "✨");
         }
       } catch (e) {
-        console.error("EDL error:", e);
+        console.error("Creative Edit error:", e);
+        showToast("Error connecting to AI pipeline", "❌");
+      } finally {
+        isProcessing = false;
+        document.getElementById('btnGenerateHero').disabled = false;
+        setTimeout(() => { processingBox.classList.remove('active'); }, 1500);
       }
     }
 
-    function renderSuggestions(edl) {
-      const cont = document.getElementById('suggestionsContainer');
-      cont.innerHTML = "";
-      let step = 1;
-
-      (edl.graphics || []).slice(0, 4).forEach(g => {
-        cont.innerHTML += `
-          <div class="suggestion-card">
-            <div class="sugg-num">${step++}</div>
-            <div class="sugg-info">
-              <div class="sugg-text">Pop-up: ${g.trigger_word || g.asset_id}</div>
-              <div class="sugg-time">at ${g.start.toFixed(1)}s - ${g.end.toFixed(1)}s</div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-        `;
-      });
+    async function requestDynamicCreativeEdit() {
+      executeAICreativeEdit();
     }
 
-    function buildTimeRuler() {
-      const ruler = document.getElementById('timeRuler');
-      ruler.innerHTML = "";
-      const pixelsPerSec = 40;
-      for (let s = 0; s <= 50; s += 5) {
-        const mark = document.createElement('div');
-        mark.className = "ruler-mark";
-        mark.style.left = `${s * pixelsPerSec}px`;
-        mark.innerText = `${s}s`;
-        ruler.appendChild(mark);
-      }
-    }
-
-    function renderTimelineTracks(edl) {
-      const pixelsPerSec = 40;
-      const trackCap = document.getElementById('trackCaptions');
-      const trackGraph = document.getElementById('trackGraphics');
-      const trackSfx = document.getElementById('trackSfx');
-
-      trackCap.innerHTML = "";
-      trackGraph.innerHTML = "";
-      trackSfx.innerHTML = "";
-
-      // Captions
-      (edl.captions || []).forEach((c, idx) => {
-        const clip = document.createElement('div');
-        clip.className = `timeline-clip ${idx % 2 === 0 ? 'clip-caption-yellow' : 'clip-caption-purple'}`;
-        clip.style.left = `${c.start * pixelsPerSec}px`;
-        clip.style.width = `${Math.max(20, (c.end - c.start) * pixelsPerSec)}px`;
-        clip.innerText = c.keyword || c.lead;
-        clip.onclick = (e) => { e.stopPropagation(); seekVideo(c.start); };
-        trackCap.appendChild(clip);
-      });
-
-      // Graphics / Pop-Up Messages
-      (edl.graphics || []).forEach(g => {
-        const clip = document.createElement('div');
-        clip.className = "timeline-clip clip-graphic";
-        clip.style.left = `${g.start * pixelsPerSec}px`;
-        clip.style.width = `${Math.max(30, (g.end - g.start) * pixelsPerSec)}px`;
-        clip.innerText = g.trigger_word || g.asset_id;
-        clip.onclick = (e) => { e.stopPropagation(); seekVideo(g.start); };
-        trackGraph.appendChild(clip);
-      });
-
-      // SFX
-      (edl.sound_effects || []).forEach(s => {
-        const clip = document.createElement('div');
-        clip.className = "timeline-clip clip-sfx";
-        clip.style.left = `${s.start * pixelsPerSec}px`;
-        clip.innerText = `🔊 ${s.asset_id}`;
-        clip.onclick = (e) => { e.stopPropagation(); seekVideo(s.start); };
-        trackSfx.appendChild(clip);
-      });
-    }
-
-    // ── REAL-TIME PLAYBACK & VISUAL EVENTS (Style Sheet Spec) ──
-    video.addEventListener('timeupdate', () => {
-      const t = video.currentTime;
-      const dur = video.duration || videoDuration;
-
-      curTimeLabel.innerText = formatTimecode(t);
-      durTimeLabel.innerText = formatTimecode(dur);
-
-      playheadNeedle.style.left = `${t * 40}px`;
-
-      const allowPopups = document.getElementById('togglePopups').checked;
-      const allowZooms = document.getElementById('toggleZooms').checked;
-
-      // 1. Top Hook Pill (0.0s - 4.5s)
-      topHookPill.style.display = (allowPopups && t <= 4.5) ? "flex" : "none";
-
-      // 2. Floating Social Comment Card (3.5s - 8.2s)
-      socialCommentPopup.style.display = (allowPopups && t >= 3.5 && t <= 8.2) ? "flex" : "none";
-
-      // 3. Dynamic Spoken Keyword Pop-Up Badges
-      badgeGaming.style.display = (allowPopups && t >= 8.0 && t <= 12.5) ? "flex" : "none";
-      badgeMoney.style.display = (allowPopups && t >= 13.5 && t <= 18.0) ? "flex" : "none";
-      badgeLink.style.display = (allowPopups && t >= 27.0 && t <= 32.5) ? "flex" : "none";
-      badgeComment.style.display = (allowPopups && t >= 36.0 && t <= 41.5) ? "flex" : "none";
-
-      // 4. Zoom Punch-In on Punch Words (Style Sheet Section 4)
-      if (allowZooms) {
-        const isPunchMoment = (t >= 7.8 && t <= 10.5) || (t >= 14.0 && t <= 17.0) || (t >= 36.5 && t <= 39.5);
-        if (isPunchMoment) {
-          videoCanvasWrapper.classList.add('punch-zoom');
-        } else {
-          videoCanvasWrapper.classList.remove('punch-zoom');
+    function animateProcessingStage(n) {
+      for (let i = 1; i <= 8; i++) {
+        const dot = document.querySelector(`#stage${i} .stage-indicator-dot`);
+        if (dot) {
+          if (i < n) dot.className = "stage-indicator-dot done";
+          else if (i === n) dot.className = "stage-indicator-dot active";
+          else dot.className = "stage-indicator-dot";
         }
       }
+    }
 
-      // 5. Signature Two-Tone Dynamic Captions
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // ── REAL-TIME VIDEO PLAYBACK & AESTHETIC COMPOSITION ENGINE ──
+    video.addEventListener('timeupdate', () => {
+      const t = video.currentTime;
+      const dur = video.duration || activeDuration || 1;
+
+      // Update Timecodes & Scrubber
+      labelCurrentTime.innerText = formatTimecode(t);
+      labelTotalDuration.innerText = formatTimecode(dur);
+      scrubberFill.style.width = `${(t / dur) * 100}%`;
+      timelineNeedle.style.left = `${t * 40}px`;
+
+      // Update Floating Music Card progress bar
+      if (floatingMusicCard.style.display !== "none") {
+        musicCardProgress.style.width = `${((t % 15) / 15) * 100}%`;
+      }
+
+      // Check if overlays are allowed
+      if (!chkShowOverlays.checked || viewMode === "original") {
+        return;
+      }
+
+      // 1. Pinterest Polaroid Overlays (Ref 1)
+      polaroidCard1.style.display = (t >= 2.0 && t <= 12.0) ? "block" : "none";
+      polaroidCard2.style.display = (t >= 15.0 && t <= 25.0) ? "block" : "none";
+
+      // 2. Retro Digital Camera Viewfinder (Ref 1)
+      cameraOverlay.style.display = (t >= 5.0 && t <= 14.0) ? "block" : "none";
+
+      // 3. Floating Music Card (Ref 2)
+      floatingMusicCard.style.display = (t >= 16.0 && t <= 28.0) ? "block" : "none";
+
+      // 4. Orbiting Glassmorphism Mini Cards (Ref 3)
+      orbitCard1.style.display = (t >= 26.0 && t <= 38.0) ? "block" : "none";
+      orbitCard2.style.display = (t >= 28.0 && t <= 40.0) ? "block" : "none";
+
+      // 5. Scrapbook Decorative Stickers
+      stickerStar.style.display = (t >= 3.0 && t <= 18.0) ? "block" : "none";
+      stickerFlower.style.display = (t >= 8.0 && t <= 22.0) ? "block" : "none";
+      stickerLove.style.display = (t >= 32.0 && t <= 44.0) ? "block" : "none";
+
+      // 6. Top Hook Banner (0.0s - 4.5s)
+      topHookBanner.style.display = (t <= 4.5) ? "block" : "none";
+
+      // 7. Social Question Card (3.5s - 8.2s)
+      socialQuestionCard.style.display = (t >= 3.5 && t <= 8.2) ? "flex" : "none";
+
+      // 8. Dynamic Spoken Badges
+      badgeGaming.style.display = (t >= 8.0 && t <= 12.5) ? "flex" : "none";
+      badgeMoney.style.display  = (t >= 13.5 && t <= 18.0) ? "flex" : "none";
+      badgeLink.style.display   = (t >= 27.0 && t <= 32.5) ? "flex" : "none";
+      badgeComment.style.display= (t >= 36.0 && t <= 41.5) ? "flex" : "none";
+
+      // 9. Dynamic Zoom Punch (Punch Words)
+      const isPunchMoment = (t >= 7.8 && t <= 10.5) || (t >= 14.0 && t <= 17.0) || (t >= 36.5 && t <= 39.5);
+      videoCanvasWrapper.classList.toggle('punch-zoom', isPunchMoment);
+
+      // 10. Dynamic Captions & Word Punch
       if (edlData && edlData.captions) {
         const activeCap = edlData.captions.find(c => t >= c.start && t <= c.end);
         if (activeCap) {
-          capLead.innerText = activeCap.lead;
-          capKeyword.innerText = activeCap.keyword;
-          capLead.style.display = activeCap.lead ? "inline-block" : "none";
-          capKeyword.style.display = activeCap.keyword ? "inline-block" : "none";
+          captionLeadWord.innerText = activeCap.lead;
+          captionKeywordPunch.innerText = activeCap.keyword;
+          captionLeadWord.style.display = activeCap.lead ? "inline-block" : "none";
+          captionKeywordPunch.style.display = activeCap.keyword ? "inline-block" : "none";
         } else {
-          capLead.style.display = "none";
-          capKeyword.style.display = "none";
+          captionLeadWord.style.display = "none";
+          captionKeywordPunch.style.display = "none";
         }
 
-        // 6. Real-Time SFX Triggering during Playback
+        // 11. Real-time Acoustic SFX Triggers
         if (!video.paused && audioUnlocked) {
           (edlData.sound_effects || []).forEach(s => {
-            const rounded = Math.floor(s.start * 10) / 10;
-            if (Math.abs(t - s.start) < 0.2 && !playedSfxTimes.has(rounded)) {
-              playedSfxTimes.add(rounded);
-              const audioObj = sfxAudioCache[s.asset_id];
+            const roundedSec = Math.floor(s.start * 10) / 10;
+            if (Math.abs(t - s.start) < 0.25 && !triggeredSfxTimes.has(roundedSec)) {
+              triggeredSfxTimes.add(roundedSec);
+              const audioObj = sfxAudioPool[s.asset_id];
               if (audioObj) {
                 audioObj.currentTime = 0;
                 audioObj.volume = 0.85;
@@ -1966,95 +2882,135 @@
       }
     });
 
-    function toggleMainPlay() {
+    // ── TRANSPORT CONTROLS ──
+    function togglePlayPause() {
       unmuteAudioNow();
       if (video.paused) {
         video.play().then(() => {
-          btnPlayMain.innerText = "⏸";
+          btnPlayHero.innerText = "⏸";
           btnTimelinePreview.innerHTML = "<span>⏸</span> Pause";
-        }).catch(err => {
-          console.log("Play error:", err);
+        }).catch(() => {
           unmuteCallout.style.display = "flex";
         });
       } else {
         video.pause();
-        btnPlayMain.innerText = "▶";
+        btnPlayHero.innerText = "▶";
         btnTimelinePreview.innerHTML = "<span>▶</span> Preview";
       }
     }
 
     function seekVideo(sec) {
-      video.currentTime = Math.max(0, Math.min(video.duration || videoDuration, sec));
-      playedSfxTimes.clear();
+      video.currentTime = Math.max(0, Math.min(video.duration || activeDuration, sec));
+      triggeredSfxTimes.clear();
     }
 
     function seekRelative(sec) {
       seekVideo(video.currentTime + sec);
     }
 
-    function handleTimelineClick(e) {
+    function handleScrubberClick(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      seekVideo(pct * (video.duration || activeDuration));
+    }
+
+    function handleTimelineCanvasClick(e) {
       const scrollArea = document.getElementById('timelineScrollArea');
       const rect = scrollArea.getBoundingClientRect();
       const clickX = e.clientX - rect.left + scrollArea.scrollLeft;
       seekVideo(clickX / 40);
     }
 
-    function executeAIPrompt() {
-      const topPrompt = document.getElementById('globalPromptInput').value.trim();
-      const leftPrompt = document.getElementById('leftPromptBox').value.trim();
-      const prompt = topPrompt || leftPrompt;
-
-      if (!prompt) {
-        showToast("Enter editing instructions", "⚠️");
-        return;
+    // ── TIMELINE RENDERER ──
+    function buildTimelineRuler() {
+      const ruler = document.getElementById('timelineRulerRow');
+      ruler.innerHTML = "";
+      const pxPerSec = 40;
+      for (let s = 0; s <= 60; s += 5) {
+        const mark = document.createElement('div');
+        mark.className = "ruler-tick-mark";
+        mark.style.left = `${s * pxPerSec}px`;
+        mark.innerText = `${s}s`;
+        ruler.appendChild(mark);
       }
-
-      if (prompt.toLowerCase().includes("white outline")) setGlowColor("white");
-      if (prompt.toLowerCase().includes("horizontal") || prompt.toLowerCase().includes("16:9")) changeCanvasRatio("16:9");
-      if (prompt.toLowerCase().includes("vertical") || prompt.toLowerCase().includes("9:16")) changeCanvasRatio("9:16");
-
-      requestDynamicEDL(prompt);
-      document.getElementById('globalPromptInput').value = "";
-      document.getElementById('leftPromptBox').value = "";
     }
 
-    function insertPrompt(p) {
-      document.getElementById('leftPromptBox').value = p;
-      document.getElementById('globalPromptInput').value = p;
-      executeAIPrompt();
+    function renderTimelineClips(edl) {
+      const px = 40;
+      const tCap = document.getElementById('tlTrackCaptions');
+      const tGraph = document.getElementById('tlTrackGraphics');
+      const tSfx = document.getElementById('tlTrackSfx');
+
+      tCap.innerHTML = "";
+      tGraph.innerHTML = "";
+      tSfx.innerHTML = "";
+
+      // Captions
+      (edl.captions || []).forEach((c, idx) => {
+        const clip = document.createElement('div');
+        clip.className = `timeline-clip-bubble ${idx % 2 === 0 ? 'clip-type-caption-a' : 'clip-type-caption-b'}`;
+        clip.style.left = `${c.start * px}px`;
+        clip.style.width = `${Math.max(20, (c.end - c.start) * px)}px`;
+        clip.innerText = c.keyword || c.lead;
+        clip.onclick = (e) => { e.stopPropagation(); seekVideo(c.start); };
+        tCap.appendChild(clip);
+      });
+
+      // Graphics & Scrapbook overlays
+      (edl.graphics || []).forEach(g => {
+        const clip = document.createElement('div');
+        clip.className = "timeline-clip-bubble clip-type-graphic";
+        clip.style.left = `${g.start * px}px`;
+        clip.style.width = `${Math.max(30, (g.end - g.start) * px)}px`;
+        clip.innerText = g.trigger_word || g.asset_id;
+        clip.onclick = (e) => { e.stopPropagation(); seekVideo(g.start); };
+        tGraph.appendChild(clip);
+      });
+
+      // SFX Hits
+      (edl.sound_effects || []).forEach(s => {
+        const clip = document.createElement('div');
+        clip.className = "timeline-clip-bubble clip-type-sfx";
+        clip.style.left = `${s.start * px}px`;
+        clip.innerText = `🔊 ${s.asset_id}`;
+        clip.onclick = (e) => { e.stopPropagation(); seekVideo(s.start); };
+        tSfx.appendChild(clip);
+      });
     }
 
-    // Export Reel via FFmpeg with Burned Popups & Mastered Audio
-    async function renderVideoExport() {
-      if (!edlData) await requestDynamicEDL();
+    // ── EXPORT VIDEO WITH FFMPEG ──
+    async function exportVideoFile() {
+      if (!edlData) await requestDynamicCreativeEdit();
+      if (!edlData) return;
 
-      const btn = document.getElementById('btnExportReel');
-      btn.innerText = "⏳ Rendering Reel...";
+      const btn = document.getElementById('btnExportVideo');
+      btn.innerText = "⏳ Rendering...";
       btn.disabled = true;
-      showToast("🚀 Rendering Full HD Reel with pop-ups & mastered audio...", "🎬");
+      showToast("Rendering Full HD reel with master audio and aesthetic popups...", "🎬");
 
       try {
         const res = await fetch("/api/render", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            filename: currentVideoFile,
+            filename: activeVideo,
             edl: edlData,
-            aspect_ratio: currentAspectRatio
+            aspect_ratio: currentAspect
           })
         });
 
         const data = await res.json();
         if (data.success && data.download_url) {
           btn.innerText = "✅ Render Complete!";
-          showToast(`Reel Rendered (${data.file_size_mb} MB) with full popups & audio!`, "🎉");
+          showToast(`Exported (${data.file_size_mb} MB) with mastered audio!`, "🎉");
 
-          const dlBtn = document.getElementById('btnDownloadExport');
-          dlBtn.href = data.download_url;
-          dlBtn.download = data.export_filename;
-          dlBtn.style.display = "block";
+          const dl = document.getElementById('btnDownloadLink');
+          dl.href = data.download_url;
+          dl.download = data.export_filename;
+          dl.style.display = "block";
         } else {
           btn.innerText = "❌ Render Failed";
+          showToast("Render failed. Check terminal.", "❌");
         }
       } catch (err) {
         btn.innerText = "❌ Error";
@@ -2066,82 +3022,61 @@
       }
     }
 
+    // ── MODAL & SYSTEM STATUS ──
     function openUploadModal() {
-      document.getElementById('uploadModal').style.display = "flex";
-      fetchSystemStatus();
+      document.getElementById('uploadModalScrim').classList.add('visible');
+      fetchStudioStatus();
     }
 
     function closeUploadModal() {
-      document.getElementById('uploadModal').style.display = "none";
+      document.getElementById('uploadModalScrim').classList.remove('visible');
     }
 
-    async function handleFileSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      closeUploadModal();
-      showToast(`Uploading ${file.name}...`, "⏳");
-
-      const fd = new FormData();
-      fd.append("file", file);
-
-      try {
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const data = await res.json();
-        if (data.success) {
-          loadVideo(data.filename, data.duration, data.width, data.height);
-          showToast(`Loaded ${data.filename}`, "✅");
-        }
-      } catch (err) {
-        showToast("Upload failed", "❌");
-      }
-    }
-
-    async function fetchSystemStatus() {
+    async function fetchStudioStatus() {
       try {
         const res = await fetch("/api/status");
         const data = await res.json();
         if (data.raw_videos) {
-          const list = document.getElementById('existingVideosList');
-          list.innerHTML = "";
+          const modalList = document.getElementById('modalExistingVideosList');
+          const recentList = document.getElementById('recentVideosHistory');
+          modalList.innerHTML = "";
+          recentList.innerHTML = "";
+
           data.raw_videos.forEach(v => {
-            list.innerHTML += `
-              <div class="suggestion-card" style="cursor:pointer;" onclick="pickVideo('${v.name}')">
-                <span style="font-size:12px; font-weight:600;">📹 ${v.name}</span>
-                <span style="font-size:10px; color:#64748B;">${v.size_mb} MB</span>
-              </div>
+            // Modal list
+            const modalItem = document.createElement('div');
+            modalItem.className = "history-row";
+            modalItem.innerHTML = `
+              <div class="history-row-title">📹 ${v.name}</div>
+              <div class="history-row-meta">${v.size_mb} MB</div>
             `;
+            modalItem.onclick = () => { closeUploadModal(); loadVideo(v.name); showToast(`Loaded ${v.name}`, "📁"); };
+            modalList.appendChild(modalItem);
+
+            // Left panel recent history list
+            const recentItem = document.createElement('div');
+            recentItem.className = "history-row";
+            recentItem.innerHTML = `
+              <div class="history-row-title">📹 ${v.name}</div>
+              <div class="history-row-meta">${v.size_mb} MB</div>
+            `;
+            recentItem.onclick = () => { loadVideo(v.name); showToast(`Loaded ${v.name}`, "📁"); };
+            recentList.appendChild(recentItem);
           });
+
+          // Auto-load first video if none active
+          if (!activeVideo && data.raw_videos.length > 0) {
+            loadVideo(data.raw_videos[0].name);
+          } else if (activeVideo) {
+            loadVideo(activeVideo);
+          }
         }
       } catch (e) {}
     }
 
-    function pickVideo(name) {
-      closeUploadModal();
-      loadVideo(name);
-      showToast(`Switched to ${name}`, "📁");
-    }
-
-    function switchRightTab(tab) {
-      document.querySelectorAll('.right-tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('contentRightStyle').style.display = (tab === 'style') ? "flex" : "none";
-      document.getElementById('contentRightSfx').style.display = (tab === 'sfx') ? "flex" : "none";
-      if (tab === 'style') document.getElementById('tabStyleRight').classList.add('active');
-      if (tab === 'sfx') document.getElementById('tabSfxRight').classList.add('active');
-    }
-
-    function setLeftTab(tab) {
-      document.getElementById('tabScriptBtn').classList.toggle('active', tab === 'script');
-      document.getElementById('tabStyleBtn').classList.toggle('active', tab === 'style');
-      if (tab === 'style') switchRightTab('style');
-    }
-
-    function selectTheme(theme, el) {
-      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      showToast(`Theme: ${theme.toUpperCase()}`, "👑");
-    }
-
+    // ── UTILITIES ──
     function formatTimecode(sec) {
+      if (!sec || isNaN(sec)) return "00:00.0";
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       const ms = Math.floor((sec % 1) * 10);
@@ -2149,12 +3084,12 @@
     }
 
     function showToast(msg, icon = "✨") {
-      const pill = document.getElementById('toastPill');
+      const toast = document.getElementById('toastCapsule');
       document.getElementById('toastMessage').innerText = msg;
       document.getElementById('toastIcon').innerText = icon;
-      pill.style.display = "flex";
-      clearTimeout(window._toastTimeout);
-      window._toastTimeout = setTimeout(() => { pill.style.display = "none"; }, 3500);
+      toast.classList.add('visible');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => { toast.classList.remove('visible'); }, 3500);
     }
   </script>
 </body>

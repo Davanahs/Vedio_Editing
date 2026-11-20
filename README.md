@@ -1,4 +1,4 @@
-# ClipForge ✦ Autonomous AI Video Studio
+# Aura ✦ AI Creative Video Studio
 
 <div align="center">
 
@@ -8,9 +8,9 @@
 ![Groq](https://img.shields.io/badge/Groq%20Whisper-Cloud%20Fast-F55036.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-**An autonomous AI short-form video editing engine that transforms raw footage into engaging, broadcast-quality reels with pop-ups, kinetic captions, angle punch-ins, and mastered audio in under 30 seconds.**
+**An autonomous AI short-form creative video studio that transforms raw footage and uploaded resources into Pinterest-inspired scrapbook reels, floating music-player compositions, and aesthetic glassmorphism edits in seconds.**
 
-[Features](#-key-features) • [Quickstart](#-quickstart-guide) • [Architecture](#-architecture--pipeline) • [Style Guide](#-master-style-sheet-integration) • [API Reference](#-api-reference)
+[Features](#-key-features) • [Quickstart](#-quickstart-guide) • [Architecture](#-architecture--pipeline) • [Style Guide](style-sheet.md) • [Full Specification](PROJECT_DETAILS.md) • [API Reference](#-api-reference)
 
 </div>
 
@@ -18,20 +18,25 @@
 
 ## 🌟 Overview
 
-ClipForge is an AI-powered video editing suite engineered for content creators, agencies, and automation pipelines. It accepts raw spoken footage (horizontal or vertical) and autonomously produces a fully edited, high-retention reel adhering to empirical short-form production standards:
+**Aura AI Creative Studio** is a prompt-based autonomous video editing studio designed for creators, aesthetic storytellers, and creative agencies. Instead of manual editing timelines, Aura uses an AI Creative Director that analyzes raw video footage alongside user-uploaded photographs, audio, and logos to compose aesthetic, high-retention video compositions:
 
+- **Pinterest-Inspired Scrapbook Compositions**: Layered Polaroid photographs, hand-drawn white outlines around subjects, floating flowers, stars, hearts, and retro camera overlays.
+- **Floating Music Player Interfaces**: Large perspective music player cards (Spotify / Apple Music aesthetics), album art panels, playback controls, and realistic drop shadows.
+- **Floating Glassmorphism Panels**: Translucent frosted-glass cards orbiting subjects with neon cyan and pink glow trails.
 - **Speed Benchmark**: Processes and renders a 48-second video in **under 30 seconds** on standard hardware.
 - **Audio Mastering**: Normalizes speech loudness to streaming broadcast standards (**`-14.0 LUFS`**) and synchronizes sound effects to visual transients.
-- **Kinetic Typography & Pop-Up Graphics**: Automatically detects spoken keywords and inserts hook banners, floating social question cards, and animated badges (`🎮 PS5`, `💰 Earn Cash`, `🔴 YouTube`, `💬 Comment`).
 - **Multi-Aspect Ratio Canvas**: Seamlessly switches between `9:16` (Vertical Reels/TikTok/Shorts), `16:9` (YouTube/Landscape), and `1:1` (Square).
 
 ---
 
 ## 🚀 Key Features
 
-### 1. ClipForge AI Web Studio (`localhost:5050`)
-- **Interactive Multi-Track Timeline**: Synchronized tracks for `👁 Captions`, `🖼 Graphics`, `🔊 SFX`, and `🎵 Music` with scrubbing and real-time playhead.
-- **AI Director Chat Drawer**: Prompt the AI Director with natural language instructions (e.g., *"Make it horizontal with a clean white outline glow and chaotic meme sound effects"*).
+### 1. Aura AI Studio Web Workspace (`localhost:5050`)
+- **Three-Panel Creative Layout**:
+  - **Left Panel (Resources)**: Source footage management, multi-resource upload (Photos, Audio, Graphics, Logos), category filters, and active asset attachment toggles.
+  - **Center Panel (Video Preview Studio)**: Real-time video player with original vs. AI-edited comparison mode, aspect ratio switcher (`9:16`, `16:9`, `1:1`), outline style switcher (white, neon yellow), and live aesthetic overlays.
+  - **Right Panel (AI Creative Director)**: Natural-language creative prompt input, 8+ visual style explorer cards, creative elements capability preview, and real-time multi-stage AI processing tracker.
+- **Interactive Multi-Track Timeline**: Synchronized tracks for `👁 Captions`, `🖼 Scrapbook / Graphics`, `🔊 SFX Hits`, and `🎵 Music Master` with scrubbing and real-time playhead.
 - **Dynamic AI Suggestions**: Transcript-aware edit suggestions with instant toggle switches.
 - **Subject Outline Glow**: Dynamic neon yellow or crisp white glowing outline around the talent.
 - **Foolproof Audio Playback**: Direct audio unmuting with explicit volume controls and an instant speaker test button.

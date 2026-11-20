@@ -67,6 +67,8 @@ Export/*
 Export/.temp/
 engine/temp/*
 !engine/temp/.gitkeep
+Resources/*
+!Resources/.gitkeep
 
 # Ignore loose heavy media & archives
 *.zip

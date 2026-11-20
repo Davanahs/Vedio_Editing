@@ -48,25 +48,32 @@ EXPORT_DIR = _ROOT / "Export"
 SFX_DIR = _ROOT / "assets" / "sfx"
 LOGOS_DIR = _ROOT / "assets" / "cache" / "logos"
 WEB_DIR = _ROOT / "engine" / "web"
+RESOURCES_DIR = _ROOT / "Resources"
 
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+(RESOURCES_DIR / "images").mkdir(parents=True, exist_ok=True)
+(RESOURCES_DIR / "audio").mkdir(parents=True, exist_ok=True)
+(RESOURCES_DIR / "graphics").mkdir(parents=True, exist_ok=True)
 
 app.mount("/media/raw", StaticFiles(directory=str(RAW_DIR)), name="raw_media")
 app.mount("/media/export", StaticFiles(directory=str(EXPORT_DIR)), name="export_media")
 app.mount("/media/sfx", StaticFiles(directory=str(SFX_DIR)), name="sfx_media")
 app.mount("/media/logos", StaticFiles(directory=str(LOGOS_DIR)), name="logos_media")
+app.mount("/media/resources", StaticFiles(directory=str(RESOURCES_DIR)), name="resources_media")
 
 class ChatEditRequest(BaseModel):
     filename: str
     prompt: str = ""
     style_preset: str = "viral"
-    aspect_ratio: str = "16:9"
+    aspect_ratio: str = "9:16"
+    resources: List[str] = []
 
 class RenderRequest(BaseModel):
     filename: str
     edl: Dict[str, Any]
-    aspect_ratio: str = "16:9"
+    aspect_ratio: str = "9:16"
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_studio():
@@ -133,6 +140,58 @@ async def upload_video(file: UploadFile = File(...)):
         "recommended_aspect": "16:9" if is_landscape else "9:16"
     }
 
+@app.post("/api/upload-resource")
+async def upload_resource(file: UploadFile = File(...), category: Optional[str] = Form(None)):
+    safe_name = file.filename.replace(" ", "_")
+    ext = Path(safe_name).suffix.lower()
+
+    if not category:
+        if ext in [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"]:
+            category = "images"
+        elif ext in [".mp3", ".wav", ".aac", ".ogg", ".m4a"]:
+            category = "audio"
+        else:
+            category = "graphics"
+
+    dest_dir = RESOURCES_DIR / category
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    target_path = dest_dir / safe_name
+
+    with open(target_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    size_mb = round(target_path.stat().st_size / (1024 * 1024), 2)
+    return {
+        "success": True,
+        "filename": safe_name,
+        "category": category,
+        "size_mb": size_mb,
+        "url": f"/media/resources/{category}/{safe_name}"
+    }
+
+@app.get("/api/resources")
+async def get_resources():
+    items = []
+    for cat in ["images", "audio", "graphics"]:
+        cat_dir = RESOURCES_DIR / cat
+        if cat_dir.exists():
+            for f in cat_dir.glob("*.*"):
+                items.append({
+                    "filename": f.name,
+                    "category": cat,
+                    "size_mb": round(f.stat().st_size / (1024 * 1024), 2),
+                    "url": f"/media/resources/{cat}/{f.name}"
+                })
+    return {"success": True, "resources": items}
+
+@app.delete("/api/resource/{category}/{filename}")
+async def delete_resource(category: str, filename: str):
+    target = RESOURCES_DIR / category / filename
+    if target.exists():
+        target.unlink()
+        return {"success": True, "deleted": filename}
+    return JSONResponse(status_code=404, content={"success": False, "error": "Not found"})
+
 @app.post("/api/chat-edit")
 async def chat_edit(req: ChatEditRequest):
     video_path = RAW_DIR / req.filename
@@ -162,8 +221,11 @@ async def chat_edit(req: ChatEditRequest):
 
     # 3. Directing with Context & User Prompts
     user_style_note = ""
-    if req.prompt:
-        user_style_note = f"\n\nUSER PROMPT INSTRUCTIONS:\n'{req.prompt}'\nTarget Aspect Ratio: {req.aspect_ratio}"
+    res_info = ""
+    if req.resources:
+        res_info = f"\nUser Uploaded Additional Resources Available: {', '.join(req.resources)}"
+    if req.prompt or res_info:
+        user_style_note = f"\n\nUSER PROMPT INSTRUCTIONS:\n'{req.prompt}'{res_info}\nTarget Aspect Ratio: {req.aspect_ratio}"
 
     asset_reg = AssetRegistry(str(_ROOT))
 

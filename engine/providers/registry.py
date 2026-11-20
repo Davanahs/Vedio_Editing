@@ -34,21 +34,25 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
     async def generate_edl(self, prompt: str, context: dict = None) -> DirectorResult:
         import json
         
-        # Extract context block from prompt
-        bursts = []
-        video_dur = 47.78
-        transcript_text = ""
-        try:
-            m = re.search(r"```json\s*(\{.*?\})\s*```", prompt, re.DOTALL)
-            if m:
-                ctx = json.loads(m.group(1))
-                bursts = ctx.get("caption_bursts_draft", [])
-                video_dur = ctx.get("video_metadata", {}).get("duration", 47.78)
-                transcript_text = ctx.get("transcript", "")
-        except Exception:
-            pass
+        # 1. First check explicit context passed from director
+        bursts = list(context.get("caption_bursts") or [])
+        transcript_text = str(context.get("transcript") or "")
+        video_dur = float(context.get("video_metadata", {}).get("duration", 50.85))
 
-        if not transcript_text and "hi guys" in prompt.lower():
+        # 2. Fallback to scanning for the context JSON block
+        if not bursts or not transcript_text:
+            for match in re.finditer(r"```json\s*(\{.*?\})\s*```", prompt, re.DOTALL):
+                try:
+                    data = json.loads(match.group(1))
+                    if "caption_bursts_draft" in data or "transcript" in data:
+                        bursts = bursts or data.get("caption_bursts_draft", [])
+                        video_dur = float(data.get("video_metadata", {}).get("duration", video_dur))
+                        transcript_text = transcript_text or str(data.get("transcript", ""))
+                        break
+                except Exception:
+                    continue
+
+        if not transcript_text:
             transcript_text = prompt
 
         formatted_captions = []
@@ -63,6 +67,14 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                 "highlight_color": b.get("highlight_color", "#FFE600")
             })
 
+        import re
+
+        def has_word(word_list: List[str], text: str) -> bool:
+            for w in word_list:
+                if re.search(r'\b' + re.escape(w) + r'\b', text, re.IGNORECASE):
+                    return True
+            return False
+
         # Dynamically Detect Semantic Keywords across the bursts
         graphics: List[Dict[str, Any]] = []
         sound_effects: List[Dict[str, Any]] = []
@@ -71,24 +83,35 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
         # Scan bursts for contextual keywords
         found_triggers = set()
 
-        # Contextual Opening Kinetic Title matching ClipForge design
-        intro_title = "AI EDITING"
-        tx_low = transcript_text.lower() + " " + prompt.lower()
-        if any(k in tx_low for k in ["gts6", "gta", "game", "gaming", "ps5"]):
+        # Contextual Opening Kinetic Title matching true content
+        intro_title = "AI TOOLS REVIEW"
+        social_q = "Can you really study faster with AI?"
+        tx_low = transcript_text.lower()
+
+        if has_word(["gemini", "notebook", "notebooklm", "alum"], tx_low):
+            intro_title = "GEMINI NOTEBOOKLM"
+            social_q = "What is Google Gemini NotebookLM?"
+        elif has_word(["exam", "exams", "study", "studies", "interview"], tx_low):
+            intro_title = "BEST STUDY AI TOOL"
+            social_q = "How do you prepare for exams with AI?"
+        elif has_word(["gta", "gts6", "gaming", "ps5"], tx_low):
             intro_title = "GTA 6 GAMING"
-        elif any(k in tx_low for k in ["money", "earn", "income", "cash"]):
+            social_q = "Can you actually earn from GTA 6 clips?"
+        elif has_word(["money", "cash", "dollar", "income"], tx_low):
             intro_title = "MAKE MONEY"
-        elif any(k in tx_low for k in ["clip", "clipping", "video", "reel"]):
-            intro_title = "AI VIDEO REEL"
+            social_q = "Can you earn income online with AI?"
+        elif has_word(["python", "coding", "developer"], tx_low):
+            intro_title = "PYTHON AI DEV"
+            social_q = "How fast can you build with Python AI?"
 
         graphics.append({
             "id": "g_title_0",
             "asset_id": "kinetic_title",
             "type": "kinetic_title",
             "title": intro_title,
-            "subtitle": "in seconds!",
+            "subtitle": "AI Productivity",
             "start": 0.8,
-            "end": 2.8,
+            "end": 3.2,
             "x": 540,
             "y": 240,
             "width": 500,
@@ -101,10 +124,97 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
         for c in formatted_captions:
             full_chunk = f"{c.get('lead', '')} {c.get('keyword', '')}".lower()
             start_t = c["start"]
-            end_t = min(start_t + 2.5, c["end"] + 1.2)
+            end_t = min(start_t + 2.8, c["end"] + 1.2)
 
-            # 1. Gaming / GTA 6 / PS5 / Controller
-            if any(k in full_chunk for k in ["gts6", "gta", "game", "gaming", "ps5", "remote"]) and "game" not in found_triggers:
+            # 1. Gemini / NotebookLM / AI Tool
+            if has_word(["gemini", "notebook", "alum", "tool", "ai"], full_chunk) and "ai_tool" not in found_triggers:
+                found_triggers.add("ai_tool")
+                graphics.append({
+                    "id": f"g_ai_{len(graphics)}",
+                    "asset_id": "gemini",
+                    "start": start_t,
+                    "end": end_t,
+                    "x": 240,
+                    "y": 480,
+                    "width": 320,
+                    "height": 80,
+                    "animation": "spring_in",
+                    "trigger_word": "GEMINI NOTEBOOKLM"
+                })
+                sound_effects.append({"id": f"s_ai_{len(sound_effects)}", "asset_id": "bell_chime", "start": start_t, "volume": 0.85})
+                zoom_events.append({"id": f"z_ai", "start": start_t, "end": end_t, "scale": 1.15, "target": "face", "ease": "back.out(1.5)"})
+
+            # 2. Exams / Research / Studies / Interview
+            elif has_word(["exam", "exams", "research", "interview", "studies", "lessons"], full_chunk) and "study" not in found_triggers:
+                found_triggers.add("study")
+                graphics.append({
+                    "id": f"g_study_{len(graphics)}",
+                    "asset_id": "book",
+                    "start": start_t,
+                    "end": end_t,
+                    "x": 720,
+                    "y": 480,
+                    "width": 300,
+                    "height": 80,
+                    "animation": "bounce_in",
+                    "trigger_word": "EXAMS & STUDY"
+                })
+                sound_effects.append({"id": f"s_study_{len(sound_effects)}", "asset_id": "pop", "start": start_t, "volume": 0.8})
+
+            # 3. PPT / Presentation
+            elif has_word(["ppt", "slides", "presentation"], full_chunk) and "ppt" not in found_triggers:
+                found_triggers.add("ppt")
+                graphics.append({
+                    "id": f"g_ppt_{len(graphics)}",
+                    "asset_id": "presentation",
+                    "start": start_t,
+                    "end": end_t,
+                    "x": 720,
+                    "y": 520,
+                    "width": 280,
+                    "height": 80,
+                    "animation": "spring_in",
+                    "trigger_word": "CREATE PPT"
+                })
+                sound_effects.append({"id": f"s_ppt_{len(sound_effects)}", "asset_id": "whoosh", "start": start_t, "volume": 0.8})
+
+            # 4. MCQs / Quiz / Resources
+            elif has_word(["mcqs", "mcq", "quiz", "resources"], full_chunk) and "mcq" not in found_triggers:
+                found_triggers.add("mcq")
+                graphics.append({
+                    "id": f"g_mcq_{len(graphics)}",
+                    "asset_id": "quiz",
+                    "start": start_t,
+                    "end": end_t,
+                    "x": 240,
+                    "y": 520,
+                    "width": 280,
+                    "height": 80,
+                    "animation": "bounce_in",
+                    "trigger_word": "GENERATE MCQS"
+                })
+                sound_effects.append({"id": f"s_mcq_{len(sound_effects)}", "asset_id": "ding", "start": start_t, "volume": 0.85})
+
+            # 5. Audio / One-on-one Podcast / Listen
+            elif has_word(["audio", "conversation", "listen"], full_chunk) and "audio" not in found_triggers:
+                found_triggers.add("audio")
+                graphics.append({
+                    "id": f"g_audio_{len(graphics)}",
+                    "asset_id": "audio_mic",
+                    "start": start_t,
+                    "end": end_t,
+                    "x": 480,
+                    "y": 540,
+                    "width": 300,
+                    "height": 80,
+                    "animation": "spring_in",
+                    "trigger_word": "AUDIO PODCAST"
+                })
+                sound_effects.append({"id": f"s_audio_{len(sound_effects)}", "asset_id": "pop", "start": start_t, "volume": 0.8})
+                zoom_events.append({"id": f"z_audio", "start": start_t, "end": end_t, "scale": 1.15, "target": "face", "ease": "power2.inOut"})
+
+            # 6. Gaming (strict word boundary, not matching other words)
+            elif has_word(["gta", "gts6", "gaming", "ps5"], full_chunk) and "game" not in found_triggers:
                 found_triggers.add("game")
                 graphics.append({
                     "id": f"g_game_{len(graphics)}",
@@ -119,10 +229,9 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                     "trigger_word": "GTA 6 / PS5"
                 })
                 sound_effects.append({"id": f"s_game_{len(sound_effects)}", "asset_id": "level_up", "start": start_t, "volume": 0.85})
-                zoom_events.append({"id": f"z_game", "start": start_t, "end": end_t, "scale": 1.15, "target": "face", "ease": "back.out(1.5)"})
 
-            # 2. Money / Earning / Cash
-            elif any(k in full_chunk for k in ["money", "earn", "cash", "dollar", "income"]) and "money" not in found_triggers:
+            # 7. Money (strict word boundary, ensure NOT matching 'learn')
+            elif has_word(["money", "cash", "dollar", "income"], full_chunk) and "money" not in found_triggers:
                 found_triggers.add("money")
                 graphics.append({
                     "id": f"g_money_{len(graphics)}",
@@ -137,74 +246,39 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                     "trigger_word": "EARN MONEY"
                 })
                 sound_effects.append({"id": f"s_money_{len(sound_effects)}", "asset_id": "cash_register", "start": start_t, "volume": 0.85})
-                zoom_events.append({"id": f"z_money", "start": start_t, "end": end_t, "scale": 1.14, "target": "face", "ease": "power2.inOut"})
 
-            # 3. YouTube / Video Links
-            elif any(k in full_chunk for k in ["youtube", "link"]) and "youtube" not in found_triggers:
-                found_triggers.add("youtube")
-                graphics.append({
-                    "id": f"g_yt_{len(graphics)}",
-                    "asset_id": "youtube",
-                    "start": start_t,
-                    "end": end_t,
-                    "x": 680,
-                    "y": 540,
-                    "width": 280,
-                    "height": 80,
-                    "animation": "bounce_in",
-                    "trigger_word": "YOUTUBE LINK"
-                })
-                sound_effects.append({"id": f"s_yt_{len(sound_effects)}", "asset_id": "pop", "start": start_t, "volume": 0.8})
-
-            # 4. Clipping / AI Platforms / Tools
-            elif any(k in full_chunk for k in ["clipping", "platform", "platforms", "tools", "clips", "flipping", "ai"]) and "clipping" not in found_triggers:
-                found_triggers.add("clipping")
-                graphics.append({
-                    "id": f"g_clip_{len(graphics)}",
-                    "asset_id": "chatgpt",
-                    "start": start_t,
-                    "end": end_t,
-                    "x": 80,
-                    "y": 700,
-                    "width": 320,
-                    "height": 80,
-                    "animation": "spring_in",
-                    "trigger_word": "AI PLATFORM"
-                })
-                sound_effects.append({"id": f"s_clip_{len(sound_effects)}", "asset_id": "whoosh", "start": start_t, "volume": 0.75})
-
-            # 5. Comment / Discussion
-            elif any(k in full_chunk for k in ["comment", "comments"]) and "comment" not in found_triggers:
+            # 8. Comment / Discussion
+            elif has_word(["comment", "comments"], full_chunk) and "comment" not in found_triggers:
                 found_triggers.add("comment")
                 graphics.append({
                     "id": f"g_com_{len(graphics)}",
                     "asset_id": "comment",
                     "start": start_t,
                     "end": end_t,
-                    "x": 540,
-                    "y": 680,
+                    "x": 280,
+                    "y": 640,
                     "width": 320,
                     "height": 80,
                     "animation": "spring_in",
-                    "trigger_word": "COMMENT LINK"
+                    "trigger_word": "COMMENT BELOW"
                 })
                 sound_effects.append({"id": f"s_com_{len(sound_effects)}", "asset_id": "bell_chime", "start": start_t, "volume": 0.8})
                 zoom_events.append({"id": f"z_com", "start": start_t, "end": end_t, "scale": 1.15, "target": "face", "ease": "back.out(1.5)"})
 
-            # 6. Follow / Subscribe
-            elif any(k in full_chunk for k in ["follow", "subscribe"]) and "follow" not in found_triggers:
+            # 9. Like / Follow / Explore More
+            elif has_word(["like", "follow", "subscribe", "explore"], full_chunk) and "follow" not in found_triggers:
                 found_triggers.add("follow")
                 graphics.append({
                     "id": f"g_fol_{len(graphics)}",
-                    "asset_id": "bell",
+                    "asset_id": "heart",
                     "start": start_t,
                     "end": end_t,
-                    "x": 540,
-                    "y": 780,
-                    "width": 340,
+                    "x": 680,
+                    "y": 640,
+                    "width": 320,
                     "height": 80,
                     "animation": "bounce_in",
-                    "trigger_word": "FOLLOW FOR MORE"
+                    "trigger_word": "LIKE & FOLLOW"
                 })
                 sound_effects.append({"id": f"s_fol_{len(sound_effects)}", "asset_id": "ding", "start": start_t, "volume": 0.85})
 
@@ -220,7 +294,9 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
             "graphics": graphics,
             "sound_effects": sound_effects,
             "music": None,
-            "color_grade": "dark_moody"
+            "color_grade": "dark_moody",
+            "hook_title": f"⚡ {intro_title} • AI TOOLS 🤖",
+            "social_question": f"💬 @alex_clips: {social_q}"
         }
 
         return DirectorResult(

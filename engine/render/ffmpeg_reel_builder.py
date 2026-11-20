@@ -24,7 +24,9 @@ def generate_ass_subtitles(
     graphics: List[Dict[str, Any]], 
     output_path: str, 
     width: int = 1920, 
-    height: int = 1080
+    height: int = 1080,
+    hook_title: Optional[str] = None,
+    social_question: Optional[str] = None
 ):
     """
     Generates an ASS subtitle file styled for the target resolution,
@@ -63,22 +65,28 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     events = []
 
-    # 1. Top Hook Banner (Style Sheet Section 6 & 8)
-    hook_title = "⚡ GTA 6 CLIPS • EARN MONEY 💰"
-    for g in graphics:
-        if g.get("type") == "kinetic_title" or "GTA" in g.get("trigger_word", ""):
-            hook_title = f"⚡ {g.get('title', 'GTA 6 GAMING')} • EARN CASH 💰"
-            break
+    # 1. Top Hook Banner (dynamically inferred from EDL or graphics)
+    if not hook_title:
+        hook_title = "⚡ AI TOOLS REVIEW 🤖"
+        for g in graphics:
+            if g.get("type") == "kinetic_title" or g.get("asset_id") == "kinetic_title":
+                t = g.get("title") or g.get("trigger_word", "").replace("Title: ", "")
+                if t:
+                    hook_title = f"⚡ {t.upper()} ✦"
+                break
     
     events.append(
         f"Dialogue: 0,0:00:00.20,0:00:05.50,TopHook,,0,0,{margin_top_hook},,  {hook_title}  "
     )
 
     # 2. Floating Social Comment / Question Card (Spring in ~3.8s to 8.5s)
+    if not social_question:
+        social_question = "💬 @alex_clips: Have you explored this AI tool yet?"
+
     center_y_card = int(height * 0.38)
     center_x_card = int(width * 0.5)
     events.append(
-        f"Dialogue: 1,0:00:03.80,0:00:08.50,CommentCard,,0,0,0,,{{\\pos({center_x_card},{center_y_card})}}  💬 @alex_clips: Can you actually earn from GTA 6 clips?  "
+        f"Dialogue: 1,0:00:03.80,0:00:08.50,CommentCard,,0,0,0,,{{\\pos({center_x_card},{center_y_card})}}  {social_question}  "
     )
 
     # 3. Dynamic Pop-Up Badges from Graphics list
@@ -92,14 +100,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
         prefix = "✨ "
         if asset == "gamepad": prefix = "🎮 "
-        elif asset == "money": prefix = "💰 "
+        elif asset in ["money", "cash"]: prefix = "💰 "
         elif asset == "youtube": prefix = "🔴 "
-        elif asset == "chatgpt": prefix = "🤖 "
+        elif asset in ["chatgpt", "robot"]: prefix = "🤖 "
         elif asset == "comment": prefix = "💬 "
-        elif asset == "bell": prefix = "👇 "
+        elif asset in ["bell", "ding"]: prefix = "🔔 "
+        elif asset == "gemini": prefix = "✨ "
+        elif asset == "book": prefix = "📚 "
+        elif asset == "presentation": prefix = "📊 "
+        elif asset == "quiz": prefix = "📝 "
+        elif asset == "audio_mic": prefix = "🎙️ "
+        elif asset == "heart": prefix = "❤️ "
+        elif asset == "star": prefix = "⭐ "
 
         # Alternate positions (left / right) for dynamic visual balance
-        pos_x = int(width * 0.72) if "YOUTUBE" in word or "GAME" in word else int(width * 0.28)
+        pos_x = int(width * 0.72) if ("YOUTUBE" in word or "GAME" in word or "STUDY" in word or "PPT" in word) else int(width * 0.28)
         pos_y = int(height * 0.44)
 
         events.append(
@@ -155,7 +170,9 @@ def render_reel_ffmpeg(
         graphics=edl.get("graphics", []),
         output_path=str(ass_path),
         width=target_w,
-        height=target_h
+        height=target_h,
+        hook_title=edl.get("hook_title"),
+        social_question=edl.get("social_question")
     )
 
     ass_escaped = str(ass_path).replace("\\", "/").replace(":", "\\:")

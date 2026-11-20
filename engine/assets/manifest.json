@@ -26,7 +26,15 @@
     "rocket": {"type": "emoji", "char": "🚀"},
     "kinetic_title": {"type": "title", "char": "⚡"},
     "shy": {"type": "emoji", "char": "😊"},
-    "shell": {"type": "emoji", "char": "🐚"}
+    "shell": {"type": "emoji", "char": "🐚"},
+    "gemini": {"type": "emoji", "char": "✨"},
+    "book": {"type": "emoji", "char": "📚"},
+    "presentation": {"type": "emoji", "char": "📊"},
+    "quiz": {"type": "emoji", "char": "📝"},
+    "audio_mic": {"type": "emoji", "char": "🎙️"},
+    "heart": {"type": "emoji", "char": "❤️"},
+    "bulb": {"type": "emoji", "char": "💡"},
+    "star": {"type": "emoji", "char": "⭐"}
   },
   "sfx": {
     "vine_boom": {"type": "sfx", "file": "vine_boom.wav", "description": "Vine boom bass drop"},

@@ -5,10 +5,11 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
 class CaptionBurst(BaseModel):
+    model_config = ConfigDict(extra="allow")
     id: str
     start: float
     end: float
@@ -19,6 +20,7 @@ class CaptionBurst(BaseModel):
 
 
 class ZoomEvent(BaseModel):
+    model_config = ConfigDict(extra="allow")
     id: str
     start: float
     end: float
@@ -33,19 +35,23 @@ class ZoomEvent(BaseModel):
 
 
 class GraphicElement(BaseModel):
+    model_config = ConfigDict(extra="allow")
     id: str
     asset_id: str
     start: float
     end: float
-    x: int = Field(ge=0, le=1080)
-    y: int = Field(ge=0, le=1920)
-    width: int
-    height: int
+    x: int = Field(default=540, ge=0, le=3840)
+    y: int = Field(default=500, ge=0, le=3840)
+    width: int = Field(default=300)
+    height: int = Field(default=80)
     animation: Literal["spring_in", "bounce_in", "slide_up", "fade_in"] = "spring_in"
     trigger_word: str = ""
+    title: str = ""
+    subtitle: str = ""
 
 
 class SoundEffect(BaseModel):
+    model_config = ConfigDict(extra="allow")
     id: str
     asset_id: str
     start: float
@@ -53,6 +59,7 @@ class SoundEffect(BaseModel):
 
 
 class MusicTrack(BaseModel):
+    model_config = ConfigDict(extra="allow")
     asset_id: str
     start: float = 0.0
     volume: float = Field(default=0.15, ge=0.0, le=1.0)
@@ -60,6 +67,7 @@ class MusicTrack(BaseModel):
 
 
 class EditDecisionList(BaseModel):
+    model_config = ConfigDict(extra="allow")
     version: str = "1.0"
     video_duration: float
     captions: list[CaptionBurst] = Field(default_factory=list)
@@ -68,3 +76,5 @@ class EditDecisionList(BaseModel):
     sound_effects: list[SoundEffect] = Field(default_factory=list)
     music: MusicTrack | None = None
     color_grade: Literal["dark_moody", "warm_cinematic", "cool_editorial"] = "dark_moody"
+    hook_title: str = ""
+    social_question: str = ""

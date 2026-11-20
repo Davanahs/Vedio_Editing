@@ -1995,17 +1995,14 @@
         <!-- OVERLAY G: Social Question Popup -->
         <div class="social-question-card" id="socialQuestionCard">
           <div class="question-avatar">💬</div>
-          <div class="question-body">
+          <div class="question-body" id="socialQuestionBody">
             <span style="color:#64748B; font-size:10px; display:block;">@alex_clips</span>
-            "Wait, can you actually make money from GTA 6 clips?"
+            Have you explored this AI tool yet?
           </div>
         </div>
 
-        <!-- OVERLAY H: Dynamic Spoken Badges -->
-        <div class="spoken-badge badge-pos-gaming" id="badgeGaming">🎮 PS5 / GTA 6 GAME</div>
-        <div class="spoken-badge badge-pos-money"  id="badgeMoney">💰 EARN $1,000+ CASH</div>
-        <div class="spoken-badge badge-pos-link"   id="badgeLink">🔴 YOUTUBE CHANNEL LINK</div>
-        <div class="spoken-badge badge-pos-comment"id="badgeComment">💬 COMMENT 'LINK' BELOW</div>
+        <!-- OVERLAY H: Dynamic Spoken Badges from Content -->
+        <div class="spoken-badge badge-pos-gaming" id="dynamicBadge" style="display:none;">✨ AI TOOL</div>
 
         <!-- OVERLAY I: Dynamic Two-Tone Captions -->
         <div class="dynamic-captions-box" id="dynamicCaptionsBox">
@@ -2337,9 +2334,9 @@
        ========================================================================== -->
   <script>
     // State
-    let activeVideo = "WhatsApp_Video_2026-11-18_at_12.36.59.mp4";
-    let activeDuration = 46.49;
-    let currentAspect = "9:16";
+    let activeVideo = "WhatsApp_Video_2026-11-18_at_13.03.38.mp4";
+    let activeDuration = 50.85;
+    let currentAspect = "16:9";
     let currentOutline = "white";
     let activeStylePreset = "scrapbook";
     let viewMode = "edited"; // "edited" | "original"
@@ -2380,10 +2377,8 @@
     const stickerLove = document.getElementById('stickerLove');
     const topHookBanner = document.getElementById('topHookBanner');
     const socialQuestionCard = document.getElementById('socialQuestionCard');
-    const badgeGaming = document.getElementById('badgeGaming');
-    const badgeMoney = document.getElementById('badgeMoney');
-    const badgeLink = document.getElementById('badgeLink');
-    const badgeComment = document.getElementById('badgeComment');
+    const socialQuestionBody = document.getElementById('socialQuestionBody');
+    const dynamicBadge = document.getElementById('dynamicBadge');
     const captionLeadWord = document.getElementById('captionLeadWord');
     const captionKeywordPunch = document.getElementById('captionKeywordPunch');
 
@@ -2471,7 +2466,7 @@
     }
 
     // ── VIDEO LOADING & SWITCHING ──
-    function loadVideo(filename, duration = 46.49, width = 848, height = 478) {
+    function loadVideo(filename, duration = 50.85, width = 848, height = 474) {
       activeVideo = filename;
       activeDuration = duration;
       triggeredSfxTimes.clear();
@@ -2542,7 +2537,7 @@
       if (!visible) {
         [polaroidCard1, polaroidCard2, cameraOverlay, floatingMusicCard, orbitCard1, orbitCard2,
          stickerStar, stickerFlower, stickerLove, topHookBanner, socialQuestionCard,
-         badgeGaming, badgeMoney, badgeLink, badgeComment, captionLeadWord, captionKeywordPunch].forEach(el => {
+         dynamicBadge, captionLeadWord, captionKeywordPunch].forEach(el => {
           if (el) el.style.display = "none";
         });
       }
@@ -2761,6 +2756,17 @@
           edlData = data.edl;
           renderTimelineClips(edlData);
 
+          // Update Top Hook and Social Question from dynamic EDL
+          if (edlData.hook_title) {
+            topHookBanner.innerHTML = `<span>${edlData.hook_title}</span>`;
+          }
+          if (edlData.social_question) {
+            socialQuestionBody.innerHTML = `
+              <span style="color:#64748B; font-size:10px; display:block;">@alex_clips</span>
+              ${edlData.social_question.replace('💬 @alex_clips: ', '')}
+            `;
+          }
+
           // Update Summary Card
           document.getElementById('resultsSummaryCard').classList.add('visible');
           document.getElementById('resultsSummaryText').innerText = data.ai_response || 
@@ -2841,11 +2847,41 @@
       // 7. Social Question Card (3.5s - 8.2s)
       socialQuestionCard.style.display = (t >= 3.5 && t <= 8.2) ? "flex" : "none";
 
-      // 8. Dynamic Spoken Badges
-      badgeGaming.style.display = (t >= 8.0 && t <= 12.5) ? "flex" : "none";
-      badgeMoney.style.display  = (t >= 13.5 && t <= 18.0) ? "flex" : "none";
-      badgeLink.style.display   = (t >= 27.0 && t <= 32.5) ? "flex" : "none";
-      badgeComment.style.display= (t >= 36.0 && t <= 41.5) ? "flex" : "none";
+      // 8. Dynamic Spoken Badges driven by actual EDL graphics
+      let matchedBadge = false;
+      if (edlData && edlData.graphics) {
+        const activeGraphic = edlData.graphics.find(g => g.type !== "kinetic_title" && t >= g.start && t <= g.end);
+        if (activeGraphic) {
+          matchedBadge = true;
+          let prefix = "✨ ";
+          const a = activeGraphic.asset_id;
+          if (a === "gemini") prefix = "✨ ";
+          else if (a === "book") prefix = "📚 ";
+          else if (a === "presentation") prefix = "📊 ";
+          else if (a === "quiz") prefix = "📝 ";
+          else if (a === "audio_mic") prefix = "🎙️ ";
+          else if (a === "comment") prefix = "💬 ";
+          else if (a === "heart") prefix = "❤️ ";
+          else if (a === "robot" || a === "chatgpt") prefix = "🤖 ";
+          else if (a === "gamepad") prefix = "🎮 ";
+          else if (a === "money" || a === "cash") prefix = "💰 ";
+          else if (a === "youtube") prefix = "🔴 ";
+
+          dynamicBadge.innerHTML = `<span>${prefix} ${activeGraphic.trigger_word.toUpperCase()}</span>`;
+          if (activeGraphic.x > 500) {
+            dynamicBadge.style.right = "14px";
+            dynamicBadge.style.left = "auto";
+          } else {
+            dynamicBadge.style.left = "14px";
+            dynamicBadge.style.right = "auto";
+          }
+          dynamicBadge.style.bottom = "45%";
+          dynamicBadge.style.display = "flex";
+        }
+      }
+      if (!matchedBadge) {
+        dynamicBadge.style.display = "none";
+      }
 
       // 9. Dynamic Zoom Punch (Punch Words)
       const isPunchMoment = (t >= 7.8 && t <= 10.5) || (t >= 14.0 && t <= 17.0) || (t >= 36.5 && t <= 39.5);

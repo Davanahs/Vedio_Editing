@@ -66,7 +66,16 @@ async def generate_edl(
 
             t0 = time.perf_counter()
             try:
-                result = await provider.generate_edl(full_prompt, context={})
+                result = await provider.generate_edl(
+                    full_prompt, 
+                    context={
+                        "transcript": transcript,
+                        "caption_bursts": caption_bursts,
+                        "video_metadata": video_metadata,
+                        "available_assets": available_assets,
+                        "available_sfx": available_sfx
+                    }
+                )
                 elapsed = time.perf_counter() - t0
                 logger.info(
                     f"  {provider.name} responded in {elapsed:.2f}s "

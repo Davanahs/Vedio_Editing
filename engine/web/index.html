@@ -1862,12 +1862,12 @@
           <span class="section-badge" id="sourceBadge">READY</span>
         </div>
 
-        <div class="upload-box-primary" id="videoDropzone" onclick="document.getElementById('hiddenVideoInput').click()">
+        <div class="upload-box-primary" id="videoDropzone" onclick="triggerVideoUpload()">
           <span class="upload-box-icon">🎬</span>
           <div class="upload-box-title">Drop your raw video here</div>
           <div class="upload-box-sub">MP4, MOV, or WEBM • Up to 500MB</div>
-          <input type="file" id="hiddenVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
         </div>
+        <input type="file" id="hiddenVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
 
         <div class="video-loaded-card" id="videoLoadedCard">
           <div class="video-preview-thumb">
@@ -2312,12 +2312,12 @@
         <button style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;" onclick="closeUploadModal()">✕</button>
       </div>
 
-      <div class="upload-box-primary" onclick="document.getElementById('modalVideoInput').click()">
+      <div class="upload-box-primary" onclick="triggerModalVideoUpload()">
         <span class="upload-box-icon">📁</span>
         <div class="upload-box-title">Choose from your computer</div>
         <div class="upload-box-sub">MP4, MOV, or WEBM</div>
-        <input type="file" id="modalVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
       </div>
+      <input type="file" id="modalVideoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
 
       <div style="font-size:12px; font-weight:700; color:var(--text-secondary);">Or pick an existing video:</div>
       <div class="history-card-list" id="modalExistingVideosList" style="max-height:160px;"></div>
@@ -2440,6 +2440,22 @@
       }, { once: true });
     });
 
+    function triggerVideoUpload() {
+      const inp = document.getElementById('hiddenVideoInput');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }
+
+    function triggerModalVideoUpload() {
+      const inp = document.getElementById('modalVideoInput');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }
+
     function setupDragDropListeners() {
       const dropzone = document.getElementById('videoDropzone');
       ['dragenter', 'dragover'].forEach(name => {
@@ -2449,9 +2465,12 @@
         dropzone.addEventListener(name, e => { e.preventDefault(); dropzone.classList.remove('drag-over'); });
       });
       dropzone.addEventListener('drop', e => {
+        e.preventDefault();
         const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('video/')) {
+        if (file && (file.type.startsWith('video/') || /\.(mp4|mov|webm|mkv|avi|m4v)$/i.test(file.name))) {
           uploadVideoFile(file);
+        } else {
+          showToast("Please drop a valid video file (.mp4, .mov, .webm)", "⚠️");
         }
       });
     }
@@ -2644,14 +2663,42 @@
 
     // ── VIDEO UPLOAD (FROM DROPDOWN OR HERO ZONE) ──
     function handleVideoUpload(e) {
-      const file = e.target.files[0];
+      const file = e.target.files && e.target.files[0];
       if (!file) return;
       closeUploadModal();
       uploadVideoFile(file);
+      e.target.value = ''; // Reset input value so selecting the same file triggers change
     }
 
     async function uploadVideoFile(file) {
-      showToast(`Uploading ${file.name}...`, "⏳");
+      // 1. INSTANT LOCAL PREVIEW: Attach local blob URL so user immediately sees video
+      const localBlobUrl = URL.createObjectURL(file);
+      activeVideo = file.name;
+      triggeredSfxTimes.clear();
+
+      document.getElementById('loadedVideoTitle').innerText = file.name;
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      document.getElementById('loadedVideoSpecs').innerText = `Uploading... • ${sizeMb} MB`;
+      document.getElementById('videoLoadedCard').classList.add('visible');
+
+      video.src = localBlobUrl;
+      miniThumbVideo.src = localBlobUrl;
+      video.load();
+
+      video.onloadedmetadata = () => {
+        activeDuration = video.duration || 50.0;
+        activeWidth = video.videoWidth || 1920;
+        activeHeight = video.videoHeight || 1080;
+        labelTotalDuration.innerText = formatTimecode(activeDuration);
+        document.getElementById('loadedVideoSpecs').innerText = `${activeDuration.toFixed(1)}s • ${activeWidth} × ${activeHeight}`;
+        if (activeWidth >= activeHeight) {
+          changeCanvasAspect("16:9");
+        } else {
+          changeCanvasAspect("9:16");
+        }
+      };
+
+      showToast(`Uploading ${file.name} (${sizeMb} MB)...`, "⏳");
       const fd = new FormData();
       fd.append("file", file);
 
@@ -2659,12 +2706,22 @@
         const res = await fetch("/api/upload", { method: "POST", body: fd });
         const data = await res.json();
         if (data.success) {
-          loadVideo(data.filename, data.duration, data.width, data.height);
-          showToast(`Loaded ${data.filename}`, "✅");
+          activeVideo = data.filename;
+          activeDuration = data.duration;
+          activeWidth = data.width;
+          activeHeight = data.height;
+          document.getElementById('loadedVideoTitle').innerText = data.filename;
+          document.getElementById('loadedVideoSpecs').innerText = `${data.duration.toFixed(1)}s • ${data.width} × ${data.height}`;
+          showToast(`Ready for editing: ${data.filename}`, "✅");
           fetchStudioStatus();
+          // Request initial dynamic edit plan
+          requestDynamicCreativeEdit();
+        } else {
+          showToast("Upload response note: ready in local player", "ℹ️");
         }
       } catch (err) {
-        showToast("Upload failed", "❌");
+        console.warn("Upload background sync error:", err);
+        showToast("Playing in preview mode", "📹");
       }
     }
 
@@ -2999,21 +3056,20 @@
         }
       }
 
-        // 11. Real-time Acoustic SFX Triggers
-        if (!video.paused && audioUnlocked) {
-          (edlData.sound_effects || []).forEach(s => {
-            const roundedSec = Math.floor(s.start * 10) / 10;
-            if (Math.abs(t - s.start) < 0.25 && !triggeredSfxTimes.has(roundedSec)) {
-              triggeredSfxTimes.add(roundedSec);
-              const audioObj = sfxAudioPool[s.asset_id];
-              if (audioObj) {
-                audioObj.currentTime = 0;
-                audioObj.volume = 0.85;
-                audioObj.play().catch(() => {});
-              }
+      // 11. Real-time Acoustic SFX Triggers
+      if (!video.paused && audioUnlocked) {
+        (edlData?.sound_effects || []).forEach(s => {
+          const roundedSec = Math.floor(s.start * 10) / 10;
+          if (Math.abs(t - s.start) < 0.25 && !triggeredSfxTimes.has(roundedSec)) {
+            triggeredSfxTimes.add(roundedSec);
+            const audioObj = sfxAudioPool[s.asset_id];
+            if (audioObj) {
+              audioObj.currentTime = 0;
+              audioObj.volume = 0.85;
+              audioObj.play().catch(() => {});
             }
-          });
-        }
+          }
+        });
       }
     });
 

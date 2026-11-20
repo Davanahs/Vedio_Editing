@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1080, height=1920">
+    <title>Captions</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@700;800;900&display=swap');
@@ -29,10 +30,10 @@
 
       .caption-item {
         position: absolute;
-        top: 1080px;
+        top: 1120px;
         left: 50%;
         transform: translateX(-50%);
-        width: 900px;
+        width: 920px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -43,595 +44,340 @@
 
       .caption-lead {
         font-family: 'Inter', -apple-system, sans-serif;
-        font-size: 36px;
+        font-size: 34px;
         font-weight: 700;
-        color: #FFFFFF;
-        text-shadow: 0 4px 14px rgba(0, 0, 0, 0.95);
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 4px 14px rgba(0, 0, 0, 0.95), 0 2px 4px rgba(0, 0, 0, 0.8);
         text-transform: lowercase;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
+        letter-spacing: -0.01em;
       }
 
       .caption-keyword {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 92px;
-        line-height: 0.95;
+        font-size: 96px;
         font-weight: 900;
-        color: #FFE600;
+        line-height: 0.92;
+        color: #FFFFFF;
         text-transform: uppercase;
         letter-spacing: 0.02em;
-        text-shadow: 0 6px 20px rgba(0, 0, 0, 0.95);
+        text-shadow: 
+          0 4px 20px rgba(0, 0, 0, 0.95),
+          0 8px 30px rgba(0, 0, 0, 0.75),
+          0 0 24px var(--hl-color, #FFE600);
+        background: linear-gradient(180deg, #FFFFFF 20%, var(--hl-color, #FFE600) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        padding: 4px 12px;
+        display: inline-block;
       }
     </style>
   </head>
   <body>
-    <div data-hf-id="hf-4rfo" id="root" data-composition-id="captions" data-start="0" data-duration="46.6" data-width="1080" data-height="1920">
-      <div data-hf-id="hf-w19y" id="sub-0" class="caption-item clip" data-start="0.0" data-duration="0.78">
-        <div data-hf-id="hf-1z3v" class="caption-lead">Hello</div>
-        <div data-hf-id="hf-vnik" class="caption-keyword">GUYS</div>
-      </div>
-      <div data-hf-id="hf-m4my" id="sub-1" class="caption-item clip" data-start="1.22" data-duration="1.6">
-        <div data-hf-id="hf-33pv" class="caption-lead">if you're</div>
-        <div data-hf-id="hf-ebxt" class="caption-keyword">WATCHING</div>
-      </div>
-      <div data-hf-id="hf-k8q8" id="sub-2" class="caption-item clip" data-start="2.82" data-duration="1.2">
-        <div data-hf-id="hf-3nr2" class="caption-lead">this video</div>
-        <div data-hf-id="hf-uijh" class="caption-keyword">ON</div>
-      </div>
-      <div data-hf-id="hf-oxku" id="sub-3" class="caption-item clip" data-start="4.02" data-duration="0.84">
-        <div data-hf-id="hf-quk6" class="caption-lead">an</div>
-        <div data-hf-id="hf-2x7k" class="caption-keyword">INSTAGRAM</div>
-      </div>
-      <div data-hf-id="hf-fxfj" id="sub-4" class="caption-item clip" data-start="4.86" data-duration="1.38">
-        <div data-hf-id="hf-uuh1" class="caption-lead">but not</div>
-        <div data-hf-id="hf-igkx" class="caption-keyword">ON</div>
-      </div>
-      <div data-hf-id="hf-b0ez" id="sub-5" class="caption-item clip" data-start="6.24" data-duration="1.48">
-        <div data-hf-id="hf-pwxl" class="caption-lead">my gallery</div>
-        <div data-hf-id="hf-57pn" class="caption-keyword">THEN</div>
-      </div>
-      <div data-hf-id="hf-pbev" id="sub-6" class="caption-item clip" data-start="7.72" data-duration="1.76">
-        <div data-hf-id="hf-joas" class="caption-lead">yes,</div>
-        <div data-hf-id="hf-hya2" class="caption-keyword">PLEASE</div>
-      </div>
-      <div data-hf-id="hf-r8ew" id="sub-7" class="caption-item clip" data-start="9.48" data-duration="0.7">
+    <div id="root">
+      <div class="caption-item" id="c_1" data-start="0.240" data-duration="0.660" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-1a57" class="caption-keyword">CONGRATULATE</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">HI</span>
       </div>
-      <div data-hf-id="hf-8kk1" id="sub-8" class="caption-item clip" data-start="10.18" data-duration="1.18">
-        <div data-hf-id="hf-27gg" class="caption-lead">me for</div>
-        <div data-hf-id="hf-fbrk" class="caption-keyword">STARTING</div>
+      <div class="caption-item" id="c_2" data-start="0.900" data-duration="1.760" data-layout-allow-safe-zone>
+        <span class="caption-lead">I'm</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">BACK</span>
       </div>
-      <div data-hf-id="hf-93ey" id="sub-9" class="caption-item clip" data-start="11.36" data-duration="1.22">
-        <div data-hf-id="hf-afb2" class="caption-lead">my content</div>
-        <div data-hf-id="hf-l4zx" class="caption-keyword">CREATION</div>
-      </div>
-      <div data-hf-id="hf-l9ss" id="sub-10" class="caption-item clip" data-start="12.58" data-duration="0.64">
-        <div data-hf-id="hf-tyz6" class="caption-lead">and this</div>
-        <div data-hf-id="hf-lc4t" class="caption-keyword">WOULD</div>
-      </div>
-      <div data-hf-id="hf-2qe9" id="sub-11" class="caption-item clip" data-start="13.22" data-duration="1.78">
-        <div data-hf-id="hf-bn4q" class="caption-lead">be my</div>
-        <div data-hf-id="hf-ppd6" class="caption-keyword">FIRST</div>
-      </div>
-      <div data-hf-id="hf-9r98" id="sub-12" class="caption-item clip" data-start="15.0" data-duration="0.82">
-        <div data-hf-id="hf-p2lj" class="caption-lead">video I</div>
-        <div data-hf-id="hf-t77d" class="caption-keyword">GUESS</div>
-      </div>
-      <div data-hf-id="hf-mfey" id="sub-13" class="caption-item clip" data-start="15.82" data-duration="1.02">
+      <div class="caption-item" id="c_3" data-start="2.660" data-duration="0.240" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-udy8" class="caption-keyword">BECAUSE</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">OKAY</span>
       </div>
-      <div data-hf-id="hf-sm17" id="sub-14" class="caption-item clip" data-start="16.84" data-duration="2.62">
-        <div data-hf-id="hf-nvyc" class="caption-lead">I created</div>
-        <div data-hf-id="hf-n774" class="caption-keyword">THIS</div>
+      <div class="caption-item" id="c_4" data-start="2.900" data-duration="1.060" data-layout-allow-safe-zone>
+        <span class="caption-lead">so</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">I</span>
       </div>
-      <div data-hf-id="hf-env1" id="sub-15" class="caption-item clip" data-start="19.46" data-duration="2.08">
-        <div data-hf-id="hf-zowq" class="caption-lead">video just</div>
-        <div data-hf-id="hf-8xy5" class="caption-keyword">TO</div>
+      <div class="caption-item" id="c_5" data-start="3.960" data-duration="0.460" data-layout-allow-safe-zone>
+        <span class="caption-lead">wanted</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">TO</span>
       </div>
-      <div data-hf-id="hf-x50p" id="sub-16" class="caption-item clip" data-start="21.54" data-duration="0.96">
-        <div data-hf-id="hf-hljv" class="caption-lead">be you</div>
-        <div data-hf-id="hf-uvbj" class="caption-keyword">KNOW</div>
+      <div class="caption-item" id="c_6" data-start="4.420" data-duration="0.480" data-layout-allow-safe-zone>
+        <span class="caption-lead">tell</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">YOU</span>
       </div>
-      <div data-hf-id="hf-679z" id="sub-17" class="caption-item clip" data-start="22.5" data-duration="0.7">
+      <div class="caption-item" id="c_7" data-start="4.900" data-duration="0.520" data-layout-allow-safe-zone>
+        <span class="caption-lead">about</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ONE</span>
+      </div>
+      <div class="caption-item" id="c_8" data-start="5.420" data-duration="0.500" data-layout-allow-safe-zone>
+        <span class="caption-lead">of</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">THE</span>
+      </div>
+      <div class="caption-item" id="c_9" data-start="5.920" data-duration="0.880" data-layout-allow-safe-zone>
+        <span class="caption-lead">AI</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">TOOL</span>
+      </div>
+      <div class="caption-item" id="c_10" data-start="6.800" data-duration="0.440" data-layout-allow-safe-zone>
+        <span class="caption-lead">that</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">I</span>
+      </div>
+      <div class="caption-item" id="c_11" data-start="7.240" data-duration="0.700" data-layout-allow-safe-zone>
+        <span class="caption-lead">used</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">IN</span>
+      </div>
+      <div class="caption-item" id="c_12" data-start="7.940" data-duration="0.480" data-layout-allow-safe-zone>
+        <span class="caption-lead">the</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">EXAMS</span>
+      </div>
+      <div class="caption-item" id="c_13" data-start="8.420" data-duration="0.940" data-layout-allow-safe-zone>
+        <span class="caption-lead">and</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">FOR</span>
+      </div>
+      <div class="caption-item" id="c_14" data-start="9.360" data-duration="0.420" data-layout-allow-safe-zone>
+        <span class="caption-lead">some</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">RESEARCH</span>
+      </div>
+      <div class="caption-item" id="c_15" data-start="9.780" data-duration="0.580" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-t8jg" class="caption-keyword">CONFIDENT</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">PURPOSE</span>
       </div>
-      <div data-hf-id="hf-tcpm" id="sub-18" class="caption-item clip" data-start="23.2" data-duration="0.98">
-        <div data-hf-id="hf-4skq" class="caption-lead">enough or</div>
-        <div data-hf-id="hf-2y47" class="caption-keyword">LIKE</div>
+      <div class="caption-item" id="c_16" data-start="10.360" data-duration="0.660" data-layout-allow-safe-zone>
+        <span class="caption-lead">That</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">IS</span>
       </div>
-      <div data-hf-id="hf-o1ez" id="sub-19" class="caption-item clip" data-start="24.18" data-duration="1.04">
-        <div data-hf-id="hf-ox12" class="caption-lead">see how</div>
-        <div data-hf-id="hf-f1gn" class="caption-keyword">I</div>
+      <div class="caption-item" id="c_17" data-start="11.020" data-duration="0.640" data-layout-allow-safe-zone>
+        <span class="caption-lead">a</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">RACK</span>
       </div>
-      <div data-hf-id="hf-rub4" id="sub-20" class="caption-item clip" data-start="25.22" data-duration="0.6">
-        <div data-hf-id="hf-l9xq" class="caption-lead">could</div>
-        <div data-hf-id="hf-fo6z" class="caption-keyword">REACT</div>
+      <div class="caption-item" id="c_18" data-start="11.660" data-duration="0.760" data-layout-allow-safe-zone>
+        <span class="caption-lead">that</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">IS</span>
       </div>
-      <div data-hf-id="hf-apjq" id="sub-21" class="caption-item clip" data-start="25.82" data-duration="0.5">
+      <div class="caption-item" id="c_19" data-start="12.420" data-duration="0.760" data-layout-allow-safe-zone>
+        <span class="caption-lead">a</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">GEMINI</span>
+      </div>
+      <div class="caption-item" id="c_20" data-start="13.180" data-duration="0.880" data-layout-allow-safe-zone>
+        <span class="caption-lead">notebook</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ALUM</span>
+      </div>
+      <div class="caption-item" id="c_21" data-start="14.060" data-duration="0.460" data-layout-allow-safe-zone>
+        <span class="caption-lead">It's</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">A</span>
+      </div>
+      <div class="caption-item" id="c_22" data-start="14.520" data-duration="1.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">very</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">BEST</span>
+      </div>
+      <div class="caption-item" id="c_23" data-start="15.800" data-duration="0.500" data-layout-allow-safe-zone>
+        <span class="caption-lead">tool</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">THAT</span>
+      </div>
+      <div class="caption-item" id="c_24" data-start="16.300" data-duration="0.340" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">COULD</span>
+      </div>
+      <div class="caption-item" id="c_25" data-start="16.640" data-duration="0.820" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-6u54" class="caption-keyword">BECAUSE</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">EXPLORE</span>
       </div>
-      <div data-hf-id="hf-kgvr" id="sub-22" class="caption-item clip" data-start="26.32" data-duration="0.76">
-        <div data-hf-id="hf-m9qq" class="caption-lead">I just</div>
-        <div data-hf-id="hf-xybn" class="caption-keyword">WANTED</div>
-      </div>
-      <div data-hf-id="hf-4kjm" id="sub-23" class="caption-item clip" data-start="27.08" data-duration="0.7">
-        <div data-hf-id="hf-euy8" class="caption-lead">to start</div>
-        <div data-hf-id="hf-crza" class="caption-keyword">MY</div>
-      </div>
-      <div data-hf-id="hf-oo4v" id="sub-24" class="caption-item clip" data-start="27.78" data-duration="0.28">
+      <div class="caption-item" id="c_26" data-start="17.460" data-duration="0.140" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-6ech" class="caption-keyword">CONTENT</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">OKAY</span>
       </div>
-      <div data-hf-id="hf-mrlb" id="sub-25" class="caption-item clip" data-start="28.06" data-duration="0.54">
+      <div class="caption-item" id="c_27" data-start="17.600" data-duration="0.560" data-layout-allow-safe-zone>
+        <span class="caption-lead">in</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ORDER</span>
+      </div>
+      <div class="caption-item" id="c_28" data-start="18.160" data-duration="0.460" data-layout-allow-safe-zone>
+        <span class="caption-lead">to</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">PREPARE</span>
+      </div>
+      <div class="caption-item" id="c_29" data-start="18.620" data-duration="0.540" data-layout-allow-safe-zone>
+        <span class="caption-lead">yourself</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">FOR</span>
+      </div>
+      <div class="caption-item" id="c_30" data-start="19.160" data-duration="0.520" data-layout-allow-safe-zone>
+        <span class="caption-lead">an</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">INTERVIEW</span>
+      </div>
+      <div class="caption-item" id="c_31" data-start="19.680" data-duration="0.680" data-layout-allow-safe-zone>
+        <span class="caption-lead">for</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">STUDIES</span>
+      </div>
+      <div class="caption-item" id="c_32" data-start="20.360" data-duration="1.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">or</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ANYTHING</span>
+      </div>
+      <div class="caption-item" id="c_33" data-start="21.640" data-duration="0.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">So</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">YOU</span>
+      </div>
+      <div class="caption-item" id="c_34" data-start="21.920" data-duration="0.280" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-q9xd" class="caption-keyword">CREATION</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">KNOW</span>
       </div>
-      <div data-hf-id="hf-8coh" id="sub-26" class="caption-item clip" data-start="28.6" data-duration="1.72">
-        <div data-hf-id="hf-ttxz" class="caption-lead">but I'm</div>
-        <div data-hf-id="hf-vdlk" class="caption-keyword">VERY</div>
+      <div class="caption-item" id="c_35" data-start="22.200" data-duration="1.300" data-layout-allow-safe-zone>
+        <span class="caption-lead">notebook</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ALUM</span>
       </div>
-      <div data-hf-id="hf-fe2i" id="sub-27" class="caption-item clip" data-start="30.32" data-duration="4.24">
-        <div data-hf-id="hf-ofbs" class="caption-lead">shy and</div>
-        <div data-hf-id="hf-3s93" class="caption-keyword">I</div>
+      <div class="caption-item" id="c_36" data-start="23.500" data-duration="1.240" data-layout-allow-safe-zone>
+        <span class="caption-lead">go</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">TO</span>
       </div>
-      <div data-hf-id="hf-o1ii" id="sub-28" class="caption-item clip" data-start="34.56" data-duration="1.46">
-        <div data-hf-id="hf-jhwc" class="caption-lead">don't know</div>
-        <div data-hf-id="hf-y42q" class="caption-keyword">HOW</div>
+      <div class="caption-item" id="c_37" data-start="24.740" data-duration="1.080" data-layout-allow-safe-zone>
+        <span class="caption-lead">Gemini</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">NOTEBOOK</span>
       </div>
-      <div data-hf-id="hf-phfn" id="sub-29" class="caption-item clip" data-start="36.02" data-duration="0.46">
-        <div data-hf-id="hf-49hz" class="caption-lead">to say</div>
-        <div data-hf-id="hf-ts43" class="caption-keyword">BUT</div>
+      <div class="caption-item" id="c_38" data-start="25.820" data-duration="0.560" data-layout-allow-safe-zone>
+        <span class="caption-lead">alum</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">AND</span>
       </div>
-      <div data-hf-id="hf-6asp" id="sub-30" class="caption-item clip" data-start="36.48" data-duration="0.62">
-        <div data-hf-id="hf-sx6p" class="caption-lead">still</div>
-        <div data-hf-id="hf-s1pj" class="caption-keyword">YEAH</div>
+      <div class="caption-item" id="c_39" data-start="26.380" data-duration="1.040" data-layout-allow-safe-zone>
+        <span class="caption-lead">sign</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">IN</span>
       </div>
-      <div data-hf-id="hf-wkwy" id="sub-31" class="caption-item clip" data-start="37.64" data-duration="0.74">
-        <div data-hf-id="hf-4hqe" class="caption-lead">So if</div>
-        <div data-hf-id="hf-2csn" class="caption-keyword">YOU</div>
+      <div class="caption-item" id="c_40" data-start="27.420" data-duration="0.240" data-layout-allow-safe-zone>
+        <span class="caption-lead">create</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">A</span>
       </div>
-      <div data-hf-id="hf-2dta" id="sub-32" class="caption-item clip" data-start="38.38" data-duration="0.64">
-        <div data-hf-id="hf-objn" class="caption-lead">guys are</div>
-        <div data-hf-id="hf-9d7t" class="caption-keyword">LOOKING</div>
-      </div>
-      <div data-hf-id="hf-b235" id="sub-33" class="caption-item clip" data-start="39.02" data-duration="0.8">
-        <div data-hf-id="hf-1k0s" class="caption-lead">at this</div>
-        <div data-hf-id="hf-6xm3" class="caption-keyword">THEN</div>
-      </div>
-      <div data-hf-id="hf-xbvx" id="sub-34" class="caption-item clip" data-start="39.82" data-duration="0.9">
-        <div data-hf-id="hf-ej4o" class="caption-lead">maybe I</div>
-        <div data-hf-id="hf-ptpu" class="caption-keyword">CAME</div>
-      </div>
-      <div data-hf-id="hf-9yk6" id="sub-35" class="caption-item clip" data-start="40.72" data-duration="0.48">
-        <div data-hf-id="hf-4uj4" class="caption-lead">out of</div>
-        <div data-hf-id="hf-60x6" class="caption-keyword">MY</div>
-      </div>
-      <div data-hf-id="hf-y51m" id="sub-36" class="caption-item clip" data-start="41.2" data-duration="0.94">
-        <div data-hf-id="hf-zkl0" class="caption-lead">shell and</div>
-        <div data-hf-id="hf-3dy2" class="caption-keyword">I</div>
-      </div>
-      <div data-hf-id="hf-mglr" id="sub-37" class="caption-item clip" data-start="42.14" data-duration="0.3">
+      <div class="caption-item" id="c_41" data-start="27.660" data-duration="0.780" data-layout-allow-safe-zone>
         
-        <div data-hf-id="hf-2lcp" class="caption-keyword">STARTED</div>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">NOTEBOOK</span>
       </div>
-      <div data-hf-id="hf-h681" id="sub-38" class="caption-item clip" data-start="42.44" data-duration="0.74">
-        <div data-hf-id="hf-a0xa" class="caption-lead">doing what</div>
-        <div data-hf-id="hf-2zn1" class="caption-keyword">I</div>
+      <div class="caption-item" id="c_42" data-start="28.300" data-duration="0.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">There</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">YOU</span>
       </div>
-      <div data-hf-id="hf-l8ip" id="sub-39" class="caption-item clip" data-start="43.18" data-duration="0.6">
-        <div data-hf-id="hf-ztoe" class="caption-lead">really</div>
-        <div data-hf-id="hf-0ghe" class="caption-keyword">WANT</div>
+      <div class="caption-item" id="c_43" data-start="28.580" data-duration="0.440" data-layout-allow-safe-zone>
+        <span class="caption-lead">can</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">GET</span>
       </div>
-      <div data-hf-id="hf-t7cy" id="sub-40" class="caption-item clip" data-start="43.78" data-duration="0.5">
-        <div data-hf-id="hf-vwyc" class="caption-lead">to</div>
-        <div data-hf-id="hf-llrh" class="caption-keyword">DO</div>
+      <div class="caption-item" id="c_44" data-start="29.020" data-duration="1.040" data-layout-allow-safe-zone>
+        <span class="caption-lead">multiple</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">OPTIONS</span>
       </div>
-      <div data-hf-id="hf-29mx" id="sub-41" class="caption-item clip" data-start="44.66" data-duration="1.2">
-        <div data-hf-id="hf-w6so" class="caption-lead">Please do</div>
-        <div data-hf-id="hf-rwyj" class="caption-keyword">SUPPORT</div>
+      <div class="caption-item" id="c_45" data-start="30.060" data-duration="0.420" data-layout-allow-safe-zone>
+        <span class="caption-lead">where</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">YOU</span>
       </div>
-      <div data-hf-id="hf-p3r5" id="sub-42" class="caption-item clip" data-start="45.86" data-duration="0.74">
-        <div data-hf-id="hf-42ew" class="caption-lead">me for</div>
-        <div data-hf-id="hf-pxbg" class="caption-keyword">BYE</div>
+      <div class="caption-item" id="c_46" data-start="30.480" data-duration="1.140" data-layout-allow-safe-zone>
+        <span class="caption-lead">can</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">GENERATE</span>
+      </div>
+      <div class="caption-item" id="c_47" data-start="31.620" data-duration="1.040" data-layout-allow-safe-zone>
+        <span class="caption-lead">AI</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">VIDEOS</span>
+      </div>
+      <div class="caption-item" id="c_48" data-start="32.660" data-duration="0.360" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">CAN</span>
+      </div>
+      <div class="caption-item" id="c_49" data-start="33.020" data-duration="1.320" data-layout-allow-safe-zone>
+        <span class="caption-lead">create</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">MCQS</span>
+      </div>
+      <div class="caption-item" id="c_50" data-start="34.340" data-duration="0.360" data-layout-allow-safe-zone>
+        <span class="caption-lead">based</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">ON</span>
+      </div>
+      <div class="caption-item" id="c_51" data-start="34.700" data-duration="1.360" data-layout-allow-safe-zone>
+        <span class="caption-lead">the</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">RESOURCES</span>
+      </div>
+      <div class="caption-item" id="c_52" data-start="36.060" data-duration="1.200" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">PROVIDE</span>
+      </div>
+      <div class="caption-item" id="c_53" data-start="37.260" data-duration="0.180" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">CAN</span>
+      </div>
+      <div class="caption-item" id="c_54" data-start="37.440" data-duration="0.480" data-layout-allow-safe-zone>
+        <span class="caption-lead">create</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">A</span>
+      </div>
+      <div class="caption-item" id="c_55" data-start="37.920" data-duration="0.480" data-layout-allow-safe-zone>
+        
+        <span class="caption-keyword" style="--hl-color: #FFE600;">PPT</span>
+      </div>
+      <div class="caption-item" id="c_56" data-start="38.400" data-duration="0.500" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">CAN</span>
+      </div>
+      <div class="caption-item" id="c_57" data-start="38.900" data-duration="1.140" data-layout-allow-safe-zone>
+        <span class="caption-lead">have</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">THAT</span>
+      </div>
+      <div class="caption-item" id="c_58" data-start="40.040" data-duration="1.160" data-layout-allow-safe-zone>
+        <span class="caption-lead">one-on-one</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">CONVERSATION</span>
+      </div>
+      <div class="caption-item" id="c_59" data-start="41.200" data-duration="0.840" data-layout-allow-safe-zone>
+        <span class="caption-lead">like</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">AN</span>
+      </div>
+      <div class="caption-item" id="c_60" data-start="42.040" data-duration="0.880" data-layout-allow-safe-zone>
+        <span class="caption-lead">audio</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">THAT</span>
+      </div>
+      <div class="caption-item" id="c_61" data-start="42.920" data-duration="0.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">you</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">CAN</span>
+      </div>
+      <div class="caption-item" id="c_62" data-start="43.200" data-duration="0.820" data-layout-allow-safe-zone>
+        <span class="caption-lead">listen</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">AND</span>
+      </div>
+      <div class="caption-item" id="c_63" data-start="44.020" data-duration="0.860" data-layout-allow-safe-zone>
+        <span class="caption-lead">learn</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">LESSONS</span>
+      </div>
+      <div class="caption-item" id="c_64" data-start="44.880" data-duration="1.040" data-layout-allow-safe-zone>
+        <span class="caption-lead">and</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">THERE</span>
+      </div>
+      <div class="caption-item" id="c_65" data-start="45.920" data-duration="0.280" data-layout-allow-safe-zone>
+        <span class="caption-lead">are</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">MANY</span>
+      </div>
+      <div class="caption-item" id="c_66" data-start="46.200" data-duration="1.080" data-layout-allow-safe-zone>
+        <span class="caption-lead">other</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">FEATURES</span>
+      </div>
+      <div class="caption-item" id="c_67" data-start="47.120" data-duration="0.240" data-layout-allow-safe-zone>
+        <span class="caption-lead">So</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">JUST</span>
+      </div>
+      <div class="caption-item" id="c_68" data-start="47.360" data-duration="0.840" data-layout-allow-safe-zone>
+        <span class="caption-lead">go</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">EXPLORE</span>
+      </div>
+      <div class="caption-item" id="c_69" data-start="48.200" data-duration="0.660" data-layout-allow-safe-zone>
+        <span class="caption-lead">and</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">LIKE</span>
+      </div>
+      <div class="caption-item" id="c_70" data-start="48.860" data-duration="0.440" data-layout-allow-safe-zone>
+        <span class="caption-lead">and</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">COMMENT</span>
+      </div>
+      <div class="caption-item" id="c_71" data-start="49.300" data-duration="0.760" data-layout-allow-safe-zone>
+        <span class="caption-lead">for</span>
+        <span class="caption-keyword" style="--hl-color: #FFE600;">MORE</span>
       </div>
     </div>
+
     <script>
-      const tl = gsap.timeline({ paused: true });
-tl.set("#sub-26", { y: 12, x: 0, data: "hf-hold" }, 0);
-
-      tl.fromTo("#sub-0", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        0.0
-      );
-      tl.to("#sub-0", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        0.78
-      );
-      tl.fromTo("#sub-1", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        1.22
-      );
-      tl.to("#sub-1", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        2.82
-      );
-      tl.fromTo("#sub-2", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        2.82
-      );
-      tl.to("#sub-2", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        4.02
-      );
-      tl.fromTo("#sub-3", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        4.02
-      );
-      tl.to("#sub-3", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        4.86
-      );
-      tl.fromTo("#sub-4", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        4.86
-      );
-      tl.to("#sub-4", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        6.24
-      );
-      tl.fromTo("#sub-5", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        6.24
-      );
-      tl.to("#sub-5", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        7.72
-      );
-      tl.fromTo("#sub-6", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        7.72
-      );
-      tl.to("#sub-6", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        9.48
-      );
-      tl.fromTo("#sub-7", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        9.48
-      );
-      tl.to("#sub-7", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        10.18
-      );
-      tl.fromTo("#sub-8", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        10.18
-      );
-      tl.to("#sub-8", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        11.36
-      );
-      tl.fromTo("#sub-9", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        11.36
-      );
-      tl.to("#sub-9", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        12.58
-      );
-      tl.fromTo("#sub-10", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        12.58
-      );
-      tl.to("#sub-10", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        13.22
-      );
-      tl.fromTo("#sub-11", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        13.22
-      );
-      tl.to("#sub-11", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        15.0
-      );
-      tl.fromTo("#sub-12", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        15.0
-      );
-      tl.to("#sub-12", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        15.82
-      );
-      tl.fromTo("#sub-13", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        15.82
-      );
-      tl.to("#sub-13", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        16.84
-      );
-      tl.fromTo("#sub-14", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        16.84
-      );
-      tl.to("#sub-14", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        19.46
-      );
-      tl.fromTo("#sub-15", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        19.46
-      );
-      tl.to("#sub-15", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        21.54
-      );
-      tl.fromTo("#sub-16", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        21.54
-      );
-      tl.to("#sub-16", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        22.5
-      );
-      tl.fromTo("#sub-17", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        22.5
-      );
-      tl.to("#sub-17", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        23.2
-      );
-      tl.fromTo("#sub-18", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        23.2
-      );
-      tl.to("#sub-18", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        24.18
-      );
-      tl.fromTo("#sub-19", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        24.18
-      );
-      tl.to("#sub-19", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        25.22
-      );
-      tl.fromTo("#sub-20", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        25.22
-      );
-      tl.to("#sub-20", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        25.82
-      );
-      tl.fromTo("#sub-21", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        25.82
-      );
-      tl.to("#sub-21", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        26.32
-      );
-      tl.fromTo("#sub-22", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        26.32
-      );
-      tl.to("#sub-22", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        27.08
-      );
-      tl.fromTo("#sub-23", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        27.08
-      );
-      tl.to("#sub-23", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        27.78
-      );
-      tl.fromTo("#sub-24", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        27.78
-      );
-      tl.to("#sub-24", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        28.06
-      );
-      tl.fromTo("#sub-25", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        28.06
-      );
-      tl.to("#sub-25", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        28.6
-      );
-      tl.to("#sub-26", 
-        { keyframes: { "0%": { opacity: 0, scale: 0.85, y: 12, x: 0 }, "35.387%": { x: 0, y: 298.082 }, "100%": { opacity: 1, scale: 1, y: 0, x: 0 }, easeEach: "power2.out" }, duration: 0.12 }, 
-        28.6
-      );
-      tl.to("#sub-26", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        30.32
-      );
-      tl.fromTo("#sub-27", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        30.32
-      );
-      tl.to("#sub-27", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        34.56
-      );
-      tl.fromTo("#sub-28", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        34.56
-      );
-      tl.to("#sub-28", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        36.02
-      );
-      tl.fromTo("#sub-29", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        36.02
-      );
-      tl.to("#sub-29", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        36.48
-      );
-      tl.fromTo("#sub-30", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        36.48
-      );
-      tl.to("#sub-30", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        37.1
-      );
-      tl.fromTo("#sub-31", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        37.64
-      );
-      tl.to("#sub-31", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        38.38
-      );
-      tl.fromTo("#sub-32", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        38.38
-      );
-      tl.to("#sub-32", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        39.02
-      );
-      tl.fromTo("#sub-33", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        39.02
-      );
-      tl.to("#sub-33", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        39.82
-      );
-      tl.fromTo("#sub-34", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        39.82
-      );
-      tl.to("#sub-34", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        40.72
-      );
-      tl.fromTo("#sub-35", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        40.72
-      );
-      tl.to("#sub-35", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        41.2
-      );
-      tl.fromTo("#sub-36", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        41.2
-      );
-      tl.to("#sub-36", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        42.14
-      );
-      tl.fromTo("#sub-37", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        42.14
-      );
-      tl.to("#sub-37", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        42.44
-      );
-      tl.fromTo("#sub-38", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        42.44
-      );
-      tl.to("#sub-38", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        43.18
-      );
-      tl.fromTo("#sub-39", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        43.18
-      );
-      tl.to("#sub-39", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        43.78
-      );
-      tl.fromTo("#sub-40", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        43.78
-      );
-      tl.to("#sub-40", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        44.28
-      );
-      tl.fromTo("#sub-41", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        44.66
-      );
-      tl.to("#sub-41", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        45.86
-      );
-      tl.fromTo("#sub-42", 
-        { opacity: 0, scale: 0.85, y: 12 }, 
-        { opacity: 1, scale: 1.0, y: 0, duration: 0.12, ease: "power2.out" }, 
-        45.86
-      );
-      tl.to("#sub-42", 
-        { opacity: 0, scale: 0.95, duration: 0.08 }, 
-        46.6
-      );
-
-      window.__timelines = window.__timelines || {};
-      window.__timelines["captions"] = tl;
-      tl.seek(0);
+      // HyperFrames frame driver triggers or GSAP timeline
+      document.querySelectorAll('.caption-item').forEach((el) => {
+        const start = parseFloat(el.getAttribute('data-start') || '0');
+        const dur = parseFloat(el.getAttribute('data-duration') || '1');
+        
+        gsap.timeline({
+          scrollTrigger: null
+        })
+        .fromTo(el, 
+          { opacity: 0, scale: 1.15, y: 15 }, 
+          { opacity: 1, scale: 1.0, y: 0, duration: 0.15, ease: "power2.out", delay: start }
+        )
+        .to(el, 
+          { opacity: 0, scale: 0.96, duration: 0.1, ease: "power2.in", delay: Math.max(0, dur - 0.25) }
+        );
+      });
     </script>
   </body>
 </html>

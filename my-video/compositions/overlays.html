@@ -1,248 +1,163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <title>Overlays</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@700;800;900&display=swap');
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1080, height=1920" />
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: transparent;
+      }
 
-    html,
-    body {
-      width: 1080px;
-      height: 1920px;
-      overflow: hidden;
-      background: transparent;
-      font-family: 'Inter', -apple-system, sans-serif;
-    }
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        pointer-events: none;
+      }
 
-    /* ── Hook card ── */
-    #hook-card {
-      position: absolute;
-      top: 120px;
-      left: 140px;
-      width: 800px;
-      text-align: center;
-      background: rgba(255, 230, 0, 0.9);
-      border-radius: 20px;
-      padding: 22px 20px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      color: #0D0E13;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
-      opacity: 0;
-    }
+      .overlay-element {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(255, 230, 0, 0.25);
+        opacity: 0;
+        z-index: 50;
+      }
 
-    .top-hook {
-      position: absolute;
-      top: 240px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 860px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
+      /* Hook Card at top */
+      #hook-card {
+        top: 240px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 860px;
+        height: 88px;
+        background: #FFE600;
+        color: #0D0E13;
+        gap: 16px;
+        border: 3px solid #FFFFFF;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 230, 0, 0.5);
+      }
 
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 24px;
-      border-radius: 9999px;
-      background: rgba(255, 230, 0, 0.15);
-      border: 1px solid #FFE600;
-      color: #FFE600;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      backdrop-filter: blur(10px);
-    }
+      .hook-emoji {
+        font-size: 42px;
+      }
 
-    .social-comment-card {
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: 22px;
-      padding: 16px 26px;
-      color: #111;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-      max-width: 840px;
-    }
+      .hook-text {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 50px;
+        letter-spacing: 0.04em;
+        line-height: 1;
+      }
 
-    .social-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #FF007A, #7928CA);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 900;
-      font-size: 26px;
-    }
+      /* CTA Banner at bottom */
+      #cta-banner {
+        bottom: 240px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 860px;
+        height: 96px;
+        background: linear-gradient(90deg, #FFE600, #FFB800);
+        color: #0D0E13;
+        gap: 20px;
+        border: 3px solid #FFFFFF;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 230, 0, 0.6);
+      }
 
-    .social-text {
-      font-size: 26px;
-      font-weight: 800;
-      line-height: 1.25;
-    }
+      .cta-arrow {
+        font-size: 46px;
+        animation: bounce 1s infinite alternate;
+      }
 
-    .social-meta {
-      font-size: 24px;
-      color: #666;
-      font-weight: 600;
-    }
+      .cta-text {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 56px;
+        letter-spacing: 0.05em;
+        line-height: 1;
+      }
 
-    .floating-badge {
-      position: absolute;
-      border-radius: 20px;
-      padding: 14px 26px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-      opacity: 0;
-    }
+      .logo-popup-content {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 28px;
+        color: #FFFFFF;
+      }
 
-    .badge-insta {
-      top: 390px;
-      right: 70px;
-      background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF);
-      color: white;
-      font-size: 28px;
-      transform: rotate(4deg);
-    }
+      .badge-icon {
+        font-size: 38px;
+      }
 
-    .badge-shy {
-      top: 980px;
-      left: 80px;
-      background: #FFFFFF;
-      color: #111;
-      font-size: 28px;
-      transform: rotate(-5deg);
-    }
+      .badge-label {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 44px;
+        letter-spacing: 0.03em;
+        line-height: 1;
+      }
 
-    .badge-unlocked {
-      top: 390px;
-      left: 80px;
-      background: #FFE600;
-      color: #000;
-      font-size: 28px;
-      transform: rotate(-3deg);
-    }
+      .emoji-big {
+        font-size: 110px;
+        filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.7));
+      }
 
-    < !-- Support CTA banner: 44.50s–46.60s --><div data-hf-id="hf-cta" id="support-cta" class="clip" data-start="44.50" data-duration="2.10" data-layout-allow-safe-zone="true">👇 FOLLOW FOR MORE </div></div><div id="badge-insta" class="floating-badge badge-insta clip" data-start="3.8" data-duration="4.5"
-    data-layout-allow-safe-zone="true"><span>📸 Instagram Post</span></div><div id="badge-shy" class="floating-badge badge-shy clip" data-start="26.0" data-duration="6.0"
-    data-layout-allow-safe-zone="true"><span>🫣 Introvert Era</span></div><div id="badge-unlocked" class="floating-badge badge-unlocked clip" data-start="38.0" data-duration="5.5"
+      @keyframes bounce {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(8px); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Top Hook Badge -->
+      <div id="hook-card" class="overlay-element" data-start="0.100" data-duration="2.900" data-layout-allow-safe-zone>
+        <span class="hook-emoji">🎉</span>
+        <span class="hook-text">FIRST TIME FINALLY POSTING</span>
+      </div>
+      <div id="overlay_gfx_0_gemini" class="overlay-element anim-spring_in" 
+           style="top: 140px; left: 540px; width: 500px; min-height: 180px; background: rgba(20, 24, 38, 0.92); border: 2px solid rgba(255, 230, 0, 0.4);" 
+           data-start="0.800" data-duration="2.400" data-layout-allow-safe-zone>
+        <div class="logo-popup-content"><span class="badge-icon">✨</span><span class="badge-label">TITLE: ⚡ GEMINI NOTEBOOKLM • AI TOOLS 🤖</span></div>
+      </div>
+      <!-- Bottom CTA Banner -->
+      <div id="cta-banner" class="overlay-element" data-start="47.850" data-duration="2.950" data-layout-allow-safe-zone>
+        <span class="cta-arrow">👇</span>
+        <span class="cta-text">FOLLOW FOR MORE</span>
+        <span class="cta-arrow">👇</span>
+      </div>
+    </div>
 
-    data-layout-allow-safe-zone="true"><span>✦ Shell Broken</span></div><div id="outro-cta" class="outro-cta clip" data-start="43.5" data-duration="3.1" data-layout-allow-safe-zone="true"><div class="cta-pill">Follow & Support ✦</div><div class="cta-sub">Tap follow to watch the creator journey</div></div></div><script>const tl=gsap.timeline({
-      paused: true
-    });
+    <audio id="sfx_0_whoosh" src="../assets/whoosh.wav" preload="auto" data-start="0.800" data-duration="0.250"></audio>
 
-    tl.fromTo("#top-hook",
-      {
-      opacity: 0, y: -40
-    }
-
-    ,
-    {
-    opacity: 1, y: 0, duration: 0.6, ease: "power3.out"
-    }
-
-    ,
-    0.1);
-
-    tl.fromTo("#badge-insta",
-      {
-      opacity: 0, scale: 0.6, rotate: -10
-    }
-
-    ,
-    {
-    opacity: 1, scale: 1, rotate: 4, duration: 0.35, ease: "back.out(2)"
-    }
-
-    ,
-    3.8);
-
-    tl.to("#badge-insta", {
-      opacity: 0, scale: 0.8, duration: 0.3
-    }
-
-    , 8.0);
-
-    // ── Support CTA: slide up from bottom
-    tl.fromTo("#support-cta",
-      {
-      opacity: 0, y: 120
-    }
-
-    ,
-    {
-    opacity: 1, y: 0, duration: 0.4, ease: "power3.out"
-    }
-
-    ,
-    44.50);
-
-    tl.to("#support-cta",
-      {
-      opacity: 0, y: 60, duration: 0.1, ease: "power2.in"
-    }
-
-    ,
-    46.55);
-
-    tl.fromTo("#badge-unlocked",
-      {
-      opacity: 0, scale: 0.6, rotate: -12
-    }
-
-    ,
-    {
-    opacity: 1, scale: 1, rotate: -3, duration: 0.35, ease: "back.out(2)"
-    }
-
-    ,
-    38.0);
-
-    tl.to("#badge-unlocked", {
-      opacity: 0, scale: 0.8, duration: 0.3
-    }
-
-    , 43.5);
-
-    tl.fromTo("#outro-cta",
-      {
-      opacity: 0, scale: 0.8, y: 30
-    }
-
-    ,
-    {
-    opacity: 1, scale: 1.0, y: 0, duration: 0.5, ease: "back.out(1.8)"
-    }
-
-    ,
-    43.5);
-
-    window.__timelines=window.__timelines || {}
-
-    ;
-    window.__timelines["overlays"]=tl;
-    tl.seek(0);
-    </script></body></html>
+    <script>
+      // GSAP In/Out animations for overlays
+      document.querySelectorAll('.overlay-element').forEach((el) => {
+        const start = parseFloat(el.getAttribute('data-start') || '0');
+        const dur = parseFloat(el.getAttribute('data-duration') || '1');
+        
+        // Elastic spring-in
+        gsap.timeline()
+          .fromTo(el,
+            { opacity: 0, scale: 0.4, y: 30 },
+            { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "back.out(1.8)", delay: start }
+          )
+          .to(el,
+            { opacity: 0, scale: 0.8, y: -20, duration: 0.2, ease: "power2.in", delay: Math.max(0, dur - 0.55) }
+          );
+      });
+    </script>
+  </body>
+</html>

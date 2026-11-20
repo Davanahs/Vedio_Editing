@@ -23,6 +23,7 @@ from engine.director.edl_schema import EditDecisionList
 from engine.assets.registry import AssetRegistry
 from engine.composer.composition_builder import build_composition
 from engine.render.renderer import render_project
+from engine.render.ffmpeg_reel_builder import render_reel_ffmpeg
 from engine.render.benchmark import Benchmark
 
 def group_words_into_bursts(words: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -226,6 +227,19 @@ async def run_pipeline(
         output_path=output_path,
         preview=preview
     )
+    if not render_res.get("success"):
+        print("[AI Pipeline] HyperFrames CLI render bypassed/unavailable, executing master FFmpeg Reel Builder...")
+        is_landscape = (probe_info.get("width", 1080) > probe_info.get("height", 1920))
+        edl_payload = edl.model_dump()
+        edl_payload["template_id"] = template_id
+        edl_payload["video_metadata"] = {"width": probe_info.get("width", 1080), "height": probe_info.get("height", 1920)}
+        render_res = render_reel_ffmpeg(
+            input_video=str(raw_video),
+            output_video=output_path,
+            edl=edl_payload,
+            aspect_ratio="16:9" if is_landscape else "9:16",
+            sfx_dir=str(root_dir / "assets" / "sfx")
+        )
     bench.end("rendering")
 
     bench_data = bench.finish()

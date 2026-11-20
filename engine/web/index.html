@@ -1278,23 +1278,23 @@
       border-color: var(--brand-primary);
     }
 
-    /* Style Explorer (8+ Visual Styles) */
+    /* Style Explorer (Visual Gallery) */
     .style-cards-scroller {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
     }
 
     .aesthetic-style-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.22s ease;
       position: relative;
     }
 
@@ -1306,31 +1306,48 @@
 
     .aesthetic-style-card.selected {
       border-color: var(--brand-primary);
-      background: rgba(168, 85, 247, 0.1);
-      box-shadow: 0 0 16px var(--brand-glow);
+      background: rgba(168, 85, 247, 0.12);
+      box-shadow: 0 0 18px var(--brand-glow), inset 0 0 0 1px var(--brand-primary);
     }
 
-    .style-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .style-card-image-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      margin-bottom: 4px;
+      background: #0d1117;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      height: 90px;
     }
 
-    .style-card-icon {
-      font-size: 20px;
+    .template-card-preview-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .aesthetic-style-card:hover .template-card-preview-thumb {
+      transform: scale(1.05);
     }
 
     .style-card-check {
-      width: 16px;
-      height: 16px;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--brand-primary);
       color: white;
-      font-size: 10px;
+      font-size: 11px;
       display: none;
       align-items: center;
       justify-content: center;
       font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      z-index: 2;
     }
 
     .aesthetic-style-card.selected .style-card-check {
@@ -1341,12 +1358,31 @@
       font-size: 11px;
       font-weight: 700;
       color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .style-card-desc {
       font-size: 9px;
       color: var(--text-muted);
       line-height: 1.3;
+    }
+
+    .template-tag-pills {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .template-tag-pills span {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
     /* Creative Elements Capability Preview Panel */
@@ -1929,82 +1965,24 @@
           <span>🔊 Click to Enable Sound</span>
         </div>
 
-        <!-- OVERLAY A: Pinterest Scrapbook Polaroid Frames (Ref 1) -->
-        <div class="polaroid-card polaroid-top-left" id="polaroidCard1">
-          <div class="polaroid-tape"></div>
-          <img class="polaroid-img" id="polaroidImg1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%236366F1'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2FF'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%234F46E5'%3EAesthetic%3C/text%3E%3C/svg%3E" alt="Polaroid">
+        <!-- Dynamic Top Hook Banner -->
+        <div class="top-hook-banner" id="topHookBanner" style="display:none;">
+          <span id="topHookText">⚡ AI CREATIVE STUDIO ✦</span>
         </div>
 
-        <div class="polaroid-card polaroid-bottom-right" id="polaroidCard2">
-          <div class="polaroid-tape"></div>
-          <img class="polaroid-img" id="polaroidImg2" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23EC4899'%3E%3Crect width='100%25' height='100%25' fill='%23FDF2F8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%23DB2777'%3EVibes%3C/text%3E%3C/svg%3E" alt="Polaroid">
-        </div>
-
-        <!-- OVERLAY B: Retro Digital Camera Overlay (Ref 1) -->
-        <div class="retro-camera-overlay" id="cameraOverlay">
-          <div class="camera-screen">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='70' fill='%2310B981'%3E%3Crect width='100%25' height='100%25' fill='%23ECFDF5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='10' fill='%23059669'%3EREC [00:46]%3C/text%3E%3C/svg%3E" alt="Digicam">
-          </div>
-          <div class="camera-lens-dot">
-            <span>● 4K 30FPS</span>
-            <span>BAT 98%</span>
-          </div>
-        </div>
-
-        <!-- OVERLAY C: Floating Music Player Card (Ref 2) -->
-        <div class="floating-music-card" id="floatingMusicCard">
-          <div class="music-card-header">
-            <div class="music-card-album">🎵</div>
-            <div class="music-card-info">
-              <div class="music-track-name" id="musicCardTitle">Dangerous (Aura AI Edit)</div>
-              <div class="music-artist-name">Kardinal Offishall, Akon</div>
-            </div>
-            <div style="font-size:14px; color:#A855F7;">⏸</div>
-          </div>
-          <div class="music-progress-bar">
-            <div class="music-progress-fill" id="musicCardProgress"></div>
-          </div>
-          <div class="music-controls-row">
-            <span>0:14</span>
-            <span>iPhone ▾</span>
-            <span>3:43</span>
-          </div>
-        </div>
-
-        <!-- OVERLAY D: Orbiting Glassmorphism Mini Cards (Ref 3) -->
-        <div class="orbit-glass-card orbit-card-1" id="orbitCard1">
-          <div style="font-size:9px; color:#22D3EE; font-weight:800;">SPOTIFY NOW PLAYING</div>
-          <div style="font-size:11px; font-weight:700; margin-top:2px;">Phantom Esdeekid</div>
-        </div>
-
-        <div class="orbit-glass-card orbit-card-2" id="orbitCard2">
-          <div style="font-size:9px; color:#EC4899; font-weight:800;">AESTHETIC VIBES</div>
-          <div style="font-size:11px; font-weight:700; margin-top:2px;">LV Sandals • 4 Raws</div>
-        </div>
-
-        <!-- OVERLAY E: Scrapbook Stickers (Stars, Flowers, Love) -->
-        <div class="scrapbook-sticker sticker-star" id="stickerStar">⭐</div>
-        <div class="scrapbook-sticker sticker-flower" id="stickerFlower">🌸</div>
-        <div class="scrapbook-sticker sticker-love" id="stickerLove">Love</div>
-
-        <!-- OVERLAY F: Top Hook Pill -->
-        <div class="top-hook-banner" id="topHookBanner">
-          <span>⚡ GTA 6 CLIPS • EARN MONEY 💰</span>
-        </div>
-
-        <!-- OVERLAY G: Social Question Popup -->
-        <div class="social-question-card" id="socialQuestionCard">
+        <!-- Contextual Social Question Card (Only when generated for content) -->
+        <div class="social-question-card" id="socialQuestionCard" style="display:none;">
           <div class="question-avatar">💬</div>
           <div class="question-body" id="socialQuestionBody">
-            <span style="color:#64748B; font-size:10px; display:block;">@alex_clips</span>
-            Have you explored this AI tool yet?
+            <span id="socialQuestionUser" style="color:#A855F7; font-size:10px; font-weight:700; display:block;">Community Question</span>
+            <span id="socialQuestionText">Have you explored this AI tool yet?</span>
           </div>
         </div>
 
-        <!-- OVERLAY H: Dynamic Spoken Badges from Content -->
-        <div class="spoken-badge badge-pos-gaming" id="dynamicBadge" style="display:none;">✨ AI TOOL</div>
+        <!-- Dynamic Context-Aware Overlays Container (Populated strictly by EDL & Collision Engine) -->
+        <div class="dynamic-overlays-container" id="dynamicOverlaysContainer"></div>
 
-        <!-- OVERLAY I: Dynamic Two-Tone Captions -->
+        <!-- Dynamic Two-Tone Kinetic Captions -->
         <div class="dynamic-captions-box" id="dynamicCaptionsBox">
           <div class="caption-lead-word" id="captionLeadWord"></div>
           <div class="caption-keyword-punch" id="captionKeywordPunch"></div>
@@ -2092,82 +2070,113 @@
                   placeholder="e.g. Keep original audio intact. Do not cover the person's face. Keep elements minimal and avoid clutter..."></textarea>
       </div>
 
-      <!-- Section: Creative Templates (7 Design Systems) -->
+      <!-- Section: Creative Templates (7 Visual Design Systems) -->
       <div>
-        <div class="section-header">
-          <span class="section-title">Creative Templates</span>
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="section-title">Creative Template Gallery</span>
+          <span class="section-badge" id="selectedTemplateBadge">Pinterest Scrapbook</span>
         </div>
 
         <div class="style-cards-scroller">
           <!-- 1. Pinterest Scrapbook -->
-          <div class="aesthetic-style-card selected" onclick="chooseCreativeStyle('pinterest_scrapbook', this)" data-prompt="Aesthetic scrapbook composition with Polaroid photo frames, hand-drawn white outlines, floating stars, and layered shadows.">
-            <div class="style-card-top">
-              <span class="style-card-icon">📸</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card selected" id="card_pinterest_scrapbook" onclick="chooseCreativeStyle('pinterest_scrapbook', this)" data-prompt="Aesthetic scrapbook composition with Polaroid photo frames, hand-drawn white outlines, floating stars, and layered shadows.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/pinterest_scrapbook.jpg" class="template-card-preview-thumb" alt="Pinterest Scrapbook" onerror="this.src='/template_previews/aesthetic_lifestyle.jpg'">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Pinterest Scrapbook</div>
-            <div class="style-card-desc">Polaroid frames, doodle stars & paper cuts</div>
+            <div class="style-card-name">📸 Pinterest Scrapbook</div>
+            <div class="style-card-desc">Polaroid frames, white doodle outlines & paper textures</div>
+            <div class="template-tag-pills">
+              <span>Polaroids</span><span>Doodles</span><span>Craft</span>
+            </div>
           </div>
 
           <!-- 2. Aesthetic Lifestyle -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('aesthetic_lifestyle', this)" data-prompt="Aesthetic lifestyle with clean pastel decorations, floating photographs, and minimal stickers.">
-            <div class="style-card-top">
-              <span class="style-card-icon">🌸</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_aesthetic_lifestyle" onclick="chooseCreativeStyle('aesthetic_lifestyle', this)" data-prompt="Aesthetic lifestyle with clean pastel decorations, floating photographs, and minimal stickers.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/aesthetic_lifestyle.jpg" class="template-card-preview-thumb" alt="Aesthetic Lifestyle">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Aesthetic Lifestyle</div>
-            <div class="style-card-desc">Clean pastels, floating photos, serene pacing</div>
+            <div class="style-card-name">🌸 Aesthetic Lifestyle</div>
+            <div class="style-card-desc">Clean pastels, soft floating photos & calm serene rhythm</div>
+            <div class="template-tag-pills">
+              <span>Pastels</span><span>Soft Shadows</span><span>Minimal</span>
+            </div>
           </div>
 
           <!-- 3. Floating Music Player -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('floating_music_player', this)" data-prompt="Music-player-inspired composition with floating Apple/Spotify style cards, realistic ground shadows, and playback graphics.">
-            <div class="style-card-top">
-              <span class="style-card-icon">🎵</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_floating_music_player" onclick="chooseCreativeStyle('floating_music_player', this)" data-prompt="Music-player-inspired composition with floating Apple/Spotify style cards, realistic ground shadows, and playback graphics.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/floating_music_player.jpg" class="template-card-preview-thumb" alt="Floating Music Player">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Floating Music Player</div>
-            <div class="style-card-desc">Perspective player cards & album art</div>
+            <div class="style-card-name">🎵 Floating Music Player</div>
+            <div class="style-card-desc">Perspective player cards, album artwork & audio waveforms</div>
+            <div class="template-tag-pills">
+              <span>Player Cards</span><span>Waveforms</span><span>Perspective</span>
+            </div>
           </div>
 
           <!-- 4. Glassmorphism -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('glassmorphism', this)" data-prompt="Translucent floating glass cards orbiting speaker, frosted-glass panels with pink and cyan glow trails.">
-            <div class="style-card-top">
-              <span class="style-card-icon">🔮</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_glassmorphism" onclick="chooseCreativeStyle('glassmorphism', this)" data-prompt="Translucent floating glass cards orbiting speaker, frosted-glass panels with pink and cyan glow trails.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/glassmorphism.jpg" class="template-card-preview-thumb" alt="Glassmorphism">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Glassmorphism</div>
-            <div class="style-card-desc">Frosted glass & cyan glowing borders</div>
+            <div class="style-card-name">🔮 Glassmorphism</div>
+            <div class="style-card-desc">Frosted translucent glass with cyan & pink neon halos</div>
+            <div class="template-tag-pills">
+              <span>Frosted Blur</span><span>Cyan Rim</span><span>Floating HUD</span>
+            </div>
           </div>
 
           <!-- 5. Retro Camera -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('retro_camera', this)" data-prompt="Vintage camcorder viewfinder HUD with REC indicator, digital timestamp, and nostalgic flash.">
-            <div class="style-card-top">
-              <span class="style-card-icon">📷</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_retro_camera" onclick="chooseCreativeStyle('retro_camera', this)" data-prompt="Vintage camcorder viewfinder HUD with REC indicator, digital timestamp, and nostalgic flash.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/retro_camera.jpg" class="template-card-preview-thumb" alt="Retro Camera">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Retro Camera</div>
-            <div class="style-card-desc">Viewfinder brackets & REC timestamp</div>
+            <div class="style-card-name">📹 Retro Camera</div>
+            <div class="style-card-desc">Viewfinder brackets, REC indicator & digital timestamp</div>
+            <div class="template-tag-pills">
+              <span>Viewfinder</span><span>REC Blink</span><span>Monospace</span>
+            </div>
           </div>
 
           <!-- 6. Creative Minimal -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('creative_minimal', this)" data-prompt="Minimalist edit with extreme restraint: 2-3 maximum high-impact highlights, clean negative space.">
-            <div class="style-card-top">
-              <span class="style-card-icon">✨</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_creative_minimal" onclick="chooseCreativeStyle('creative_minimal', this)" data-prompt="Minimalist edit with extreme restraint: 2-3 maximum high-impact highlights, clean negative space.">
+            <div class="style-card-image-wrap">
+              <img src="/template_previews/creative_minimal.jpg" class="template-card-preview-thumb" alt="Creative Minimal">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Creative Minimal</div>
-            <div class="style-card-desc">Zero clutter, clean visual hierarchy</div>
+            <div class="style-card-name">✨ Creative Minimal</div>
+            <div class="style-card-desc">Zero clutter, pure white typography & maximum visual restraint</div>
+            <div class="template-tag-pills">
+              <span>Minimal</span><span>Clean Typography</span><span>Focus</span>
+            </div>
           </div>
 
           <!-- 7. Auto Creative (AI Decides) -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('auto_creative', this)" data-prompt="" style="grid-column: span 2;">
-            <div class="style-card-top">
-              <span class="style-card-icon">🤖</span>
-              <span class="style-card-check">✓</span>
+          <div class="aesthetic-style-card" id="card_auto_creative" onclick="chooseCreativeStyle('auto_creative', this)" data-prompt="" style="grid-column: span 2;">
+            <div class="style-card-image-wrap" style="height:70px;">
+              <img src="/template_previews/auto_creative.jpg" class="template-card-preview-thumb" alt="Auto Creative">
+              <div class="style-card-check">✓</div>
             </div>
-            <div class="style-card-name">Auto Creative (AI Decides)</div>
-            <div class="style-card-desc">AI multimodal analysis independently selects the best creative direction</div>
+            <div class="style-card-name">🤖 Auto Creative (Multimodal AI)</div>
+            <div class="style-card-desc">AI simultaneously analyzes audio topics and visual keyframes to independently select the best template</div>
+            <div class="template-tag-pills">
+              <span>Multimodal Vision</span><span>Context Grounded</span><span>Safe Zones</span>
+            </div>
           </div>
+        </div>
+
+        <!-- Style Inspector Drawer -->
+        <div id="templateInspectorBox" class="template-inspector-box" style="margin-top:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px; display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:800; color:var(--brand-primary);" id="inspectorTitle">Template Inspection</span>
+            <span style="font-size:10px; color:var(--text-muted); cursor:pointer;" onclick="closeTemplateInspector()">✕ Close</span>
+          </div>
+          <div id="inspectorContent" style="font-size:10px; color:var(--text-secondary); line-height:1.4;"></div>
         </div>
       </div>
 
@@ -2357,20 +2366,10 @@
     const chkShowOverlays = document.getElementById('chkShowOverlays');
 
     // Overlays DOM
-    const polaroidCard1 = document.getElementById('polaroidCard1');
-    const polaroidCard2 = document.getElementById('polaroidCard2');
-    const cameraOverlay = document.getElementById('cameraOverlay');
-    const floatingMusicCard = document.getElementById('floatingMusicCard');
-    const musicCardProgress = document.getElementById('musicCardProgress');
-    const orbitCard1 = document.getElementById('orbitCard1');
-    const orbitCard2 = document.getElementById('orbitCard2');
-    const stickerStar = document.getElementById('stickerStar');
-    const stickerFlower = document.getElementById('stickerFlower');
-    const stickerLove = document.getElementById('stickerLove');
     const topHookBanner = document.getElementById('topHookBanner');
     const socialQuestionCard = document.getElementById('socialQuestionCard');
     const socialQuestionBody = document.getElementById('socialQuestionBody');
-    const dynamicBadge = document.getElementById('dynamicBadge');
+    const dynamicOverlaysContainer = document.getElementById('dynamicOverlaysContainer');
     const captionLeadWord = document.getElementById('captionLeadWord');
     const captionKeywordPunch = document.getElementById('captionKeywordPunch');
 
@@ -2525,13 +2524,12 @@
     }
 
     function toggleOverlaysVisibility(visible) {
-      const displayStyle = visible ? "" : "none";
       if (!visible) {
-        [polaroidCard1, polaroidCard2, cameraOverlay, floatingMusicCard, orbitCard1, orbitCard2,
-         stickerStar, stickerFlower, stickerLove, topHookBanner, socialQuestionCard,
-         dynamicBadge, captionLeadWord, captionKeywordPunch].forEach(el => {
-          if (el) el.style.display = "none";
-        });
+        if (dynamicOverlaysContainer) dynamicOverlaysContainer.innerHTML = '';
+        if (topHookBanner) topHookBanner.style.display = "none";
+        if (socialQuestionCard) socialQuestionCard.style.display = "none";
+        if (captionLeadWord) captionLeadWord.style.display = "none";
+        if (captionKeywordPunch) captionKeywordPunch.style.display = "none";
       }
     }
 
@@ -2670,17 +2668,71 @@
       }
     }
 
-    // ── CREATIVE STYLE EXPLORER SELECTION ──
+    // ── CREATIVE STYLE EXPLORER SELECTION & INSPECTION ──
     function chooseCreativeStyle(preset, cardEl) {
       activeStylePreset = preset;
       document.querySelectorAll('.aesthetic-style-card').forEach(c => c.classList.remove('selected'));
-      cardEl.classList.add('selected');
+      if (cardEl) cardEl.classList.add('selected');
 
-      const promptTemplate = cardEl.dataset.prompt;
-      if (promptTemplate) {
+      const badge = document.getElementById('selectedTemplateBadge');
+      if (badge && cardEl) {
+        badge.innerText = cardEl.querySelector('.style-card-name').innerText.trim();
+      }
+
+      const promptTemplate = cardEl?.dataset?.prompt;
+      if (promptTemplate && promptTemplate.length > 0) {
         directorPromptInput.value = promptTemplate;
       }
-      showToast(`Style: ${cardEl.querySelector('.style-card-name').innerText}`, "🎨");
+      showToast(`Active Template: ${preset.replace(/_/g, ' ').toUpperCase()}`, "🎨");
+      inspectTemplate(preset);
+    }
+
+    function inspectTemplate(preset) {
+      const box = document.getElementById('templateInspectorBox');
+      const titleEl = document.getElementById('inspectorTitle');
+      const contentEl = document.getElementById('inspectorContent');
+      if (!box || !titleEl || !contentEl) return;
+
+      const templateSpecs = {
+        pinterest_scrapbook: {
+          title: "📸 Pinterest Scrapbook Design Spec",
+          desc: "Layered Polaroid frames, hand-drawn white subject outlines, warm cream paper textures, soft drop shadows, and subtle floating stars. Safe-zone collision limits overlays to side gutters."
+        },
+        aesthetic_lifestyle: {
+          title: "🌸 Aesthetic Lifestyle Design Spec",
+          desc: "Pastel color palette (blush, lavender, mint), soft lighting, floating photography, serene pacing, and zero screen clutter."
+        },
+        floating_music_player: {
+          title: "🎵 Floating Music Player Design Spec",
+          desc: "Floating acrylic player cards with real-time audio progress, perspective-angled album cards, and synchronized sound wave transients."
+        },
+        glassmorphism: {
+          title: "🔮 Glassmorphism Design Spec",
+          desc: "Translucent frosted glass cards (backdrop-filter: blur(14px)), glowing cyan/magenta border accents, and high-tech typography."
+        },
+        retro_camera: {
+          title: "📹 Retro Camera Design Spec",
+          desc: "Vintage camcorder HUD, viewfinder frame brackets, blinking red REC indicator, and digital monospace data timestamps."
+        },
+        creative_minimal: {
+          title: "✨ Creative Minimal Design Spec",
+          desc: "Ultra-clean Scandinavian layout, pure white sans typography, maximum negative space, and strict 2-badge maximum."
+        },
+        auto_creative: {
+          title: "🤖 Auto Creative Multimodal Engine",
+          desc: "Multimodal AI evaluates speech transcript, visual keyframe luminance, and face positions to autonomously select and style the ideal template."
+        }
+      };
+
+      const spec = templateSpecs[preset] || templateSpecs.auto_creative;
+      titleEl.innerText = spec.title;
+      contentEl.innerHTML = `<div>${spec.desc}</div>`;
+      box.style.display = "block";
+    }
+
+    function closeTemplateInspector() {
+      const box = document.getElementById('templateInspectorBox');
+      if (box) box.style.display = "none";
     }
 
     function applyQuickPrompt(p) {
@@ -2797,6 +2849,115 @@
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+    // ── DYNAMIC CONTEXT-AWARE OVERLAYS ENGINE (ZERO MOCK CONTENT) ──
+    function renderDynamicOverlays(t) {
+      const container = document.getElementById('dynamicOverlaysContainer');
+      if (!container) return;
+
+      // 1. Top Hook Banner (0.0s - 4.5s)
+      if (topHookBanner) {
+        topHookBanner.style.display = (t <= 4.5 && edlData && edlData.hook_title) ? "block" : "none";
+      }
+
+      // 2. Social Question Card (3.5s - 8.2s) - Only if genuine contextual question exists
+      if (socialQuestionCard) {
+        const sq = edlData?.social_question;
+        const isValid = sq && !sq.includes("@alex_clips");
+        socialQuestionCard.style.display = (isValid && t >= 3.5 && t <= 8.2) ? "flex" : "none";
+      }
+
+      // 3. Dynamic Visual Elements from edlData.graphics
+      if (!edlData || !edlData.graphics || edlData.graphics.length === 0) {
+        container.innerHTML = "";
+        return;
+      }
+
+      const activeGraphics = edlData.graphics.filter(g => g.type !== "kinetic_title" && t >= g.start && t <= g.end);
+      if (activeGraphics.length === 0) {
+        container.innerHTML = "";
+        return;
+      }
+
+      let html = "";
+      const currentTemplate = activeStylePreset || "pinterest_scrapbook";
+
+      activeGraphics.forEach(g => {
+        const title = (g.title || g.trigger_word || "").toUpperCase();
+        const subtitle = g.subtitle || "";
+        const asset = g.asset_id || "star";
+        
+        const vidW = activeWidth || 1080;
+        const vidH = activeHeight || 1920;
+        const xPct = Math.max(5, Math.min(75, ((g.x || 200) / vidW) * 100));
+        const yPct = Math.max(12, Math.min(65, ((g.y || 400) / vidH) * 100));
+
+        let icon = "✨";
+        if (asset === "gemini") icon = "✨";
+        else if (asset === "book") icon = "📚";
+        else if (asset === "presentation") icon = "📊";
+        else if (asset === "quiz") icon = "📝";
+        else if (asset === "audio_mic") icon = "🎙️";
+        else if (asset === "laptop") icon = "💻";
+        else if (asset === "comment") icon = "💬";
+        else if (asset === "heart") icon = "❤️";
+        else if (asset === "star") icon = "⭐";
+
+        if (currentTemplate === "pinterest_scrapbook") {
+          html += `
+            <div class="polaroid-card dynamic-render" style="display:block; left:${xPct}%; top:${yPct}%; transform:rotate(-4deg); width:130px;">
+              <div class="polaroid-tape"></div>
+              <div style="background:#1e293b; color:#fff; border-radius:2px; height:75px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6px;">
+                <div style="font-size:24px;">${icon}</div>
+                <div style="font-size:9px; font-weight:700; margin-top:4px;">${title}</div>
+              </div>
+              <div style="font-size:9px; font-weight:700; color:#182436; margin-top:6px; text-align:center; font-family:Georgia, serif;">
+                ✦ ${title} ✿
+              </div>
+            </div>
+          `;
+        } else if (currentTemplate === "glassmorphism") {
+          html += `
+            <div class="orbit-glass-card dynamic-render" style="display:block; left:${xPct}%; top:${yPct}%; max-width:220px;">
+              <div style="font-size:9px; color:#22D3EE; font-weight:800; display:flex; align-items:center; gap:4px;">
+                <span>${icon}</span> <span>NOTEBOOKLM INSIGHT</span>
+              </div>
+              <div style="font-size:12px; font-weight:800; margin-top:2px; color:#FFFFFF;">${title}</div>
+              ${subtitle ? `<div style="font-size:9px; color:#94A3B8; margin-top:2px;">${subtitle}</div>` : ''}
+            </div>
+          `;
+        } else if (currentTemplate === "retro_camera") {
+          html += `
+            <div class="retro-camera-overlay dynamic-render" style="display:block; left:${xPct}%; top:${yPct}%; width:140px;">
+              <div class="camera-screen" style="height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000;">
+                <span style="font-family:monospace; color:#10B981; font-size:11px;">[DATA_CAPTURE]</span>
+                <span style="font-family:monospace; color:#FFF; font-size:10px; margin-top:4px;">${icon} ${title}</span>
+              </div>
+              <div class="camera-lens-dot">
+                <span>● TARGET</span>
+                <span>REC ●</span>
+              </div>
+            </div>
+          `;
+        } else if (currentTemplate === "creative_minimal") {
+          html += `
+            <div class="dynamic-render" style="position:absolute; left:${xPct}%; top:${yPct}%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:6px 12px; color:#fff; display:flex; align-items:center; gap:8px;">
+              <span style="font-size:14px;">${icon}</span>
+              <span style="font-size:11px; font-weight:700; letter-spacing:0.5px;">${title}</span>
+            </div>
+          `;
+        } else {
+          // Default / Auto Creative
+          html += `
+            <div class="spoken-badge dynamic-render" style="display:flex; left:${xPct}%; top:${yPct}%;">
+              <span>${icon} ${title}</span>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
     // ── REAL-TIME VIDEO PLAYBACK & AESTHETIC COMPOSITION ENGINE ──
     video.addEventListener('timeupdate', () => {
       const t = video.currentTime;
@@ -2808,82 +2969,23 @@
       scrubberFill.style.width = `${(t / dur) * 100}%`;
       timelineNeedle.style.left = `${t * 40}px`;
 
-      // Update Floating Music Card progress bar
-      if (floatingMusicCard.style.display !== "none") {
-        musicCardProgress.style.width = `${((t % 15) / 15) * 100}%`;
-      }
-
       // Check if overlays are allowed
       if (!chkShowOverlays.checked || viewMode === "original") {
+        const container = document.getElementById('dynamicOverlaysContainer');
+        if (container) container.innerHTML = '';
+        if (topHookBanner) topHookBanner.style.display = 'none';
+        if (socialQuestionCard) socialQuestionCard.style.display = 'none';
         return;
       }
 
-      // 1. Pinterest Polaroid Overlays (Ref 1)
-      polaroidCard1.style.display = (t >= 2.0 && t <= 12.0) ? "block" : "none";
-      polaroidCard2.style.display = (t >= 15.0 && t <= 25.0) ? "block" : "none";
+      // Render Dynamic Context Overlays (Decoupled, zero static mock elements)
+      renderDynamicOverlays(t);
 
-      // 2. Retro Digital Camera Viewfinder (Ref 1)
-      cameraOverlay.style.display = (t >= 5.0 && t <= 14.0) ? "block" : "none";
-
-      // 3. Floating Music Card (Ref 2)
-      floatingMusicCard.style.display = (t >= 16.0 && t <= 28.0) ? "block" : "none";
-
-      // 4. Orbiting Glassmorphism Mini Cards (Ref 3)
-      orbitCard1.style.display = (t >= 26.0 && t <= 38.0) ? "block" : "none";
-      orbitCard2.style.display = (t >= 28.0 && t <= 40.0) ? "block" : "none";
-
-      // 5. Scrapbook Decorative Stickers
-      stickerStar.style.display = (t >= 3.0 && t <= 18.0) ? "block" : "none";
-      stickerFlower.style.display = (t >= 8.0 && t <= 22.0) ? "block" : "none";
-      stickerLove.style.display = (t >= 32.0 && t <= 44.0) ? "block" : "none";
-
-      // 6. Top Hook Banner (0.0s - 4.5s)
-      topHookBanner.style.display = (t <= 4.5) ? "block" : "none";
-
-      // 7. Social Question Card (3.5s - 8.2s)
-      socialQuestionCard.style.display = (t >= 3.5 && t <= 8.2) ? "flex" : "none";
-
-      // 8. Dynamic Spoken Badges driven by actual EDL graphics
-      let matchedBadge = false;
-      if (edlData && edlData.graphics) {
-        const activeGraphic = edlData.graphics.find(g => g.type !== "kinetic_title" && t >= g.start && t <= g.end);
-        if (activeGraphic) {
-          matchedBadge = true;
-          let prefix = "✨ ";
-          const a = activeGraphic.asset_id;
-          if (a === "gemini") prefix = "✨ ";
-          else if (a === "book") prefix = "📚 ";
-          else if (a === "presentation") prefix = "📊 ";
-          else if (a === "quiz") prefix = "📝 ";
-          else if (a === "audio_mic") prefix = "🎙️ ";
-          else if (a === "comment") prefix = "💬 ";
-          else if (a === "heart") prefix = "❤️ ";
-          else if (a === "robot" || a === "chatgpt") prefix = "🤖 ";
-          else if (a === "gamepad") prefix = "🎮 ";
-          else if (a === "money" || a === "cash") prefix = "💰 ";
-          else if (a === "youtube") prefix = "🔴 ";
-
-          dynamicBadge.innerHTML = `<span>${prefix} ${activeGraphic.trigger_word.toUpperCase()}</span>`;
-          if (activeGraphic.x > 500) {
-            dynamicBadge.style.right = "14px";
-            dynamicBadge.style.left = "auto";
-          } else {
-            dynamicBadge.style.left = "14px";
-            dynamicBadge.style.right = "auto";
-          }
-          dynamicBadge.style.bottom = "45%";
-          dynamicBadge.style.display = "flex";
-        }
-      }
-      if (!matchedBadge) {
-        dynamicBadge.style.display = "none";
-      }
-
-      // 9. Dynamic Zoom Punch (Punch Words)
+      // Dynamic Zoom Punch (Punch Words)
       const isPunchMoment = (t >= 7.8 && t <= 10.5) || (t >= 14.0 && t <= 17.0) || (t >= 36.5 && t <= 39.5);
       videoCanvasWrapper.classList.toggle('punch-zoom', isPunchMoment);
 
-      // 10. Dynamic Captions & Word Punch
+      // Dynamic Captions & Word Punch
       if (edlData && edlData.captions) {
         const activeCap = edlData.captions.find(c => t >= c.start && t <= c.end);
         if (activeCap) {
@@ -2895,6 +2997,7 @@
           captionLeadWord.style.display = "none";
           captionKeywordPunch.style.display = "none";
         }
+      }
 
         // 11. Real-time Acoustic SFX Triggers
         if (!video.paused && audioUnlocked) {

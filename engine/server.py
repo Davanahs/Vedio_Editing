@@ -68,6 +68,7 @@ app.mount("/media/export", StaticFiles(directory=str(EXPORT_DIR)), name="export_
 app.mount("/media/sfx", StaticFiles(directory=str(SFX_DIR)), name="sfx_media")
 app.mount("/media/logos", StaticFiles(directory=str(LOGOS_DIR)), name="logos_media")
 app.mount("/media/resources", StaticFiles(directory=str(RESOURCES_DIR)), name="resources_media")
+app.mount("/template_previews", StaticFiles(directory=str(WEB_DIR / "template_previews")), name="template_previews")
 
 class ChatEditRequest(BaseModel):
     filename: str

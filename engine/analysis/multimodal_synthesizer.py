@@ -14,6 +14,7 @@ from engine.analysis.audio_segmenter import AudioSegment
 from engine.analysis.frame_analyzer import VisualFrameAnalysis
 from engine.assets.registry import AssetRegistry
 from engine.templates.definitions import CreativeTemplate, get_template
+from engine.composer.collision_detector import SafeZoneCollisionEngine, BoundingBox
 
 logger = logging.getLogger(__name__)
 
@@ -78,14 +79,21 @@ def synthesize_multimodal_plan(
     height = int(video_metadata.get("height", 1920))
     is_landscape = width > height
 
-    # 1. Evaluate User Explicit Instructions (Priority 1)
+    # 1. Initialize SafeZoneCollisionEngine with all detected faces
+    all_face_boxes = []
+    for vf in visual_frames:
+        if vf.faces:
+            all_face_boxes.extend(vf.faces)
+    collision_engine = SafeZoneCollisionEngine(canvas_w=width, canvas_h=height, face_boxes=all_face_boxes)
+
+    # 2. Evaluate User Explicit Instructions (Priority 1)
     instr_low = (additional_instructions or "").lower()
     prompt_low = (main_prompt or "").lower()
     force_minimal = "minimal" in instr_low or template_id == "creative_minimal"
     no_stickers = "no sticker" in instr_low or "clean video" in instr_low
     avoid_face = "face" in instr_low or True  # Always avoid face by default
 
-    # 2. Determine Auto-Creative Template if requested
+    # 3. Determine Auto-Creative Template if requested
     active_template = template
     auto_detected_style = None
     if template_id == "auto_creative":
@@ -200,16 +208,42 @@ def synthesize_multimodal_plan(
             )
             continue
 
-        # Compute Spatial Placement that AVOIDS the person's face and bottom captions
-        placement = _calculate_safe_placement(
-            matching_frame=matching_frame,
-            canvas_w=width,
-            canvas_h=height,
-            is_landscape=is_landscape
+        # Compute Non-Colliding Safe Placement using Collision Engine
+        dur = min(3.2, max(2.0, seg.duration * 0.6))
+        safe_coord = collision_engine.find_safe_placement(
+            element_id=f"el_{seg.segment_id}_{chosen_id}",
+            start_t=seg.start,
+            end_t=seg.start + dur,
+            width=320,
+            height=80,
+            preferred_side="right" if is_landscape else "auto"
         )
 
-        # Duration & Animation
-        dur = min(3.0, max(2.0, seg.duration * 0.6))
+        if not safe_coord:
+            # Collision detected against face or caption safe zones -> preserve clean footage!
+            decisions.append(
+                SegmentDecision(
+                    segment_id=seg.segment_id,
+                    time_range=f"{seg.start:.1f}s - {seg.end:.1f}s",
+                    start=seg.start,
+                    end=seg.end,
+                    spoken_topic=topic,
+                    visual_context=visual_desc,
+                    mood=mood,
+                    needs_visual_element=False,
+                    clean_reason="Preserving clean footage: candidate placement would collide with face or captions",
+                    chosen_asset_id=None,
+                    asset_badge_title=None,
+                    asset_badge_subtitle=None,
+                    placement={},
+                    duration_s=0.0,
+                    animation="none",
+                    sound_effect=None,
+                )
+            )
+            continue
+
+        placement = {"x": safe_coord[0], "y": safe_coord[1], "scale": 1.0}
         anim = active_template.preferred_animations[0] if active_template.preferred_animations else "pop_in"
         
         # Audio SFX
@@ -239,20 +273,20 @@ def synthesize_multimodal_plan(
             )
         )
 
-    # Generate Dynamic Hook Title & Social Question for EDL
+    # Generate Dynamic Hook Title & Grounded Social Question (NO invented handles/products)
     combined_topics = " ".join([d.spoken_topic for d in decisions])
     if "NotebookLM" in combined_topics or "Gemini" in combined_topics:
         hook_title = "⚡ GEMINI NOTEBOOKLM • AI TOOLS 🤖"
-        social_q = "💬 @alex_clips: What is Google Gemini NotebookLM?"
+        social_q = "💬 What is your favorite feature in Google Gemini NotebookLM?"
     elif "Fashion" in combined_topics or "Lifestyle" in combined_topics or "aesthetic" in prompt_low:
         hook_title = "✨ AESTHETIC LIFESTYLE • DAILY VIBES 🌸"
-        social_q = "💬 @style_diaries: What's your favorite piece from this look?"
+        social_q = "💬 Which detail do you love most from this look?"
     elif "Recipe" in combined_topics or "Cooking" in combined_topics:
         hook_title = "🍲 MASTER RECIPE • QUICK PREP 👨‍🍳"
-        social_q = "💬 @foodie_table: Have you tried cooking this before?"
+        social_q = "💬 Have you tried cooking this dish before?"
     else:
         hook_title = "✨ CREATIVE HIGHLIGHTS • AI STUDIO 🚀"
-        social_q = "💬 @creator_lab: Drop your thoughts in the comments below!"
+        social_q = "💬 What are your thoughts? Drop a comment below!"
 
     return {
         "applied_template": active_template.to_dict(),

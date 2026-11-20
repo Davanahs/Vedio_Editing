@@ -26,24 +26,111 @@ def generate_ass_subtitles(
     width: int = 1920, 
     height: int = 1080,
     hook_title: Optional[str] = None,
-    social_question: Optional[str] = None
+    social_question: Optional[str] = None,
+    template_id: str = "auto_creative",
+    source_width: Optional[int] = None,
+    source_height: Optional[int] = None
 ):
     """
-    Generates an ASS subtitle file styled for the target resolution,
-    implementing the Master Reel Editor Style Sheet specifications.
+    Generates an ASS subtitle file styled for the target resolution and creative template,
+    implementing context-aware non-colliding layout and design specifications.
     """
     is_vertical = height > width
+    src_w = source_width or width
+    src_h = source_height or height
+    scale_x = width / src_w if src_w > 0 else 1.0
+    scale_y = height / src_h if src_h > 0 else 1.0
     
-    # Fonts and sizing based on style-sheet.md
-    font_hook = 46 if is_vertical else 36
-    font_lead = 36 if is_vertical else 28
-    font_kw = 78 if is_vertical else 56
-    font_badge = 42 if is_vertical else 32
-    font_card = 30 if is_vertical else 24
+    # Fonts and sizing based on style-sheet & creative template
+    font_hook = 44 if is_vertical else 34
+    font_lead = 34 if is_vertical else 26
+    font_kw = 72 if is_vertical else 50
+    font_badge = 38 if is_vertical else 28
+    font_card = 28 if is_vertical else 22
 
-    margin_top_hook = 120 if is_vertical else 50
-    margin_v_lead = 480 if is_vertical else 140
-    margin_v_kw = 380 if is_vertical else 70
+    margin_top_hook = 110 if is_vertical else 45
+    margin_v_lead = 460 if is_vertical else 130
+    margin_v_kw = 360 if is_vertical else 60
+
+    # Template-specific color and font palette
+    # Colors in ASS are &HAABBGGRR (hex with Alpha, Blue, Green, Red)
+    if template_id == "pinterest_scrapbook":
+        hook_font = "Georgia"
+        hook_primary = "&H00182436"  # warm mocha
+        hook_outline = "&H00DDEEFF"  # warm cream
+        hook_back = "&H00DDEEFF"
+        badge_font = "Georgia"
+        badge_primary = "&H00182436"
+        badge_outline = "&H00FFFFFF" # polaroid white frame
+        badge_back = "&H80FFFFFF"
+        kw_font = "Georgia"
+        kw_color = "&H003DB5FF"      # warm amber-gold
+    elif template_id == "glassmorphism":
+        hook_font = "Inter"
+        hook_primary = "&H00FFFFFF"
+        hook_outline = "&H00D4B606"  # electric cyan
+        hook_back = "&H801A1210"     # translucent dark glass
+        badge_font = "Inter"
+        badge_primary = "&H00FFFFFF"
+        badge_outline = "&H00D4B606" # cyan rim
+        badge_back = "&H80221812"    # frosted glass pill
+        kw_font = "Arial Black"
+        kw_color = "&H00D4B606"      # neon cyan
+    elif template_id == "retro_camera":
+        hook_font = "Consolas"
+        hook_primary = "&H000000FF"  # rec red dot / white text
+        hook_outline = "&H00FFFFFF"
+        hook_back = "&HB0000000"
+        badge_font = "Consolas"
+        badge_primary = "&H0000FF00" # viewfinder green
+        badge_outline = "&H00000000"
+        badge_back = "&HB0000000"
+        kw_font = "Consolas"
+        kw_color = "&H0000FF00"      # HUD neon green
+    elif template_id == "creative_minimal":
+        hook_font = "Inter"
+        hook_primary = "&H00FFFFFF"
+        hook_outline = "&H80000000"  # discreet subtle border
+        hook_back = "&H00000000"
+        badge_font = "Inter"
+        badge_primary = "&H00F5F5F5"
+        badge_outline = "&H80000000"
+        badge_back = "&H00000000"
+        kw_font = "Inter"
+        kw_color = "&H00FFFFFF"      # crisp pure white
+    elif template_id == "aesthetic_lifestyle":
+        hook_font = "Georgia"
+        hook_primary = "&H00332233"
+        hook_outline = "&H00F2E4EE"  # soft pastel lavender
+        hook_back = "&H00F2E4EE"
+        badge_font = "Georgia"
+        badge_primary = "&H002A1E2A"
+        badge_outline = "&H00FFFFFF"
+        badge_back = "&H80F8EFF5"
+        kw_font = "Georgia"
+        kw_color = "&H009966B3"      # soft lilac
+    elif template_id == "floating_music_player":
+        hook_font = "Inter"
+        hook_primary = "&H00FFFFFF"
+        hook_outline = "&H00333333"
+        hook_back = "&H80181818"
+        badge_font = "Inter"
+        badge_primary = "&H00FFFFFF"
+        badge_outline = "&H001DB954"  # subtle accent
+        badge_back = "&H80202020"
+        kw_font = "Inter"
+        kw_color = "&H00FFFFFF"
+    else:  # auto_creative default
+        hook_font = "Bebas Neue"
+        hook_primary = "&H000D0E13"
+        hook_outline = "&H0000E6FF"
+        hook_back = "&H0000E6FF"
+        badge_font = "Arial Black"
+        badge_primary = "&H0000E6FF"
+        badge_outline = "&H00000000"
+        badge_back = "&H80000000"
+        kw_font = "Arial Black"
+        kw_color = "&H0000E6FF"
 
     ass_content = f"""[Script Info]
 Title: Style-Sheet Master Reel
@@ -54,11 +141,11 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: TopHook,Bebas Neue,{font_hook},&H000D0E13,&H000000FF,&H0000E6FF,&H0000E6FF,1,0,0,0,100,100,2,0,1,12,3,8,40,40,{margin_top_hook},1
-Style: CommentCard,Inter,{font_card},&H00111111,&H000000FF,&H00FFFFFF,&H00FFFFFF,1,0,0,0,100,100,0,0,1,10,3,5,60,60,0,1
-Style: PopUpBadge,Arial Black,{font_badge},&H0000E6FF,&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,1,0,1,6,3,5,40,40,0,1
+Style: TopHook,{hook_font},{font_hook},{hook_primary},&H000000FF,{hook_outline},{hook_back},1,0,0,0,100,100,2,0,1,8,2,8,40,40,{margin_top_hook},1
+Style: CommentCard,Inter,{font_card},&H00111111,&H000000FF,&H00FFFFFF,&H00FFFFFF,1,0,0,0,100,100,0,0,1,8,2,5,60,60,0,1
+Style: PopUpBadge,{badge_font},{font_badge},{badge_primary},&H000000FF,{badge_outline},{badge_back},1,0,0,0,100,100,1,0,1,6,3,5,40,40,0,1
 Style: Lead,Inter,{font_lead},&H00FFFFFF,&H000000FF,&H00000000,&H80000000,1,0,0,0,100,100,0,0,1,4,2,2,60,60,{margin_v_lead},1
-Style: Keyword,Arial Black,{font_kw},&H0000E6FF,&H000000FF,&H00000000,&HB0000000,1,0,0,0,100,100,2,0,1,6,3,2,50,50,{margin_v_kw},1
+Style: Keyword,{kw_font},{font_kw},{kw_color},&H000000FF,&H00000000,&HB0000000,1,0,0,0,100,100,2,0,1,6,3,2,50,50,{margin_v_kw},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -67,35 +154,45 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     # 1. Top Hook Banner (dynamically inferred from EDL or graphics)
     if not hook_title:
-        hook_title = "⚡ AI TOOLS REVIEW 🤖"
         for g in graphics:
             if g.get("type") == "kinetic_title" or g.get("asset_id") == "kinetic_title":
                 t = g.get("title") or g.get("trigger_word", "").replace("Title: ", "")
                 if t:
-                    hook_title = f"⚡ {t.upper()} ✦"
+                    hook_title = t.upper()
                 break
     
-    events.append(
-        f"Dialogue: 0,0:00:00.20,0:00:05.50,TopHook,,0,0,{margin_top_hook},,  {hook_title}  "
-    )
+    if hook_title:
+        clean_title = hook_title.strip()
+        if template_id == "retro_camera":
+            formatted_hook = f"● REC  |  {clean_title}"
+        elif template_id == "pinterest_scrapbook":
+            formatted_hook = f"✂  {clean_title}  ✿"
+        elif template_id == "creative_minimal":
+            formatted_hook = f"{clean_title}"
+        elif template_id == "glassmorphism":
+            formatted_hook = f"◈ {clean_title} ◈"
+        else:
+            formatted_hook = f"⚡ {clean_title} ✦"
 
-    # 2. Floating Social Comment / Question Card (Spring in ~3.8s to 8.5s)
-    if not social_question:
-        social_question = "💬 @alex_clips: Have you explored this AI tool yet?"
+        events.append(
+            f"Dialogue: 0,0:00:00.20,0:00:05.50,TopHook,,0,0,{margin_top_hook},,  {formatted_hook}  "
+        )
 
-    center_y_card = int(height * 0.38)
-    center_x_card = int(width * 0.5)
-    events.append(
-        f"Dialogue: 1,0:00:03.80,0:00:08.50,CommentCard,,0,0,0,,{{\\pos({center_x_card},{center_y_card})}}  {social_question}  "
-    )
+    # 2. Contextual Social Question Card (Only if genuinely provided and safe)
+    if social_question and "@alex_clips" not in social_question:
+        safe_y = int(height * 0.18)
+        center_x_card = int(width * 0.5)
+        events.append(
+            f"Dialogue: 1,0:00:03.80,0:00:08.50,CommentCard,,0,0,0,,{{\\pos({center_x_card},{safe_y})}}  {social_question}  "
+        )
 
-    # 3. Dynamic Pop-Up Badges from Graphics list
+    # 3. Dynamic Pop-Up Badges from Graphics list using Collision Engine Placements
     for g in graphics:
         if g.get("type") == "kinetic_title":
             continue
         start_t = format_ass_time(float(g.get("start", 0.0)))
         end_t = format_ass_time(float(g.get("end", 0.0)))
-        word = g.get("trigger_word", "").upper()
+        word = (g.get("title") or g.get("trigger_word", "")).upper()
         asset = g.get("asset_id", "")
 
         prefix = "✨ "
@@ -130,12 +227,29 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         elif asset == "brain_ai": prefix = "🧠 "
         elif asset == "chip": prefix = "⚡ "
 
-        # Alternate positions (left / right) for dynamic visual balance
-        pos_x = int(width * 0.72) if ("YOUTUBE" in word or "GAME" in word or "STUDY" in word or "PPT" in word) else int(width * 0.28)
-        pos_y = int(height * 0.44)
+        # Respect SafeZone collision engine coordinates
+        raw_x = g.get("x")
+        raw_y = g.get("y")
+        if raw_x is not None and raw_y is not None:
+            pos_x = int(float(raw_x) * scale_x)
+            pos_y = int(float(raw_y) * scale_y)
+        else:
+            # Safe side placement outside center face box
+            pos_x = int(width * 0.78) if ("YOUTUBE" in word or "GAME" in word or "STUDY" in word or "PPT" in word) else int(width * 0.22)
+            pos_y = int(height * 0.28)
+
+        # Style-specific badge format
+        if template_id == "retro_camera":
+            badge_text = f"[{word}]"
+        elif template_id == "creative_minimal":
+            badge_text = f"{word}"
+        elif template_id == "pinterest_scrapbook":
+            badge_text = f"{prefix}{word} ✿"
+        else:
+            badge_text = f"{prefix}{word}"
 
         events.append(
-            f"Dialogue: 2,{start_t},{end_t},PopUpBadge,,0,0,0,,{{\\pos({pos_x},{pos_y})}}  {prefix}{word}  "
+            f"Dialogue: 2,{start_t},{end_t},PopUpBadge,,0,0,0,,{{\\pos({pos_x},{pos_y})}}  {badge_text}  "
         )
 
     # 4. Spoken Dynamic Captions (Two-tone White + Electric Yellow)
@@ -182,6 +296,12 @@ def render_reel_ffmpeg(
     temp_dir = out.parent / ".temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
     ass_path = temp_dir / f"{out.stem}_master.ass"
+    
+    template_id = edl.get("template_id") or edl.get("metadata", {}).get("template_id") or "auto_creative"
+    vm = edl.get("video_metadata") or {}
+    src_w = vm.get("width")
+    src_h = vm.get("height")
+
     generate_ass_subtitles(
         captions=edl.get("captions", []),
         graphics=edl.get("graphics", []),
@@ -189,7 +309,10 @@ def render_reel_ffmpeg(
         width=target_w,
         height=target_h,
         hook_title=edl.get("hook_title"),
-        social_question=edl.get("social_question")
+        social_question=edl.get("social_question"),
+        template_id=template_id,
+        source_width=src_w,
+        source_height=src_h
     )
 
     ass_escaped = str(ass_path).replace("\\", "/").replace(":", "\\:")

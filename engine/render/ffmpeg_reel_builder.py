@@ -112,6 +112,23 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         elif asset == "audio_mic": prefix = "🎙️ "
         elif asset == "heart": prefix = "❤️ "
         elif asset == "star": prefix = "⭐ "
+        elif asset == "polaroid_frame": prefix = "📷 "
+        elif asset == "flower_blossom": prefix = "🌸 "
+        elif asset == "sparkle_stars": prefix = "⭐ "
+        elif asset == "doodle_heart": prefix = "💖 "
+        elif asset == "sun_warmth": prefix = "☀️ "
+        elif asset == "recipe_dish": prefix = "🍲 "
+        elif asset == "chef_hat": prefix = "👨‍🍳 "
+        elif asset == "fresh_leaf": prefix = "🌿 "
+        elif asset == "music_card": prefix = "🎵 "
+        elif asset == "headphones": prefix = "🎧 "
+        elif asset == "sound_wave": prefix = "〰️ "
+        elif asset == "laptop": prefix = "💻 "
+        elif asset == "glass_pill": prefix = "🔲 "
+        elif asset == "viewfinder": prefix = "🎯 "
+        elif asset == "rec_dot": prefix = "🔴 "
+        elif asset == "brain_ai": prefix = "🧠 "
+        elif asset == "chip": prefix = "⚡ "
 
         # Alternate positions (left / right) for dynamic visual balance
         pos_x = int(width * 0.72) if ("YOUTUBE" in word or "GAME" in word or "STUDY" in word or "PPT" in word) else int(width * 0.28)

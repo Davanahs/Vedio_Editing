@@ -25,6 +25,9 @@ async def generate_edl(
     video_metadata: dict,
     asset_registry: Any,  # AssetRegistry instance
     sfx_registry: list[str],
+    multimodal_plan: dict | None = None,
+    template_id: str = "auto_creative",
+    additional_instructions: str = "",
 ) -> EditDecisionList:
     """
     Main director orchestrator.
@@ -73,7 +76,10 @@ async def generate_edl(
                         "caption_bursts": caption_bursts,
                         "video_metadata": video_metadata,
                         "available_assets": available_assets,
-                        "available_sfx": available_sfx
+                        "available_sfx": available_sfx,
+                        "multimodal_plan": multimodal_plan,
+                        "template_id": template_id,
+                        "additional_instructions": additional_instructions,
                     }
                 )
                 elapsed = time.perf_counter() - t0

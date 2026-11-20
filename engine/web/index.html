@@ -2076,44 +2076,56 @@
           <button class="style-chip-btn" onclick="applyQuickPrompt('📸 Aesthetic scrapbook with Polaroid cutouts and white outlines')">📸 Scrapbook</button>
           <button class="style-chip-btn" onclick="applyQuickPrompt('🎵 Floating Spotify music cards with perspective shadow')">🎵 Music Card</button>
           <button class="style-chip-btn" onclick="applyQuickPrompt('✨ Clean white outline glow around speaker')">✨ White Outline</button>
-          <button class="style-chip-btn" onclick="applyQuickPrompt('🔥 Viral reel with pop-ups and gaming level-up SFX')">🔥 Viral Reel</button>
+          <button class="style-chip-btn" onclick="applyQuickPrompt('🔥 High energy educational highlights with badges')">⚡ Educational</button>
         </div>
       </div>
 
-      <!-- Section: Creative Style Explorer (8+ Visual Styles) -->
+      <!-- Section: Additional Instructions for AI -->
+      <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+            <span>💡</span> Additional Instructions for AI
+          </span>
+          <span style="font-size:9px; color:var(--text-muted);">(Optional constraints)</span>
+        </div>
+        <textarea id="additionalInstructionsInput" style="width:100%; height:62px; background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-main); font-size:11px; padding:8px; resize:none; outline:none; font-family:inherit;" 
+                  placeholder="e.g. Keep original audio intact. Do not cover the person's face. Keep elements minimal and avoid clutter..."></textarea>
+      </div>
+
+      <!-- Section: Creative Templates (7 Design Systems) -->
       <div>
         <div class="section-header">
-          <span class="section-title">Creative Style Explorer</span>
+          <span class="section-title">Creative Templates</span>
         </div>
 
         <div class="style-cards-scroller">
-          <!-- 1. Aesthetic Scrapbook -->
-          <div class="aesthetic-style-card selected" onclick="chooseCreativeStyle('scrapbook', this)" data-prompt="Aesthetic scrapbook composition with Polaroid photo frames, hand-drawn white subject outlines, floating stars, flowers, and handwritten typography.">
+          <!-- 1. Pinterest Scrapbook -->
+          <div class="aesthetic-style-card selected" onclick="chooseCreativeStyle('pinterest_scrapbook', this)" data-prompt="Aesthetic scrapbook composition with Polaroid photo frames, hand-drawn white outlines, floating stars, and layered shadows.">
             <div class="style-card-top">
               <span class="style-card-icon">📸</span>
               <span class="style-card-check">✓</span>
             </div>
-            <div class="style-card-name">Aesthetic Scrapbook</div>
-            <div class="style-card-desc">Polaroid layers, white outline, stars & flowers</div>
+            <div class="style-card-name">Pinterest Scrapbook</div>
+            <div class="style-card-desc">Polaroid frames, doodle stars & paper cuts</div>
           </div>
 
-          <!-- 2. Pinterest Lifestyle -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('pinterest', this)" data-prompt="Pinterest lifestyle aesthetic with soft warm tone, pastel stickers, and elegant cutouts.">
+          <!-- 2. Aesthetic Lifestyle -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('aesthetic_lifestyle', this)" data-prompt="Aesthetic lifestyle with clean pastel decorations, floating photographs, and minimal stickers.">
             <div class="style-card-top">
               <span class="style-card-icon">🌸</span>
               <span class="style-card-check">✓</span>
             </div>
-            <div class="style-card-name">Pinterest Lifestyle</div>
-            <div class="style-card-desc">Dreamy filters, pastel stickers, lifestyle cuts</div>
+            <div class="style-card-name">Aesthetic Lifestyle</div>
+            <div class="style-card-desc">Clean pastels, floating photos, serene pacing</div>
           </div>
 
           <!-- 3. Floating Music Player -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('music_player', this)" data-prompt="Music-player-inspired composition with floating Apple/Spotify style cards, realistic ground shadows, and playback graphics.">
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('floating_music_player', this)" data-prompt="Music-player-inspired composition with floating Apple/Spotify style cards, realistic ground shadows, and playback graphics.">
             <div class="style-card-top">
               <span class="style-card-icon">🎵</span>
               <span class="style-card-check">✓</span>
             </div>
-            <div class="style-card-name">Music Player</div>
+            <div class="style-card-name">Floating Music Player</div>
             <div class="style-card-desc">Perspective player cards & album art</div>
           </div>
 
@@ -2124,57 +2136,37 @@
               <span class="style-card-check">✓</span>
             </div>
             <div class="style-card-name">Glassmorphism</div>
-            <div class="style-card-desc">Orbiting frosted glass & cyan light trails</div>
+            <div class="style-card-desc">Frosted glass & cyan glowing borders</div>
           </div>
 
-          <!-- 5. Retro Digital Camera -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('retrocamer', this)" data-prompt="Y2K retro digital camera viewfinder overlay with REC indicator, timestamp, and nostalgic flash.">
+          <!-- 5. Retro Camera -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('retro_camera', this)" data-prompt="Vintage camcorder viewfinder HUD with REC indicator, digital timestamp, and nostalgic flash.">
             <div class="style-card-top">
               <span class="style-card-icon">📷</span>
               <span class="style-card-check">✓</span>
             </div>
-            <div class="style-card-name">Retro Digicam</div>
-            <div class="style-card-desc">Y2K camera viewfinder & timestamp</div>
+            <div class="style-card-name">Retro Camera</div>
+            <div class="style-card-desc">Viewfinder brackets & REC timestamp</div>
           </div>
 
-          <!-- 6. Playful Collage -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('collage', this)" data-prompt="Playful collage with multi-photo cutouts, washi tape, and layered depth.">
+          <!-- 6. Creative Minimal -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('creative_minimal', this)" data-prompt="Minimalist edit with extreme restraint: 2-3 maximum high-impact highlights, clean negative space.">
             <div class="style-card-top">
-              <span class="style-card-icon">🎨</span>
+              <span class="style-card-icon">✨</span>
               <span class="style-card-check">✓</span>
             </div>
-            <div class="style-card-name">Playful Collage</div>
-            <div class="style-card-desc">Multi-cutout photos with washi tape</div>
+            <div class="style-card-name">Creative Minimal</div>
+            <div class="style-card-desc">Zero clutter, clean visual hierarchy</div>
           </div>
 
-          <!-- 7. Dreamy Pastel -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('pastel', this)" data-prompt="Dreamy pastel with soft color grading, floating sparkle stickers, and gentle kinetic text.">
-            <div class="style-card-top">
-              <span class="style-card-icon">☁️</span>
-              <span class="style-card-check">✓</span>
-            </div>
-            <div class="style-card-name">Dreamy Pastel</div>
-            <div class="style-card-desc">Soft dreamy aura & floating sparkles</div>
-          </div>
-
-          <!-- 8. Cinematic Creative -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('cinematic', this)" data-prompt="Cinematic dramatic reel with punch zooms, film grain, and letterboxed composition.">
-            <div class="style-card-top">
-              <span class="style-card-icon">🎬</span>
-              <span class="style-card-check">✓</span>
-            </div>
-            <div class="style-card-name">Cinematic Creative</div>
-            <div class="style-card-desc">Film punch cuts & editorial typography</div>
-          </div>
-
-          <!-- 9. Auto Creative (AI Decides) -->
-          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('auto', this)" data-prompt="" style="grid-column: span 2;">
+          <!-- 7. Auto Creative (AI Decides) -->
+          <div class="aesthetic-style-card" onclick="chooseCreativeStyle('auto_creative', this)" data-prompt="" style="grid-column: span 2;">
             <div class="style-card-top">
               <span class="style-card-icon">🤖</span>
               <span class="style-card-check">✓</span>
             </div>
             <div class="style-card-name">Auto Creative (AI Decides)</div>
-            <div class="style-card-desc">AI analyzes video transcript and assets to compose the best aesthetic</div>
+            <div class="style-card-desc">AI multimodal analysis independently selects the best creative direction</div>
           </div>
         </div>
       </div>
@@ -2338,7 +2330,7 @@
     let activeDuration = 50.85;
     let currentAspect = "16:9";
     let currentOutline = "white";
-    let activeStylePreset = "scrapbook";
+    let activeStylePreset = "pinterest_scrapbook";
     let viewMode = "edited"; // "edited" | "original"
     let edlData = null;
     let audioUnlocked = false;
@@ -2727,14 +2719,18 @@
         animateProcessingStage(3); // Reviewing resources
         await sleep(300);
 
+        const addInstructions = document.getElementById('additionalInstructionsInput')?.value.trim() || '';
+
         const res = await fetch("/api/chat-edit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             filename: activeVideo,
             prompt: userPrompt,
-            aspect_ratio: currentAspect,
+            template: activeStylePreset,
             style_preset: activeStylePreset,
+            aspect_ratio: currentAspect,
+            additional_instructions: addInstructions,
             resources: attachedResources
           })
         });

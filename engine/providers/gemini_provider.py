@@ -22,8 +22,8 @@ class GeminiDirectorProvider(DirectorProvider):
     Uses Gemini 2.0 Flash Lite (or 1.5 Flash fallback) to generate EDL JSON.
     """
 
-    PRIMARY_MODEL = "gemini-2.0-flash-lite"
-    FALLBACK_MODEL = "gemini-1.5-flash"
+    PRIMARY_MODEL = "models/gemini-2.5-flash"
+    FALLBACK_MODEL = "models/gemini-2.5-flash-lite"
 
     def __init__(self, api_key: str | None = None):
         if not _GENAI_AVAILABLE:

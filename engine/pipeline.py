@@ -13,6 +13,10 @@ from typing import Dict, Any, Optional, List
 from engine.analysis.video_probe import probe_video
 from engine.analysis.audio_extractor import extract_audio
 from engine.analysis.analyzer import analyze_video
+from engine.analysis.audio_segmenter import segment_audio_narration
+from engine.analysis.frame_analyzer import extract_representative_frames, analyze_frames_multimodal
+from engine.analysis.multimodal_synthesizer import synthesize_multimodal_plan
+from engine.templates.definitions import get_template
 from engine.providers.registry import get_transcription_provider, get_director_provider
 from engine.director.director import generate_edl
 from engine.director.edl_schema import EditDecisionList
@@ -81,7 +85,10 @@ async def run_pipeline(
     video_path: str,
     output_path: Optional[str] = None,
     preview: bool = False,
-    project_dir: Optional[str] = None
+    project_dir: Optional[str] = None,
+    template_id: str = "auto_creative",
+    user_prompt: str = "",
+    additional_instructions: str = "",
 ) -> Dict[str, Any]:
     """
     Executes the end-to-end autonomous video editing pipeline.
@@ -151,22 +158,46 @@ async def run_pipeline(
     # Stage 4: Video Analysis (scenes, faces, pauses)
     bench.start("video_analysis")
     analysis_data = await analyze_video(str(raw_video), {"words": words_list, "duration": duration})
+    scenes = analysis_data.get("scenes", [])
+    frames_dir = root_dir / "engine" / "temp" / "frames" / raw_video.stem
+    frame_tuples = extract_representative_frames(
+        video_path=str(raw_video),
+        output_dir=frames_dir,
+        scene_timestamps=scenes,
+        interval_s=10.0,
+        total_duration=duration
+    )
+    audio_segments = segment_audio_narration(words_list, duration)
+    visual_analyses = await analyze_frames_multimodal(frame_tuples, video_topic_hint=transcript_text[:150])
+    
+    asset_reg = AssetRegistry(str(root_dir))
+    multimodal_plan = synthesize_multimodal_plan(
+        audio_segments=audio_segments,
+        visual_frames=visual_analyses,
+        video_metadata={"duration": duration, "width": probe_info.get("width", 1080), "height": probe_info.get("height", 1920)},
+        template_id=template_id,
+        main_prompt=user_prompt,
+        additional_instructions=additional_instructions,
+        asset_registry=asset_reg
+    )
     bench.end("video_analysis")
-    print(f"[AI Pipeline] Video analysis complete: {len(analysis_data.get('scenes', []))} scenes detected")
+    print(f"[AI Pipeline] Multimodal analysis complete: {len(scenes)} scenes, {len(visual_analyses)} keyframes analyzed")
 
     # Stage 5: Asset Registry
     bench.start("asset_loading")
-    asset_reg = AssetRegistry(str(root_dir))
     bench.end("asset_loading")
 
     # Stage 6: AI Director EDL Generation
     bench.start("ai_director")
     edl = await generate_edl(
-        transcript=transcript_text,
+        transcript=transcript_text + (f"\n\nUSER PROMPT: {user_prompt}" if user_prompt else ""),
         caption_bursts=caption_bursts,
         video_metadata={"duration": duration, "width": probe_info.get("width", 1080), "height": probe_info.get("height", 1920)},
         asset_registry=asset_reg,
-        sfx_registry=asset_reg.list_available_sfx()
+        sfx_registry=asset_reg.list_available_sfx(),
+        multimodal_plan=multimodal_plan,
+        template_id=template_id,
+        additional_instructions=additional_instructions
     )
     bench.end("ai_director")
     print(f"[AI Pipeline] AI Director produced EDL:")

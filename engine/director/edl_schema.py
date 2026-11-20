@@ -44,7 +44,7 @@ class GraphicElement(BaseModel):
     y: int = Field(default=500, ge=0, le=3840)
     width: int = Field(default=300)
     height: int = Field(default=80)
-    animation: Literal["spring_in", "bounce_in", "slide_up", "fade_in"] = "spring_in"
+    animation: str = "spring_in"
     trigger_word: str = ""
     title: str = ""
     subtitle: str = ""
@@ -75,6 +75,11 @@ class EditDecisionList(BaseModel):
     graphics: list[GraphicElement] = Field(default_factory=list)
     sound_effects: list[SoundEffect] = Field(default_factory=list)
     music: MusicTrack | None = None
-    color_grade: Literal["dark_moody", "warm_cinematic", "cool_editorial"] = "dark_moody"
+    color_grade: str = "dark_moody"
     hook_title: str = ""
     social_question: str = ""
+
+    @field_validator("version", mode="before")
+    @classmethod
+    def coerce_version(cls, v: Any) -> str:
+        return str(v)

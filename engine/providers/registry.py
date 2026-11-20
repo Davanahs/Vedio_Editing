@@ -80,6 +80,94 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
         sound_effects: List[Dict[str, Any]] = []
         zoom_events: List[Dict[str, Any]] = []
 
+        vm = context.get("video_metadata", {}) if context else {}
+        duration = float(vm.get("duration", 47.78))
+        is_landscape = (vm.get("width", 1080) > vm.get("height", 1920))
+        multimodal_plan = context.get("multimodal_plan") if context else None
+        if multimodal_plan and "decisions" in multimodal_plan:
+            decisions = multimodal_plan.get("decisions", [])
+            hook_title = multimodal_plan.get("hook_title", "⚡ AI CREATIVE STUDIO 🎬")
+            social_q = multimodal_plan.get("social_question", "💬 What do you think?")
+
+            # Opening hook
+            graphics.append({
+                "id": "g_title_0",
+                "asset_id": "gemini",
+                "type": "kinetic_title",
+                "title": hook_title.split("•")[0].strip("⚡✨ "),
+                "subtitle": "AI Studio",
+                "start": 0.8,
+                "end": 3.2,
+                "x": 540 if is_landscape else 540,
+                "y": 140 if is_landscape else 240,
+                "width": 500,
+                "height": 180,
+                "animation": "spring_in",
+                "trigger_word": f"Title: {hook_title}"
+            })
+            sound_effects.append({"id": "s_intro_whoosh", "asset_id": "whoosh", "start": 0.8, "volume": 0.85})
+
+            for idx, dec in enumerate(decisions):
+                if dec.get("needs_visual_element") and dec.get("chosen_asset_id"):
+                    asset_id = dec["chosen_asset_id"]
+                    start_t = dec["start"]
+                    end_t = dec["end"]
+                    placement = dec.get("placement", {})
+                    x_pos = placement.get("x", 240)
+                    y_pos = placement.get("y", 480)
+                    title = dec.get("asset_badge_title", asset_id.upper())
+                    subtitle = dec.get("asset_badge_subtitle", "")
+                    anim = dec.get("animation", "pop_in")
+                    sfx = dec.get("sound_effect")
+
+                    graphics.append({
+                        "id": f"g_{asset_id}_{idx}",
+                        "asset_id": asset_id,
+                        "start": start_t,
+                        "end": end_t,
+                        "x": x_pos,
+                        "y": y_pos,
+                        "width": 320,
+                        "height": 80,
+                        "animation": anim,
+                        "trigger_word": title,
+                        "title": title,
+                        "subtitle": subtitle
+                    })
+                    if sfx:
+                        sound_effects.append({
+                            "id": f"s_{asset_id}_{idx}",
+                            "asset_id": sfx,
+                            "start": start_t,
+                            "volume": 0.8
+                        })
+                    if idx % 3 == 0:
+                        zoom_events.append({
+                            "id": f"z_{idx}",
+                            "start": start_t,
+                            "end": end_t,
+                            "scale": 1.12,
+                            "target": "face",
+                            "ease": "back.out(1.5)"
+                        })
+            return DirectorResult(
+                edl={
+                    "version": "1.0",
+                    "video_duration": duration,
+                    "captions": formatted_captions,
+                    "zoom_events": zoom_events,
+                    "graphics": graphics,
+                    "sound_effects": sound_effects,
+                    "music": None,
+                    "color_grade": "clean",
+                    "hook_title": hook_title,
+                    "social_question": social_q
+                },
+                model_used="local_semantic_director",
+                raw_response="LocalSemanticDirector with Multimodal Plan",
+                tokens_used=0
+            )
+
         # Scan bursts for contextual keywords
         found_triggers = set()
 
@@ -347,6 +435,17 @@ def get_director_chain() -> List[DirectorProvider]:
     """
     chain: List[DirectorProvider] = []
 
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    if gemini_key and gemini_key.startswith("AIzaSy"):
+        try:
+            from .gemini_provider import GeminiDirectorProvider
+            chain.append(GeminiDirectorProvider(api_key=gemini_key))
+        except Exception:
+            pass
+
+    # Always append Local Dynamic Semantic Director (multimodal plan aware)
+    chain.append(LocalHeuristicDirectorProvider())
+
     openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
     if openrouter_key and openrouter_key.startswith("sk-or-"):
         try:
@@ -355,8 +454,6 @@ def get_director_chain() -> List[DirectorProvider]:
         except Exception:
             pass
 
-    # Always append Local Dynamic Semantic Director as reliable fallback
-    chain.append(LocalHeuristicDirectorProvider())
     return chain
 
 

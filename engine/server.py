@@ -47,6 +47,12 @@ RAW_DIR = _ROOT / "Raw Footage"
 EXPORT_DIR = _ROOT / "Export"
 SFX_DIR = _ROOT / "assets" / "sfx"
 LOGOS_DIR = _ROOT / "assets" / "cache" / "logos"
+from engine.templates.definitions import list_templates, get_template
+from engine.analysis.scene_detector import detect_scenes
+from engine.analysis.audio_segmenter import segment_audio_narration
+from engine.analysis.frame_analyzer import extract_representative_frames, analyze_frames_multimodal
+from engine.analysis.multimodal_synthesizer import synthesize_multimodal_plan
+
 WEB_DIR = _ROOT / "engine" / "web"
 RESOURCES_DIR = _ROOT / "Resources"
 
@@ -66,14 +72,16 @@ app.mount("/media/resources", StaticFiles(directory=str(RESOURCES_DIR)), name="r
 class ChatEditRequest(BaseModel):
     filename: str
     prompt: str = ""
-    style_preset: str = "viral"
-    aspect_ratio: str = "9:16"
+    template: str = "auto_creative"
+    style_preset: Optional[str] = None
+    aspect_ratio: str = "16:9"
+    additional_instructions: Optional[str] = ""
     resources: List[str] = []
 
 class RenderRequest(BaseModel):
     filename: str
     edl: Dict[str, Any]
-    aspect_ratio: str = "9:16"
+    aspect_ratio: str = "16:9"
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_studio():
@@ -81,6 +89,10 @@ async def serve_studio():
     if index_html.exists():
         return HTMLResponse(content=index_html.read_text(encoding="utf-8"))
     return HTMLResponse("<h1>Reel Editor Studio loading...</h1>")
+
+@app.get("/api/templates")
+async def get_templates():
+    return {"success": True, "templates": list_templates()}
 
 @app.get("/api/status")
 async def get_system_status():
@@ -219,7 +231,38 @@ async def chat_edit(req: ChatEditRequest):
     words_list = [{"word": w.word, "start": w.start, "end": w.end} for w in tx_result.words]
     caption_bursts = group_words_into_bursts(words_list)
 
-    # 3. Directing with Context & User Prompts
+    # 3. Multimodal Analysis: Scene Detection & Representative Frame Sampling
+    scene_timestamps = await detect_scenes(str(video_path), threshold=0.4)
+    frames_dir = _ROOT / "engine" / "temp" / "frames" / video_path.stem
+    frame_tuples = extract_representative_frames(
+        video_path=str(video_path),
+        output_dir=frames_dir,
+        scene_timestamps=scene_timestamps,
+        interval_s=10.0,
+        total_duration=duration
+    )
+
+    # 4. Multimodal Synthesis (Audio segments + Visual frame inspection)
+    audio_segments = segment_audio_narration(words_list, duration)
+    visual_analyses = await analyze_frames_multimodal(
+        frame_tuples=frame_tuples,
+        video_topic_hint=transcript_text[:150]
+    )
+
+    target_template = req.template or req.style_preset or "auto_creative"
+    asset_reg = AssetRegistry(str(_ROOT))
+
+    multimodal_plan = synthesize_multimodal_plan(
+        audio_segments=audio_segments,
+        visual_frames=visual_analyses,
+        video_metadata={"duration": duration, "width": probe.get("width", 1920), "height": probe.get("height", 1080)},
+        template_id=target_template,
+        main_prompt=req.prompt,
+        additional_instructions=req.additional_instructions or "",
+        asset_registry=asset_reg
+    )
+
+    # 5. Directing with Context & User Prompts
     user_style_note = ""
     res_info = ""
     if req.resources:
@@ -227,9 +270,6 @@ async def chat_edit(req: ChatEditRequest):
     if req.prompt or res_info:
         user_style_note = f"\n\nUSER PROMPT INSTRUCTIONS:\n'{req.prompt}'{res_info}\nTarget Aspect Ratio: {req.aspect_ratio}"
 
-    asset_reg = AssetRegistry(str(_ROOT))
-
-    # 4. Generate Dynamic EDL
     target_w = 1920 if req.aspect_ratio == "16:9" else 1080
     target_h = 1080 if req.aspect_ratio == "16:9" else 1920
 
@@ -238,7 +278,10 @@ async def chat_edit(req: ChatEditRequest):
         caption_bursts=caption_bursts,
         video_metadata={"duration": duration, "width": target_w, "height": target_h},
         asset_registry=asset_reg,
-        sfx_registry=asset_reg.list_available_sfx()
+        sfx_registry=asset_reg.list_available_sfx(),
+        multimodal_plan=multimodal_plan,
+        template_id=target_template,
+        additional_instructions=req.additional_instructions or "",
     )
 
     edl_dict = edl.model_dump()
@@ -246,16 +289,23 @@ async def chat_edit(req: ChatEditRequest):
 
     # Generate friendly summary of decisions made
     graphics_list = [g.get("trigger_word", g.get("asset_id")) for g in edl_dict.get("graphics", [])]
+    applied_tmpl = multimodal_plan.get("applied_template", {})
     ai_reply = (
-        f"I've tailored your edit for **{req.aspect_ratio}** format based on your video transcript and instructions! "
-        f"Generated {len(edl.captions)} contextual captions, {len(edl.graphics)} visual triggers ({', '.join(graphics_list)}), "
-        f"{len(edl.sound_effects)} sound effects, and {len(edl.zoom_events)} dynamic zoom punch-ins."
+        f"Multimodal AI synthesized your edit using **{applied_tmpl.get('name', target_template)}** template in **{req.aspect_ratio}** format! "
+        f"Analyzed {len(audio_segments)} narrative audio segments and {len(visual_analyses)} video keyframes. "
+        f"Generated {len(edl.captions)} contextual captions, {len(edl.graphics)} strictly relevant visual elements ({', '.join(graphics_list)}), "
+        f"preserved {multimodal_plan.get('clean_segments_preserved', 0)} clean moments to prevent clutter, and synchronized {len(edl.sound_effects)} audio SFX."
     )
 
     return {
         "success": True,
         "edl": edl_dict,
         "transcript": transcript_text,
+        "audio_segments": [seg.to_dict() for seg in audio_segments],
+        "visual_frames": [vf.to_dict() for vf in visual_analyses],
+        "multimodal_plan": multimodal_plan,
+        "applied_template": applied_tmpl,
+        "applied_instructions": req.additional_instructions or "",
         "caption_count": len(edl.captions),
         "graphics_count": len(edl.graphics),
         "sfx_count": len(edl.sound_effects),

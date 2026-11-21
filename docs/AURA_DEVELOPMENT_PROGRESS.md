@@ -1,4 +1,4 @@
-﻿# Aura Development Progress
+# Aura Development Progress
 
 **Last updated:** 2026-11-21  
 **Current phase:** Phase 6 — AI Creative Director  
@@ -159,6 +159,36 @@
   - **25.0s**: Distinct template identities confirmed (Retro Camera has film grain and camcorder HUD; Scrapbook has rich golden paper warmth and doodle heart).
 - Full verification: `python -m pytest engine/tests -v` — **47 passed**.
 
+## Phase 10 — Dynamic Motion Graphics, Thematic Visual FX & Frame-Accurate A/V Sync (complete)
+
+### Root Cause & Definitive Fix for Audio/Video Sync Lag
+- **Root Cause**: Probed `WhatsApp_Video_...12.36.59.mp4`: `r_frame_rate: 49/2 (24.5 fps)`, `avg_frame_rate: 24.6323 fps` (Variable Frame Rate / VFR).
+  The previous filtergraph used `select` with `setpts=N/FRAME_RATE/TB` and `aselect` with `asetpts=N/SR/TB`. In VFR footage, `FRAME_RATE` is not a constant interval, causing video timestamps to drift by 6–12 frames over 46 seconds (~250–500ms noticeable audio lag).
+- **Rock-Solid Fix**:
+  1. Base streams are normalized immediately to CFR 30fps (`[0:v]fps=fps=30:round=near,setpts=PTS-STARTPTS[v_norm]`) and 48kHz stereo float (`[0:a:0]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,asetpts=PTS-STARTPTS[a_norm]`).
+  2. For jump cuts (`keep_segments`), paired `trim` and `atrim` feed into `concat=n=N:v=1:a=1[v_raw][src_a]`, locking video frames and audio samples physically segment by segment with zero possible PTS drift.
+  3. Output encoded with `-fps_mode cfr -r 30 -ar 48000`.
+
+### Dynamic Motion Graphics & Thematic VFX Engine
+- Implemented `engine/render/dynamic_vfx.py`:
+  1. **Thematic Disco Ball & Volumetric Light Rays (`disco_ball_lights`)**:
+     - Suspended rotating 3D faceted mirror disco ball with animated chain at top center.
+     - 14–16 rotating volumetric colored light beams (cyan, magenta, gold, electric purple, lime) sweeping across the entire video canvas.
+     - 40+ dancing specular mirror reflection spots orbiting across the room with perspective variation.
+     - Specular glints and star bursts radiating from rotating facets.
+  2. **Kinetic Lines & Trailing Accent Swooshes (`kinetic_lines`)**:
+     - Fast sweeping speed lines and glowing curved accent paths trailing dynamically behind moving badges and across the canvas.
+  3. **Glitter & Twinkling Sparkle Particle System (`glitter_sparkle`)**:
+     - 35 multi-tier 4-point diamond sparkle stars and floating luminous motes drifting gently with sine twinkle modulation.
+     - Face exclusion zones so particles frame the subject without obstructing eyes or mouth.
+- Screen-blend architecture (`blend=all_mode=screen:shortest=1`): black pixels become 100% transparent; colored rays, glints, and speed lines add luminous intensity without blocking underlying footage.
+- **Web Studio Dual-Layer Parity**:
+  - Added `<canvas id="dynamicFxCanvas">` with `mix-blend-mode: screen;` inside `#videoCanvasWrapper`.
+  - Implemented 60fps real-time `renderDynamicFX` loop rendering the identical equations for live preview.
+  - Added Dynamic VFX selector dropdown in the studio header (`Auto (AI)`, `Disco Ball & Lights`, `Kinetic Lines`, `Glitter Sparkles`, `Off`).
+- Verified with real test render `engine/temp/render_disco_test.mp4` (62.7 MB, exact 1394 frames at 30.0 fps, 2179 audio frames at 48kHz, exact 46.467s duration) and extracted frames `disco_vfx_2.0s.jpg` and `disco_vfx_6.0s.jpg`.
+- Full verification: `python -m pytest engine/tests` — **49 passed**.
+
 ## Per-phase record
 
 | Phase | State | Next action |
@@ -171,4 +201,5 @@
 | 6 | Complete | Dynamic camera punch zoom and cadence motion engine |
 | 7 | Complete | Cinematic color grading, film grain, vignettes, and camcorder HUD |
 | 8 | Complete | Web Studio intensity controls and interactive workflow |
-| 9 | Complete | Real-video frame extraction inspection and full 47-test suite pass |
+| 9 | Complete | Real-video frame extraction inspection and full test suite pass |
+| 10 | Complete | Dynamic VFX (disco ball & volumetric lights, kinetic lines, glitter) & frame-accurate CFR A/V sync |

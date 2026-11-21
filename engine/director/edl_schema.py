@@ -83,6 +83,7 @@ class EditDecisionList(BaseModel):
     social_question: str = ""
     keep_segments: list[tuple[float, float]] = Field(default_factory=list)
     jump_cuts: list[tuple[float, float]] = Field(default_factory=list)
+    dynamic_vfx: str | None = None
 
     @field_validator("version", mode="before")
     @classmethod

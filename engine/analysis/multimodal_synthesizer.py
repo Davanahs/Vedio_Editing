@@ -364,11 +364,26 @@ def synthesize_multimodal_plan(
     hook_title = re.sub(r"\s+", " ", title_source).strip(" .,!?:;")[:64].upper()
     social_q = "What stood out to you in this video?"
 
+    # Dynamic Visual FX intent detection (Disco Ball & Lights, Kinetic Lines, Glitter Sparkles)
+    dynamic_vfx = None
+    prompt_combo = f"{main_prompt} {additional_instructions} {combined_topics_low}".lower()
+    if any(k in prompt_combo for k in ["disco", "party", "club", "dance", "nightclub", "dj", "celebrat"]):
+        dynamic_vfx = "disco_ball_lights"
+    elif any(k in prompt_combo for k in ["glitter", "sparkle", "stars", "twinkle", "shimmer", "magic"]):
+        dynamic_vfx = "glitter_sparkle"
+    elif any(k in prompt_combo for k in ["lines", "speed", "kinetic", "fast", "trail", "pulse", "action"]):
+        dynamic_vfx = "kinetic_lines"
+    elif active_template.id == "pinterest_scrapbook":
+        dynamic_vfx = "glitter_sparkle"
+    elif active_template.id == "glassmorphism":
+        dynamic_vfx = "kinetic_lines"
+
     return {
         "applied_template": active_template.to_dict(),
         "auto_detected_style": auto_detected_style,
         "hook_title": hook_title,
         "social_question": social_q,
+        "dynamic_vfx": dynamic_vfx,
         "decisions": [d.to_dict() for d in decisions],
         "resource_evidence": resource_evidence or [],
         "asset_ranking_method": "offline semantic embeddings with relevance validation and local lexical fallback",

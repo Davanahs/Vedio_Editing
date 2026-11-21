@@ -184,7 +184,8 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                     "music": None,
                     "color_grade": "clean",
                     "hook_title": hook_title,
-                    "social_question": social_q
+                    "social_question": social_q,
+                    "dynamic_vfx": (multimodal_plan or {}).get("dynamic_vfx")
                 },
                 model_used="local_semantic_director",
                 raw_response="LocalSemanticDirector with Multimodal Plan",
@@ -407,7 +408,8 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
             "music": None,
             "color_grade": "dark_moody",
             "hook_title": f"⚡ {intro_title} • AI TOOLS 🤖",
-            "social_question": f"💬 @alex_clips: {social_q}"
+            "social_question": f"💬 @alex_clips: {social_q}",
+            "dynamic_vfx": (context.get("multimodal_plan") or {}).get("dynamic_vfx") if context else None
         }
 
         return DirectorResult(

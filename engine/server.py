@@ -96,6 +96,7 @@ class ChatEditRequest(BaseModel):
     style_preset: Optional[str] = None
     aspect_ratio: str = "16:9"
     effect_intensity: str = "creative"
+    dynamic_vfx: Optional[str] = None
     additional_instructions: Optional[str] = ""
     resources: List[str] = []
     remove_silence: bool = False
@@ -109,6 +110,7 @@ class RenderRequest(BaseModel):
     aspect_ratio: str = "16:9"
     background_mode: str = "blur"
     effect_intensity: str = "creative"
+    dynamic_vfx: Optional[str] = None
 
 class SubjectCutoutRequest(BaseModel):
     filename: str
@@ -507,6 +509,8 @@ async def chat_edit(req: ChatEditRequest):
 
     edl_dict = edl.model_dump()
     edl_dict["effect_intensity"] = intensity
+    if req.dynamic_vfx:
+        edl_dict["dynamic_vfx"] = req.dynamic_vfx
     elapsed = round(time.perf_counter() - t0, 2)
     frame_dicts = [frame.to_dict() for frame in visual_analyses]
     segment_context = []
@@ -618,6 +622,8 @@ async def render_video(req: RenderRequest):
     render_edl = dict(req.edl)
     if req.effect_intensity:
         render_edl["effect_intensity"] = req.effect_intensity
+    if req.dynamic_vfx:
+        render_edl["dynamic_vfx"] = req.dynamic_vfx
 
     res = render_reel_ffmpeg(
         input_video=str(video_path),

@@ -21,6 +21,7 @@ from engine.assets.registry import AssetRegistry
 from engine.render.animations import get_animation
 from engine.render.camera_motion import generate_contextual_zoom_events, build_camera_motion_filter
 from engine.render.visual_treatments import get_template_color_grade, get_template_texture_filters
+from engine.render.dynamic_vfx import detect_dynamic_vfx_intent, generate_vfx_overlay_video
 
 
 def _probe_display_size(video_path: Path, fallback_width: int, fallback_height: int) -> tuple[int, int]:
@@ -403,21 +404,37 @@ def render_reel_ffmpeg(
     crop_x = round(max(0, scaled_w - target_w) * focal_x)
     crop_y = round(max(0, scaled_h - target_h) * focal_y)
 
-    # 1. Base Stream Pre-processing (Jump-cuts and Audio/Video PTS Synchronization)
+    # 1. Base Stream Pre-processing (CFR Normalization & Sample-Accurate Jump-Cut Concat)
+    # Prevents smartphone VFR (variable frame rate) timestamp drift by normalizing to CFR 30fps & 48kHz stereo.
     keep_segments = edl.get("keep_segments")
     v_prep_filters = []
     a_prep_filters = []
 
     if keep_segments and len(keep_segments) > 0:
-        cond = "+".join(f"between(t,{s:.3f},{e:.3f})" for s, e in keep_segments)
-        v_prep_filters.append(f"[0:v]select='{cond}',setpts=N/FRAME_RATE/TB[v_raw]")
+        v_prep_filters.append("[0:v]fps=fps=30:round=near,setpts=PTS-STARTPTS[v_norm]")
         if source_has_audio:
-            a_prep_filters.append(f"[0:a:0]aselect='{cond}',asetpts=N/SR/TB,aresample=async=1000:first_pts=0[src_a]")
+            a_prep_filters.append("[0:a:0]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,asetpts=PTS-STARTPTS[a_norm]")
+        
+        v_seg_labels = []
+        a_seg_labels = []
+        for idx, (s, e) in enumerate(keep_segments):
+            v_prep_filters.append(f"[v_norm]trim=start={s:.3f}:end={e:.3f},setpts=PTS-STARTPTS[v_seg_{idx}]")
+            v_seg_labels.append(f"[v_seg_{idx}]")
+            if source_has_audio:
+                a_prep_filters.append(f"[a_norm]atrim=start={s:.3f}:end={e:.3f},asetpts=PTS-STARTPTS[a_seg_{idx}]")
+                a_seg_labels.append(f"[a_seg_{idx}]")
+
+        if source_has_audio:
+            concat_in = "".join(f"{v_seg_labels[i]}{a_seg_labels[i]}" for i in range(len(keep_segments)))
+            v_prep_filters.append(f"{concat_in}concat=n={len(keep_segments)}:v=1:a=1[v_raw][src_a]")
+        else:
+            concat_in = "".join(v_seg_labels)
+            v_prep_filters.append(f"{concat_in}concat=n={len(keep_segments)}:v=1:a=0[v_raw]")
         v_in = "v_raw"
     else:
-        v_prep_filters.append("[0:v]setpts=PTS-STARTPTS[v_raw]")
+        v_prep_filters.append("[0:v]fps=fps=30:round=near,setpts=PTS-STARTPTS[v_raw]")
         if source_has_audio:
-            a_prep_filters.append("[0:a:0]asetpts=PTS-STARTPTS,aresample=async=1000:first_pts=0[src_a]")
+            a_prep_filters.append("[0:a:0]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,asetpts=PTS-STARTPTS,aresample=async=1:first_pts=0[src_a]")
         v_in = "v_raw"
 
     tex_part = f",{texture_filter_str}" if texture_filter_str else ""
@@ -458,6 +475,39 @@ def render_reel_ffmpeg(
             f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black{cam_part},{grade_filter}{tex_part},subtitles='{ass_escaped}'[vbase]"
         )
 
+    # Dynamic Visual FX Layer (Disco Ball & Volumetric Light Rays, Kinetic Lines, Glitter Sparkles)
+    dynamic_vfx_type = edl.get("dynamic_vfx")
+    if not dynamic_vfx_type:
+        dynamic_vfx_type = detect_dynamic_vfx_intent(
+            prompt=str(edl.get("prompt") or edl.get("additional_instructions") or ""),
+            transcript=str(edl.get("transcript") or ""),
+            template_id=template_id
+        )
+
+    vfx_file = None
+    if dynamic_vfx_type:
+        temp_dir = Path(__file__).resolve().parents[1] / "temp" / "vfx"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        vfx_file = temp_dir / f"vfx_{dynamic_vfx_type}_{target_w}x{target_h}.mp4"
+        if not vfx_file.exists() or vfx_file.stat().st_size == 0:
+            generate_vfx_overlay_video(
+                vfx_type=dynamic_vfx_type,
+                output_path=vfx_file,
+                width=target_w,
+                height=target_h,
+                duration=4.0,
+                fps=30,
+                intensity=intensity,
+                face_boxes=edl.get("face_boxes")
+            )
+
+    next_input_index = 1
+    vfx_input_index = None
+    if vfx_file and vfx_file.exists():
+        vfx_input_index = next_input_index
+        next_input_index += 1
+        cmd_inputs.extend(["-stream_loop", "-1", "-i", str(vfx_file)])
+
     # Find safe, in-project PNGs for static library art or generated cutouts.
     element_dir = Path(__file__).resolve().parents[1] / "assets" / "elements"
     resources_root = Path(__file__).resolve().parents[2] / "Resources" / "graphics" / "cutouts"
@@ -484,7 +534,6 @@ def render_reel_ffmpeg(
     # Add raster counterparts of the SVG library as image inputs. Browser and
     # FFmpeg use the same artwork; the alpha channel preserves transparent edges.
     vector_input_indices = []
-    next_input_index = 1
     for graphic, png_path in vector_graphics:
         vector_input_indices.append(next_input_index)
         next_input_index += 1
@@ -492,12 +541,18 @@ def render_reel_ffmpeg(
         start = max(0.0, float(graphic.get("start", 0.0)))
         cmd_inputs.extend(["-itsoffset", f"{start:.3f}", "-loop", "1", "-framerate", "30", "-t", f"{duration:.3f}", "-i", str(png_path)])
 
-    if not vector_graphics:
-        base_video_filter = base_video_filter.replace("[vbase]", "[vout]")
-    initial_label = "vbase" if vector_graphics else "vout"
-    v_filters = [base_video_filter]
-    v_filters = v_prep_filters + [base_video_filter]
-    current_video_label = initial_label
+    v_filters = list(v_prep_filters) + [base_video_filter]
+    current_video_label = "vbase"
+
+    if vfx_input_index is not None:
+        vfx_out_label = "v_fx" if vector_graphics else "vout"
+        v_filters.append(
+            f"[{current_video_label}][{vfx_input_index}:v]blend=all_mode=screen:shortest=1[{vfx_out_label}]"
+        )
+        current_video_label = vfx_out_label
+    elif not vector_graphics:
+        v_filters[-1] = v_filters[-1].replace("[vbase]", "[vout]")
+        current_video_label = "vout"
     for index, ((graphic, _png_path), input_index) in enumerate(zip(vector_graphics, vector_input_indices)):
         is_vert = target_h > target_w
         default_size = 280 if is_vert else 240

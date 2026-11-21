@@ -19,6 +19,8 @@ from PIL import Image
 
 from engine.assets.registry import AssetRegistry
 from engine.render.animations import get_animation
+from engine.render.camera_motion import generate_contextual_zoom_events, build_camera_motion_filter
+from engine.render.visual_treatments import get_template_color_grade, get_template_texture_filters
 
 
 def _probe_display_size(video_path: Path, fallback_width: int, fallback_height: int) -> tuple[int, int]:
@@ -370,19 +372,23 @@ def render_reel_ffmpeg(
     
     cmd_inputs = ["-i", str(inp)]
     
-    # Aesthetic Color Grading Filter based on template identity
-    if template_id == "pinterest_scrapbook":
-        grade_filter = "eq=contrast=1.06:brightness=0.02:saturation=1.12"
-    elif template_id == "glassmorphism":
-        grade_filter = "eq=contrast=1.08:brightness=0.01:saturation=1.18"
-    elif template_id == "retro_camera":
-        grade_filter = "eq=contrast=1.05:saturation=0.92"
-    elif template_id == "aesthetic_lifestyle":
-        grade_filter = "eq=contrast=1.03:brightness=0.02:saturation=1.10"
-    elif template_id == "creative_minimal":
-        grade_filter = "eq=contrast=1.04:saturation=1.02"
-    else:
-        grade_filter = "eq=contrast=1.05:saturation=1.10"
+    # 2. Extract visual treatment & camera motion configurations
+    intensity = str(edl.get("effect_intensity") or "subtle").lower()
+    grade_filter = get_template_color_grade(template_id, intensity=intensity)
+    texture_filter_list = get_template_texture_filters(template_id, intensity=intensity)
+    texture_filter_str = ",".join(texture_filter_list)
+
+    # 3. Zoom Events synthesis if not already provided
+    zoom_events = edl.get("zoom_events") or []
+    if not zoom_events and intensity != "subtle":
+        total_duration = float(edl.get("video_duration") or vm.get("duration") or 45.0)
+        zoom_events = generate_contextual_zoom_events(
+            video_duration=total_duration,
+            face_boxes=edl.get("face_boxes"),
+            intensity=intensity,
+        )
+
+    subtle_breathing = (intensity not in {"subtle", "none"})
 
     # Aspect-ratio composition never distorts source pixels. "blur" preserves
     # the full source in front of a blurred cover-scaled copy; "fill" crops;
@@ -390,7 +396,7 @@ def render_reel_ffmpeg(
     background_mode = background_mode if background_mode in {"blur", "fill", "fit"} else "blur"
     focal = edl.get("focal_point") or vm.get("focal_point") or {}
     focal_x = min(1.0, max(0.0, float(focal.get("x", 0.5)))) if isinstance(focal, dict) else 0.5
-    focal_y = min(1.0, max(0.0, float(focal.get("y", 0.5)))) if isinstance(focal, dict) else 0.5
+    focal_y = min(1.0, max(0.0, float(focal.get("y", 0.38)))) if isinstance(focal, dict) else 0.38
     fill_scale = max(target_w / source_width, target_h / source_height)
     fit_scale = min(target_w / source_width, target_h / source_height)
     scaled_w, scaled_h = round(source_width * fill_scale), round(source_height * fill_scale)
@@ -414,22 +420,42 @@ def render_reel_ffmpeg(
             a_prep_filters.append("[0:a:0]asetpts=PTS-STARTPTS,aresample=async=1000:first_pts=0[src_a]")
         v_in = "v_raw"
 
+    tex_part = f",{texture_filter_str}" if texture_filter_str else ""
+
     if background_mode == "fill":
+        cam_motion = build_camera_motion_filter(
+            zoom_events, base_w=target_w, base_h=target_h,
+            subtle_breathing=subtle_breathing,
+            default_focal_x=focal_x, default_focal_y=focal_y
+        )
+        cam_part = f",{cam_motion}" if cam_motion else ""
         base_video_filter = (
             f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
-            f"crop={target_w}:{target_h}:{crop_x}:{crop_y},{grade_filter},subtitles='{ass_escaped}'[vbase]"
+            f"crop={target_w}:{target_h}:{crop_x}:{crop_y}{cam_part},{grade_filter}{tex_part},subtitles='{ass_escaped}'[vbase]"
         )
     elif background_mode == "blur":
+        cam_motion = build_camera_motion_filter(
+            zoom_events, base_w=target_w, base_h=target_h,
+            subtle_breathing=subtle_breathing,
+            default_focal_x=focal_x, default_focal_y=focal_y
+        )
+        cam_part = f",{cam_motion}" if cam_motion else ""
         base_video_filter = (
             f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
             f"crop={target_w}:{target_h}:{crop_x}:{crop_y},boxblur=24:12[background];"
-            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease[foreground];"
-            f"[background][foreground]overlay=(W-w)/2:(H-h)/2,{grade_filter},subtitles='{ass_escaped}'[vbase]"
+            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease{cam_part}[foreground];"
+            f"[background][foreground]overlay=(W-w)/2:(H-h)/2,{grade_filter}{tex_part},subtitles='{ass_escaped}'[vbase]"
         )
     else:
+        cam_motion = build_camera_motion_filter(
+            zoom_events, base_w=target_w, base_h=target_h,
+            subtle_breathing=subtle_breathing,
+            default_focal_x=focal_x, default_focal_y=focal_y
+        )
+        cam_part = f",{cam_motion}" if cam_motion else ""
         base_video_filter = (
             f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease,"
-            f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black,{grade_filter},subtitles='{ass_escaped}'[vbase]"
+            f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black{cam_part},{grade_filter}{tex_part},subtitles='{ass_escaped}'[vbase]"
         )
 
     # Find safe, in-project PNGs for static library art or generated cutouts.
@@ -473,8 +499,12 @@ def render_reel_ffmpeg(
     v_filters = v_prep_filters + [base_video_filter]
     current_video_label = initial_label
     for index, ((graphic, _png_path), input_index) in enumerate(zip(vector_graphics, vector_input_indices)):
-        width = max(48, min(target_w, int(graphic.get("width") or 180)))
-        height = max(48, min(target_h, int(graphic.get("height") or 180)))
+        is_vert = target_h > target_w
+        default_size = 280 if is_vert else 240
+        req_w = int(graphic.get("width") or default_size)
+        req_h = int(graphic.get("height") or default_size)
+        width = max(180, min(target_w, req_w))
+        height = max(180, min(target_h, req_h))
         with Image.open(_png_path) as artwork:
             artwork_width, artwork_height = artwork.size
         box_scale = min(width / max(1, artwork_width), height / max(1, artwork_height))
@@ -482,8 +512,21 @@ def render_reel_ffmpeg(
         height = max(2, round(artwork_height * box_scale))
         coordinate_width = max(1, int(src_w or target_w))
         coordinate_height = max(1, int(src_h or target_h))
-        x = int(float(graphic.get("x", coordinate_width * 0.72)) * target_w / coordinate_width)
-        y = int(float(graphic.get("y", coordinate_height * 0.22)) * target_h / coordinate_height)
+
+        raw_x = graphic.get("x")
+        raw_y = graphic.get("y")
+        if raw_x is not None:
+            x = int(float(raw_x) * target_w / coordinate_width)
+        else:
+            x = int(target_w * 0.68) if index % 2 == 0 else int(target_w * 0.12)
+            x = max(int(target_w * 0.05), min(int(target_w * 0.95) - width, x))
+
+        if raw_y is not None:
+            y = int(float(raw_y) * target_h / coordinate_height)
+        else:
+            y = int(target_h * (0.22 + 0.14 * (index % 3)))
+            y = max(int(target_h * 0.12), min(int(target_h * 0.66) - height, y))
+
         start = max(0.0, float(graphic.get("start", 0.0)))
         end = max(start, float(graphic.get("end", start)))
         rotation = float(graphic.get("rotation", 0.0))
@@ -513,7 +556,9 @@ def render_reel_ffmpeg(
         x_expr, y_expr = str(x), str(y)
         if spec.kind == "slide":
             x_expr = f"{x}-80*(1-min(1,max(0,(t-{start:.3f})/{spec.entrance_seconds:.3f})))"
+            y_expr = str(y)
         elif spec.kind == "float":
+            x_expr = f"{x}-(w-{width})/2"
             y_expr = f"{y}+10*sin(2*PI*(t-{start:.3f})/2)"
         elif spec.kind == "rotate":
             x_expr = f"{x}-(w-{width})/2"

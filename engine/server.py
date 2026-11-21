@@ -37,6 +37,7 @@ from engine.director.validator import apply_plan_composition
 from engine.assets.registry import AssetRegistry
 from engine.pipeline import group_words_into_bursts
 from engine.render.ffmpeg_reel_builder import render_reel_ffmpeg
+from engine.render.camera_motion import generate_contextual_zoom_events
 from engine.assets.subject_cutout import create_subject_cutout
 
 logger = logging.getLogger(__name__)
@@ -94,6 +95,7 @@ class ChatEditRequest(BaseModel):
     template: str = "auto_creative"
     style_preset: Optional[str] = None
     aspect_ratio: str = "16:9"
+    effect_intensity: str = "creative"
     additional_instructions: Optional[str] = ""
     resources: List[str] = []
     remove_silence: bool = False
@@ -106,6 +108,7 @@ class RenderRequest(BaseModel):
     edl: Dict[str, Any]
     aspect_ratio: str = "16:9"
     background_mode: str = "blur"
+    effect_intensity: str = "creative"
 
 class SubjectCutoutRequest(BaseModel):
     filename: str
@@ -475,32 +478,35 @@ async def chat_edit(req: ChatEditRequest):
             edl = EditDecisionList(**retimed_dict)
             logger.info("Smart Jump-Cuts: %d pauses trimmed (%.2fs dead air removed)", len(cut_intervals), trimmed_seconds)
 
-    # 7. Cadence Face Punch Zoom
+    # 7. Cadence Face Punch Zoom & Dynamic Camera Motion
+    intensity = req.effect_intensity or "creative"
     if req.cadence_zoom:
         current_zooms = list(edl.zoom_events)
         edl_dur = float(edl.video_duration or duration)
         if not current_zooms:
-            if edl_dur >= 7.0:
+            all_faces = [
+                face for frame in visual_analyses
+                for face in (getattr(frame, "normalized_faces", None) or [])
+            ]
+            synthesized_zooms = generate_contextual_zoom_events(
+                video_duration=edl_dur,
+                audio_segments=audio_segments,
+                face_boxes=all_faces,
+                intensity=intensity,
+            )
+            for z in synthesized_zooms:
                 current_zooms.append(ZoomEvent(
-                    id="z_hook_punch",
-                    start=1.0,
-                    end=3.5,
-                    scale=1.12,
-                    target="face",
-                    ease="back.out(1.2)"
-                ))
-            if edl_dur >= 16.0:
-                current_zooms.append(ZoomEvent(
-                    id="z_mid_punch",
-                    start=min(edl_dur - 4.0, 11.0),
-                    end=min(edl_dur - 1.0, 14.5),
-                    scale=1.10,
+                    id=z["id"],
+                    start=z["start"],
+                    end=z["end"],
+                    scale=z["scale"],
                     target="face",
                     ease="power2.inOut"
                 ))
             edl = edl.model_copy(update={"zoom_events": current_zooms})
 
     edl_dict = edl.model_dump()
+    edl_dict["effect_intensity"] = intensity
     elapsed = round(time.perf_counter() - t0, 2)
     frame_dicts = [frame.to_dict() for frame in visual_analyses]
     segment_context = []
@@ -609,10 +615,14 @@ async def render_video(req: RenderRequest):
     out_filename = f"reel_{video_path.stem}_{ratio_tag}_{timestamp}.mp4"
     out_path = EXPORT_DIR / out_filename
 
+    render_edl = dict(req.edl)
+    if req.effect_intensity:
+        render_edl["effect_intensity"] = req.effect_intensity
+
     res = render_reel_ffmpeg(
         input_video=str(video_path),
         output_video=str(out_path),
-        edl=req.edl,
+        edl=render_edl,
         aspect_ratio=req.aspect_ratio,
         sfx_dir=str(SFX_DIR),
         background_mode=req.background_mode,

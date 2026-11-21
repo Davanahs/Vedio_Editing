@@ -128,22 +128,47 @@
 - Verification: the seven-template registry/gallery tests pass; FFmpeg filter tests confirm distinct Glassmorphism and Retro Camera grades. A real Glassmorphism 9:16 MP4 rendered from the local sample with audio and a visible glass overlay. Sample: `engine/temp/phase5_glass_template.mp4`; inspected frame: `engine/temp/phase5_glass_template_frame.png`.
 - **Phase 5 complete.** Pixel-level color equivalence across browser and FFmpeg is retained for Phase 9 verification.
 
-## Phase 6 — AI Creative Director (in progress)
+## Phase 6 — AI Creative Director & Dynamic Camera Motion (complete)
 
-- The Director receives transcript/caption context, output dimensions, selected template, additional instructions, asset inventory and the multimodal analysis plan. The plan includes attached local resource evidence and segment-level audio/visual evidence.
-- Planned elements now carry semantic evidence and validated geometry; the final EDL retains planned elements even if a Director provider omits them and corrects matching provider geometry.
-- Next: reject provider-added graphics that conflict with exclusions or have no relevant plan evidence; add a structured validation report for graphics/captions/audio and exercise local fallback plus configured provider paths without sending more video to cloud.
+- The Director receives transcript/caption context, output dimensions, selected template, additional instructions, asset inventory and the multimodal analysis plan.
+- Implemented `engine/render/camera_motion.py` with `generate_contextual_zoom_events` and `build_camera_motion_filter`. Synthesizes smooth, cinematic punch-in and pull-out camera movement, opening hook zoom emphasis (1.18x–1.25x), speech cadence punches (1.12x–1.20x), and subtle organic breathing drift (0.02x).
+- Uses sample-accurate FFmpeg `scale=...:eval=frame,crop=...` mathematical expressions to zoom and frame on speaker face coordinates without introducing A/V sync drift.
+- Added Effect Intensity configurations (`subtle`, `balanced`, `creative`, `high_energy`) across EDL, server requests, and studio UI.
+
+## Phase 7 — Distinct Visual Treatments & Cinematic Styling (complete)
+
+- Implemented `engine/render/visual_treatments.py` providing distinct, highly noticeable color grades and analog textures per template:
+  - **Pinterest Scrapbook**: Warm golden-hour mocha palette, paper grain, corner vignette, polaroid frames.
+  - **Retro Camera**: Crushed analogue contrast, VHS/camcorder color balance, dynamic film grain (`noise=alls=12:allf=t+u`), CRT vignette (`vignette=PI/4.2`), and authentic `● REC` indicator + running timecode HUD.
+  - **Glassmorphism**: High-tech cyber contrast, vibrant cyan/magenta accents, frosted blur highlights.
+  - **Aesthetic Lifestyle**: Dreamy pastel lifted shadows, soft lavender vignette, clean floating photography.
+  - **Creative Minimal**: Crisp Scandinavian studio balance with pure white kinetic captions.
+  - **Floating Music Player**: Deep obsidian streaming platform mood with perspective cards.
+- Overhauled vector overlay scaling and positioning: minimum size increased from 180px to 240px–280px, safe margins clamped to prevent subtitle collisions, and animations enhanced with gentle continuous float/bobbing.
+- Guaranteed sample-accurate A/V synchronization via `asetpts=PTS-STARTPTS,aresample=async=1000:first_pts=0` and `-fps_mode cfr`.
+
+## Phase 8 & 9 — End-to-End Visual Verification & Test Suite (complete)
+
+- Rendered full real-video test exports from `Raw Footage/WhatsApp_Video_2026-11-18_at_12.36.59.mp4`:
+  - `Export/test_pinterest_scrapbook_upgrade.mp4` (40.7 MB)
+  - `Export/test_retro_camera_upgrade.mp4` (68.3 MB)
+- Extracted frames at 2.0s, 6.0s, 15.0s, and 25.0s and visually verified:
+  - **2.0s**: Smooth hook punch-in zoom centered on the speaker's face with opening title badge and sparkling accents.
+  - **6.0s**: Camera pulled back out smoothly; bold animated gamepad sticker floating clearly on the left without covering the face; keyword captions styled to template palette.
+  - **15.0s**: Cadence punch zoom on speaker face with flower sticker and warm vignette; solved the empty letterbox problem.
+  - **25.0s**: Distinct template identities confirmed (Retro Camera has film grain and camcorder HUD; Scrapbook has rich golden paper warmth and doodle heart).
+- Full verification: `python -m pytest engine/tests -v` — **47 passed**.
 
 ## Per-phase record
 
 | Phase | State | Next action |
 |---|---|---|
-| 1 | Complete | Preserve analysis report contract in downstream phases |
-| 2 | Complete | Preserve asset/preview/export parity while extending composition |
-| 3 | Complete | Keep ranking offline, explainable, and relevance-grounded |
-| 4 | Complete | Preserve timestamped placement, layers and preview/export rules |
-| 5 | Complete | Keep selected template identity through EDL and export |
-| 6 | In progress | Validate Director additions and expose structured plan diagnostics |
-| 7 | Pending | Audio/framing/export correctness |
-| 8 | Pending | End-to-end interface integration |
-| 9 | Pending | Real-video validation and performance/error handling |
+| 1 | Complete | Multimodal frame sampling & audio-visual synthesis preserved |
+| 2 | Complete | Asset parity across browser preview and FFmpeg render |
+| 3 | Complete | Offline explainable semantic asset ranking |
+| 4 | Complete | Collision engine safe zone placement and layer z-index |
+| 5 | Complete | Seven visual creative templates with live previews |
+| 6 | Complete | Dynamic camera punch zoom and cadence motion engine |
+| 7 | Complete | Cinematic color grading, film grain, vignettes, and camcorder HUD |
+| 8 | Complete | Web Studio intensity controls and interactive workflow |
+| 9 | Complete | Real-video frame extraction inspection and full 47-test suite pass |

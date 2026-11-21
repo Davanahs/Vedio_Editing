@@ -2351,6 +2351,17 @@
           <input type="checkbox" id="chkRemoveRepeats" checked>
           <span>🔄 <b>Retake Detection:</b> Auto-trim stumbles & restarts</span>
         </label>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
+            ⚡ <b>Effect Intensity:</b>
+          </span>
+          <select id="effectIntensitySelect" class="ratio-dropdown" style="padding:3px 8px; font-size:11px; border-radius:4px;">
+            <option value="subtle">Subtle</option>
+            <option value="balanced">Balanced</option>
+            <option value="creative" selected>Creative (Default)</option>
+            <option value="high_energy">High Energy</option>
+          </select>
+        </div>
       </div>
 
       <!-- Primary Action: Generate Edit Button -->
@@ -3122,7 +3133,8 @@
             resources: attachedResources,
             remove_silence: document.getElementById('chkRemoveSilence')?.checked ?? true,
             cadence_zoom: document.getElementById('chkCadenceZoom')?.checked ?? true,
-            remove_repeats: document.getElementById('chkRemoveRepeats')?.checked ?? true
+            remove_repeats: document.getElementById('chkRemoveRepeats')?.checked ?? true,
+            effect_intensity: document.getElementById('effectIntensitySelect')?.value || 'creative'
           })
         });
 
@@ -3578,7 +3590,8 @@
             filename: activeVideo,
             edl: edlData,
             aspect_ratio: currentAspect,
-            background_mode: document.getElementById('backgroundModeSelect').value
+            background_mode: document.getElementById('backgroundModeSelect').value,
+            effect_intensity: document.getElementById('effectIntensitySelect')?.value || 'creative'
           })
         });
 

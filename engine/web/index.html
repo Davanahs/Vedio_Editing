@@ -1717,22 +1717,71 @@
       display: none;
       width: 100%;
       text-decoration: none;
-    }
-
-    .btn-download-inner {
-      width: 100%;
-      background: var(--brand-emerald);
-      border: none;
-      color: #000000;
-      padding: 8px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      border: 1px solid #34D399;
+      color: #FFFFFF !important;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
-      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-timeline-download:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .dynamic-render {
+      animation: springIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, dynamicFloat 4.5s ease-in-out infinite alternate;
+      will-change: transform, opacity;
+    }
+
+    @keyframes springIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.65) translateY(18px) rotate(-6deg);
+      }
+      70% {
+        transform: scale(1.04) translateY(-3px) rotate(1deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes dynamicFloat {
+      0% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+      50% {
+        transform: translateY(-6px) rotate(1.5deg);
+      }
+      100% {
+        transform: translateY(2px) rotate(-0.5deg);
+      }
+    }
+
+    @keyframes driftAcross {
+      0% {
+        transform: translateX(-12px) translateY(4px);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(12px) translateY(-4px);
+      }
     }
 
     /* Modal Dropzone */
@@ -2249,6 +2298,11 @@
         <div class="results-text-body" id="resultsSummaryText">
           Tailored composition generated with kinetic captions, visual triggers, and sound design.
         </div>
+        <div id="resultsCardDownloadWrap" style="margin-top:12px; display:none;">
+          <a id="btnSummaryDownloadLink" class="btn-timeline-download" style="display:inline-flex; width:100%; text-decoration:none; justify-content:center;" href="#" download>
+            <span style="font-size:12px; font-weight:800; color:#fff;">⬇ Download Exported Reel</span>
+          </a>
+        </div>
       </div>
 
     </aside>
@@ -2298,8 +2352,8 @@
 
       <div style="font-size:10px; color:var(--text-muted);">⏱ ~20s render</div>
 
-      <a id="btnDownloadLink" class="btn-timeline-download" href="#" download>
-        <button class="btn-download-inner">⬇ Download MP4</button>
+      <a id="btnDownloadLink" class="btn-timeline-download" href="#" target="_blank" download>
+        <span>⬇</span> Download Reel
       </a>
     </div>
   </footer>
@@ -2475,11 +2529,53 @@
       });
     }
 
+    // ── COMPLETE STUDIO RESET ON SWITCH OR NEW VIDEO ──
+    function resetStudioState() {
+      edlData = null;
+      triggeredSfxTimes.clear();
+
+      // Clear dynamic overlays and captions
+      const container = document.getElementById('dynamicOverlaysContainer');
+      if (container) container.innerHTML = '';
+      if (topHookBanner) topHookBanner.style.display = 'none';
+      if (socialQuestionCard) socialQuestionCard.style.display = 'none';
+      if (captionLeadWord) { captionLeadWord.innerText = ''; captionLeadWord.style.display = 'none'; }
+      if (captionKeywordPunch) { captionKeywordPunch.innerText = ''; captionKeywordPunch.style.display = 'none'; }
+
+      // Default to Raw Footage mode so user can inspect first
+      setViewMode('original');
+
+      // Clear timeline clip tracks
+      const tCap = document.getElementById('tlTrackCaptions');
+      const tGraph = document.getElementById('tlTrackGraphics');
+      const tSfx = document.getElementById('tlTrackSfx');
+      if (tCap) tCap.innerHTML = '';
+      if (tGraph) tGraph.innerHTML = '';
+      if (tSfx) tSfx.innerHTML = '';
+
+      // Reset playhead & scrubber
+      if (scrubberFill) scrubberFill.style.width = '0%';
+      if (timelineNeedle) timelineNeedle.style.left = '0px';
+      if (labelCurrentTime) labelCurrentTime.innerText = "00:00.0";
+
+      // Hide results card & download links
+      const summaryCard = document.getElementById('resultsSummaryCard');
+      if (summaryCard) summaryCard.classList.remove('visible');
+      const summaryDl = document.getElementById('resultsCardDownloadWrap');
+      if (summaryDl) summaryDl.style.display = 'none';
+      const tlDl = document.getElementById('btnDownloadLink');
+      if (tlDl) tlDl.style.display = 'none';
+
+      // Clear additional instructions
+      const addInp = document.getElementById('additionalInstructionsInput');
+      if (addInp) addInp.value = '';
+    }
+
     // ── VIDEO LOADING & SWITCHING ──
     function loadVideo(filename, duration = 50.85, width = 848, height = 474) {
+      resetStudioState();
       activeVideo = filename;
       activeDuration = duration;
-      triggeredSfxTimes.clear();
 
       document.getElementById('loadedVideoTitle').innerText = filename;
       document.getElementById('loadedVideoSpecs').innerText = `${duration.toFixed(1)}s • ${width} × ${height}`;
@@ -2505,8 +2601,7 @@
         changeCanvasAspect("9:16");
       }
 
-      // Request initial dynamic edit plan
-      requestDynamicCreativeEdit();
+      // DO NOT auto-generate edit. User must choose template and click Generate.
     }
 
     function changeCanvasAspect(ratio) {
@@ -2671,6 +2766,7 @@
     }
 
     async function uploadVideoFile(file) {
+      resetStudioState();
       // 1. INSTANT LOCAL PREVIEW: Attach local blob URL so user immediately sees video
       const localBlobUrl = URL.createObjectURL(file);
       activeVideo = file.name;
@@ -2714,8 +2810,7 @@
           document.getElementById('loadedVideoSpecs').innerText = `${data.duration.toFixed(1)}s • ${data.width} × ${data.height}`;
           showToast(`Ready for editing: ${data.filename}`, "✅");
           fetchStudioStatus();
-          // Request initial dynamic edit plan
-          requestDynamicCreativeEdit();
+          // DO NOT auto-generate edit. Ready for user prompt & selection.
         } else {
           showToast("Upload response note: ready in local player", "ℹ️");
         }
@@ -2860,6 +2955,7 @@
 
           edlData = data.edl;
           renderTimelineClips(edlData);
+          setViewMode('edited');
 
           // Update Top Hook and Social Question from dynamic EDL
           if (edlData.hook_title) {
@@ -2867,8 +2963,8 @@
           }
           if (edlData.social_question) {
             socialQuestionBody.innerHTML = `
-              <span style="color:#64748B; font-size:10px; display:block;">@alex_clips</span>
-              ${edlData.social_question.replace('💬 @alex_clips: ', '')}
+              <span style="color:#64748B; font-size:10px; display:block;">COMMUNITY QUESTION</span>
+              ${edlData.social_question.replace('💬 @alex_clips: ', '').replace('💬 ', '')}
             `;
           }
 
@@ -2958,6 +3054,15 @@
         else if (asset === "comment") icon = "💬";
         else if (asset === "heart") icon = "❤️";
         else if (asset === "star") icon = "⭐";
+        else if (asset === "gamepad") icon = "🎮";
+        else if (asset === "money") icon = "💰";
+        else if (asset === "youtube") icon = "▶️";
+        else if (asset === "chip") icon = "⚡";
+        else if (asset === "fire") icon = "🔥";
+
+        const categoryBadge = (title.includes("GTA") || title.includes("CLIP") || title.includes("MONEY") || asset === "gamepad" || asset === "money" || asset === "youtube")
+          ? "GAMING INTEL"
+          : (asset === "gemini" || asset === "book" || title.includes("NOTEBOOK") ? "NOTEBOOKLM AI" : "KEY HIGHLIGHT");
 
         if (currentTemplate === "pinterest_scrapbook") {
           html += `
@@ -2976,7 +3081,7 @@
           html += `
             <div class="orbit-glass-card dynamic-render" style="display:block; left:${xPct}%; top:${yPct}%; max-width:220px;">
               <div style="font-size:9px; color:#22D3EE; font-weight:800; display:flex; align-items:center; gap:4px;">
-                <span>${icon}</span> <span>NOTEBOOKLM INSIGHT</span>
+                <span>${icon}</span> <span>${categoryBadge}</span>
               </div>
               <div style="font-size:12px; font-weight:800; margin-top:2px; color:#FFFFFF;">${title}</div>
               ${subtitle ? `<div style="font-size:9px; color:#94A3B8; margin-top:2px;">${subtitle}</div>` : ''}
@@ -3171,8 +3276,10 @@
 
     // ── EXPORT VIDEO WITH FFMPEG ──
     async function exportVideoFile() {
-      if (!edlData) await requestDynamicCreativeEdit();
-      if (!edlData) return;
+      if (!edlData) {
+        showToast("Please click 'Generate Creative Edit' first!", "⚠️");
+        return;
+      }
 
       const btn = document.getElementById('btnExportVideo');
       btn.innerText = "⏳ Rendering...";
@@ -3191,14 +3298,34 @@
         });
 
         const data = await res.json();
-        if (data.success && data.download_url) {
+        if (data.success && data.export_filename) {
           btn.innerText = "✅ Render Complete!";
           showToast(`Exported (${data.file_size_mb} MB) with mastered audio!`, "🎉");
 
+          const downloadApiUrl = `/api/download/${data.export_filename}`;
+
           const dl = document.getElementById('btnDownloadLink');
-          dl.href = data.download_url;
-          dl.download = data.export_filename;
-          dl.style.display = "block";
+          if (dl) {
+            dl.href = downloadApiUrl;
+            dl.download = data.export_filename;
+            dl.style.display = "inline-flex";
+          }
+
+          const summaryWrap = document.getElementById('resultsCardDownloadWrap');
+          const summaryLink = document.getElementById('btnSummaryDownloadLink');
+          if (summaryWrap && summaryLink) {
+            summaryLink.href = downloadApiUrl;
+            summaryLink.download = data.export_filename;
+            summaryWrap.style.display = "block";
+          }
+
+          // Trigger browser direct download
+          const tempA = document.createElement('a');
+          tempA.href = downloadApiUrl;
+          tempA.download = data.export_filename;
+          document.body.appendChild(tempA);
+          tempA.click();
+          document.body.removeChild(tempA);
         } else {
           btn.innerText = "❌ Render Failed";
           showToast("Render failed. Check terminal.", "❌");
@@ -3255,11 +3382,9 @@
             recentList.appendChild(recentItem);
           });
 
-          // Auto-load first video if none active
+          // Auto-load first video ONLY if none active yet
           if (!activeVideo && data.raw_videos.length > 0) {
             loadVideo(data.raw_videos[0].name);
-          } else if (activeVideo) {
-            loadVideo(activeVideo);
           }
         }
       } catch (e) {}

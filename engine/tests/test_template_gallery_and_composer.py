@@ -127,8 +127,9 @@ def test_ass_subtitles_zero_alex_clips_and_dynamic_coords():
         # Strict assertion: @alex_clips MUST be purged
         assert "@alex_clips" not in content, "Fake @alex_clips detected in ASS subtitles!"
 
-        # Dynamic coordinates must be used
-        assert "\\pos(120,280)" in content, "Failed to use exact EDL (x, y) coordinates!"
+        # Dynamic coordinates & animation must be used
+        assert "120,280" in content, "Failed to use exact EDL (x, y) coordinates!"
+        assert "\\move(" in content, "Failed to apply dynamic motion animation!"
 
         # Template styling applied
         assert "Georgia" in content, "Failed to apply Pinterest Scrapbook Georgia font style!"

@@ -248,8 +248,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         else:
             badge_text = f"{prefix}{word}"
 
+        # Animate entrance: glide in from subtle offset with smooth fade
+        drift_x = pos_x - 14 if pos_x < (width / 2) else pos_x + 14
+        drift_y = pos_y + 10
         events.append(
-            f"Dialogue: 2,{start_t},{end_t},PopUpBadge,,0,0,0,,{{\\pos({pos_x},{pos_y})}}  {badge_text}  "
+            f"Dialogue: 2,{start_t},{end_t},PopUpBadge,,0,0,0,,{{\\fad(220,180)\\move({drift_x},{drift_y},{pos_x},{pos_y},0,420)}}  {badge_text}  "
         )
 
     # 4. Spoken Dynamic Captions (Two-tone White + Electric Yellow)
@@ -323,9 +326,23 @@ def render_reel_ffmpeg(
     
     cmd_inputs = ["-i", str(inp)]
     
-    # Video Filter: Scale, Pad, and Burn Stylized Visual Layer
+    # Aesthetic Color Grading Filter based on template identity
+    if template_id == "pinterest_scrapbook":
+        grade_filter = "eq=contrast=1.06:brightness=0.02:saturation=1.12"
+    elif template_id == "glassmorphism":
+        grade_filter = "eq=contrast=1.08:brightness=0.01:saturation=1.18"
+    elif template_id == "retro_camera":
+        grade_filter = "eq=contrast=1.05:saturation=0.92"
+    elif template_id == "aesthetic_lifestyle":
+        grade_filter = "eq=contrast=1.03:brightness=0.02:saturation=1.10"
+    elif template_id == "creative_minimal":
+        grade_filter = "eq=contrast=1.04:saturation=1.02"
+    else:
+        grade_filter = "eq=contrast=1.05:saturation=1.10"
+
+    # Video Filter: Scale, Pad, Color Grade, and Burn Stylized Visual Layer
     v_filters = [
-        f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease,pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black,subtitles='{ass_escaped}'[vout]"
+        f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease,pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black,{grade_filter},subtitles='{ass_escaped}'[vout]"
     ]
     
     # Audio Filters: Master dialogue with loudness normalization to -14 LUFS (Style Sheet Section 7)

@@ -90,12 +90,17 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
             social_q = multimodal_plan.get("social_question", "💬 What do you think?")
 
             # Opening hook
+            is_gaming_hook = ("GTA" in hook_title or "GAMING" in hook_title or "CLIPS" in hook_title or "MONEY" in hook_title)
+            is_gemini_hook = ("GEMINI" in hook_title or "NOTEBOOK" in hook_title)
+            hook_asset = "gamepad" if is_gaming_hook else ("gemini" if is_gemini_hook else "star")
+            hook_sub = "Trending Clips" if is_gaming_hook else ("AI Assistant" if is_gemini_hook else "AI Studio")
+
             graphics.append({
                 "id": "g_title_0",
-                "asset_id": "gemini",
+                "asset_id": hook_asset,
                 "type": "kinetic_title",
                 "title": hook_title.split("•")[0].strip("⚡✨ "),
-                "subtitle": "AI Studio",
+                "subtitle": hook_sub,
                 "start": 0.8,
                 "end": 3.2,
                 "x": 540 if is_landscape else 540,

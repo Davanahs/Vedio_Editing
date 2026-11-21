@@ -143,25 +143,31 @@ def _analyze_segment_semantics(text: str, is_last: bool, word_idx: int, total_wo
             keywords.append(kt)
 
     # Topic synthesis
-    if any(k in low for k in ["like", "comment", "subscribe", "follow", "more"]):
+    if any(k in low for k in ["like", "comment", "subscribe", "follow", "website link"]):
         topic = "Audience Engagement & Call to Action"
         tone = "upbeat friendly"
         is_cta = True
-    elif any(k in low for k in ["gemini", "notebooklm", "tool", "ai"]):
-        topic = "AI Tool Introduction: Gemini NotebookLM"
+    elif any(k in low for k in ["gta", "gts", "gta6", "gts6", "gaming", "game", "clipping", "clips", "earn money", "views"]):
+        topic = "Gaming & Content Monetization"
+        tone = "high-energy discovery"
+    elif any(k in low for k in ["gemini", "notebooklm", "notebook alum"]):
+        topic = "AI Productivity: Gemini NotebookLM"
         tone = "enthusiastic discovery"
-    elif any(k in low for k in ["exam", "study", "research", "interview"]):
-        topic = "Academic & Career Research Utility"
+    elif any(k in low for k in ["exam", "exams", "study", "research", "interview"]):
+        topic = "Academic & Career Utility"
         tone = "instructional helpful"
     elif any(k in low for k in ["mcq", "quiz", "questions"]):
-        topic = "Automated Quiz & MCQ Generation"
+        topic = "Automated Quiz & Knowledge Check"
         tone = "excited educational"
     elif any(k in low for k in ["ppt", "presentation", "slides"]):
-        topic = "Automated Presentation Deck Creation"
+        topic = "Presentation & Document Creation"
         tone = "productive efficient"
     elif any(k in low for k in ["audio", "podcast", "conversation", "listen"]):
-        topic = "Two-Way Audio Podcast Synthesis"
-        tone = "fascinating conversational"
+        topic = "Audio Synthesis & Dialogue"
+        tone = "conversational engaging"
+    elif any(k in low for k in ["tool", "software", "app", "application", "ai"]):
+        topic = "AI Tools & Workflow Overview"
+        tone = "clear narrative"
     elif word_idx < total_words * 0.25:
         topic = "Video Introduction & Hook"
         tone = "engaging welcoming"

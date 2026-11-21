@@ -274,14 +274,17 @@ def synthesize_multimodal_plan(
         )
 
     # Generate Dynamic Hook Title & Grounded Social Question (NO invented handles/products)
-    combined_topics = " ".join([d.spoken_topic for d in decisions])
-    if "NotebookLM" in combined_topics or "Gemini" in combined_topics:
+    combined_topics_low = (" ".join([d.spoken_topic for d in decisions]) + " " + " ".join([seg.text for seg in audio_segments])).lower()
+    if any(k in combined_topics_low for k in ["gta", "gts", "gta6", "gts6", "gaming", "game", "clipping", "clips", "earn money"]):
+        hook_title = "⚡ GTA 6 CLIPS • EARN MONEY 💰"
+        social_q = "💬 What clipping platform do you use to monetize videos?"
+    elif any(k in combined_topics_low for k in ["notebooklm", "notebook alum", "gemini"]):
         hook_title = "⚡ GEMINI NOTEBOOKLM • AI TOOLS 🤖"
         social_q = "💬 What is your favorite feature in Google Gemini NotebookLM?"
-    elif "Fashion" in combined_topics or "Lifestyle" in combined_topics or "aesthetic" in prompt_low:
+    elif any(k in combined_topics_low for k in ["fashion", "lifestyle", "outfit", "aesthetic"]):
         hook_title = "✨ AESTHETIC LIFESTYLE • DAILY VIBES 🌸"
         social_q = "💬 Which detail do you love most from this look?"
-    elif "Recipe" in combined_topics or "Cooking" in combined_topics:
+    elif any(k in combined_topics_low for k in ["recipe", "cooking", "food", "dish"]):
         hook_title = "🍲 MASTER RECIPE • QUICK PREP 👨‍🍳"
         social_q = "💬 Have you tried cooking this dish before?"
     else:
@@ -322,13 +325,23 @@ def _select_contextual_element(
     if is_cta:
         if "like" in speech_low or "follow" in speech_low:
             candidates.append(("heart", "LIKE & FOLLOW", "Tap the heart for more!"))
-        if "comment" in speech_low or "reply" in speech_low or "tell" in speech_low:
-            candidates.append(("comment", "COMMENT BELOW", "Share your thoughts!"))
+        if "comment" in speech_low or "reply" in speech_low or "tell" in speech_low or "link" in speech_low:
+            candidates.append(("comment", "COMMENT FOR LINK", "Get the Platform Link"))
 
-    # 2. Tech / Gemini / Education checks
+    # 2. Gaming / GTA / Clipping / Monetization checks
+    if any(k in speech_low for k in ["gta", "gts", "game", "gaming", "gamer", "stream", "play"]):
+        candidates.append(("gamepad", "GTA 6 GAMING", "Viral Clipping Strategy"))
+    if any(k in speech_low for k in ["money", "earn", "cash", "views", "monetize", "revenue", "income", "paid"]):
+        candidates.append(("money", "EARN MONEY", "Monetize Short Clips"))
+    if any(k in speech_low for k in ["youtube", "yt", "link", "video link", "copy"]):
+        candidates.append(("youtube", "YOUTUBE CLIPS", "Automated Clip Creator"))
+    if any(k in speech_low for k in ["clip", "clipping", "platform", "creator", "content creator"]):
+        candidates.append(("chip", "SMART CLIPPING", "Instant Viral Highlights"))
+
+    # 3. Tech / Gemini / Education checks
     if any(k in speech_low for k in ["gemini", "notebooklm", "notebook alum", "google ai"]):
         candidates.append(("gemini", "GEMINI NOTEBOOKLM", "Smart AI Assistant"))
-    if any(k in speech_low for k in ["exam", "exams", "study", "research", "learn", "lesson"]):
+    if any(k in speech_low for k in ["exam", "exams", "research", "interview", "test"]) or ("academic" in topic.lower() and any(k in speech_low for k in ["study", "learn"])):
         candidates.append(("book", "EXAMS & STUDY", "Research & Preparation"))
     if any(k in speech_low for k in ["mcq", "mcqs", "quiz", "questions"]):
         candidates.append(("quiz", "GENERATE MCQS", "Instant Quiz Prep"))
@@ -339,7 +352,7 @@ def _select_contextual_element(
     if any(k in speech_low for k in ["laptop", "computer", "software", "tool"]):
         candidates.append(("laptop", "DESKTOP STUDIO", "Web App Workflow"))
 
-    # 3. Lifestyle / Aesthetic checks
+    # 4. Lifestyle / Aesthetic checks
     if any(k in speech_low for k in ["outfit", "style", "dress", "fashion", "aesthetic"]):
         candidates.append(("polaroid_frame", "DAILY OOTD", "Aesthetic Look"))
         candidates.append(("flower_blossom", "FLORAL ACCENT", "Dreamy Mood"))

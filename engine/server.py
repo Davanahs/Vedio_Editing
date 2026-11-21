@@ -345,10 +345,30 @@ async def render_video(req: RenderRequest):
     return {
         "success": True,
         "export_filename": out_filename,
-        "download_url": f"/media/export/{out_filename}",
+        "download_url": f"/api/download/{out_filename}",
         "file_size_mb": size_mb,
         "aspect_ratio": req.aspect_ratio
     }
+
+@app.get("/api/download/{filename}")
+async def download_file(filename: str):
+    """Direct forced file download with attachment headers."""
+    file_path = EXPORT_DIR / filename
+    if not file_path.exists():
+        matches = list(EXPORT_DIR.glob(f"*{filename}*"))
+        if matches:
+            file_path = matches[0]
+        else:
+            raise HTTPException(status_code=404, detail="Exported video file not found")
+    
+    return FileResponse(
+        path=str(file_path),
+        filename=filename,
+        media_type="video/mp4",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"'
+        }
+    )
 
 if __name__ == "__main__":
     import uvicorn

@@ -10,90 +10,261 @@
     "scrapbook_decorative",
     "glassmorphism",
     "retro_camera",
+    "subject_cutout",
     "social_engagement"
   ],
   "logos": {
-    "instagram": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "instagram", "color": "#E4405F", "file": "instagram.svg", "category": "social_engagement", "keywords": ["instagram", "ig", "social", "reels", "dm", "follow"]},
-    "youtube": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "youtube", "color": "#FF0000", "file": "youtube.svg", "category": "social_engagement", "keywords": ["youtube", "subscribe", "video", "channel", "watch"]},
-    "chatgpt": {"type": "svg", "source": "local", "slug": "openai", "color": "#10A37F", "file": "openai.svg", "category": "ai_technology", "keywords": ["chatgpt", "openai", "gpt", "ai", "llm", "prompt"]},
-    "tiktok": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "tiktok", "color": "#010101", "file": "tiktok.svg", "category": "social_engagement", "keywords": ["tiktok", "viral", "trend", "short"]},
-    "python": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "python", "color": "#3776AB", "file": "python.svg", "category": "ai_technology", "keywords": ["python", "code", "programming", "script", "developer"]},
-    "react": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "react", "color": "#61DAFB", "file": "react.svg", "category": "ai_technology", "keywords": ["react", "frontend", "web", "app", "ui"]},
-    "nodejs": {"type": "svg", "source": "cdn.simpleicons.org", "slug": "nodedotjs", "color": "#5FA04E", "file": "nodejs.svg", "category": "ai_technology", "keywords": ["node", "backend", "javascript", "server"]}
+    "instagram": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "instagram",
+      "color": "#E4405F",
+      "file": "instagram.svg",
+      "category": "social_engagement",
+      "keywords": [
+        "instagram",
+        "ig",
+        "social",
+        "reels",
+        "dm",
+        "follow"
+      ]
+    },
+    "youtube": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "youtube",
+      "color": "#FF0000",
+      "file": "youtube.svg",
+      "category": "social_engagement",
+      "keywords": [
+        "youtube",
+        "subscribe",
+        "video",
+        "channel",
+        "watch"
+      ]
+    },
+    "chatgpt": {
+      "type": "svg",
+      "source": "local",
+      "slug": "openai",
+      "color": "#10A37F",
+      "file": "openai.svg",
+      "category": "ai_technology",
+      "keywords": [
+        "chatgpt",
+        "openai",
+        "gpt",
+        "ai",
+        "llm",
+        "prompt"
+      ]
+    },
+    "tiktok": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "tiktok",
+      "color": "#010101",
+      "file": "tiktok.svg",
+      "category": "social_engagement",
+      "keywords": [
+        "tiktok",
+        "viral",
+        "trend",
+        "short"
+      ]
+    },
+    "python": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "python",
+      "color": "#3776AB",
+      "file": "python.svg",
+      "category": "ai_technology",
+      "keywords": [
+        "python",
+        "code",
+        "programming",
+        "script",
+        "developer"
+      ]
+    },
+    "react": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "react",
+      "color": "#61DAFB",
+      "file": "react.svg",
+      "category": "ai_technology",
+      "keywords": [
+        "react",
+        "frontend",
+        "web",
+        "app",
+        "ui"
+      ]
+    },
+    "nodejs": {
+      "type": "svg",
+      "source": "cdn.simpleicons.org",
+      "slug": "nodedotjs",
+      "color": "#5FA04E",
+      "file": "nodejs.svg",
+      "category": "ai_technology",
+      "keywords": [
+        "node",
+        "backend",
+        "javascript",
+        "server"
+      ]
+    }
   },
   "stickers": {
     "gemini": {
-      "type": "emoji",
-      "char": "✨",
+      "type": "png",
       "category": "ai_technology",
-      "keywords": ["gemini", "notebooklm", "google ai", "ai model", "assistant", "ai tool"],
+      "keywords": [
+        "gemini",
+        "notebooklm",
+        "google ai",
+        "ai model",
+        "assistant",
+        "ai tool"
+      ],
       "visual_description": "AI sparkle symbol indicating modern artificial intelligence features",
-      "suitable_content_types": ["ai_tutorial", "tech_review", "coding", "productivity"],
+      "suitable_content_types": [
+        "ai_tutorial",
+        "tech_review",
+        "coding",
+        "productivity"
+      ],
       "mood": "innovative",
       "style": "clean",
       "color": "#38BDF8",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight AI model, NotebookLM, or automated smart intelligence features"
+      "intended_purpose": "Highlight AI model, NotebookLM, or automated smart intelligence features",
+      "file": "elements/gemini.png"
     },
     "robot": {
-      "type": "emoji",
-      "char": "🤖",
+      "type": "png",
       "category": "ai_technology",
-      "keywords": ["ai", "bot", "algorithm", "automation", "machine learning", "agent"],
+      "keywords": [
+        "ai",
+        "bot",
+        "algorithm",
+        "automation",
+        "machine learning",
+        "agent"
+      ],
       "visual_description": "Friendly robot icon representing automation and intelligent agents",
-      "suitable_content_types": ["ai_tutorial", "tech_review", "automation"],
+      "suitable_content_types": [
+        "ai_tutorial",
+        "tech_review",
+        "automation"
+      ],
       "mood": "futuristic",
       "style": "tech",
       "color": "#60A5FA",
       "animation_type": "pop_in",
-      "intended_purpose": "Callout intelligent AI assistance or automated workflows"
+      "intended_purpose": "Callout intelligent AI assistance or automated workflows",
+      "file": "elements/robot.png"
     },
     "brain_ai": {
-      "type": "emoji",
-      "char": "🧠",
+      "type": "png",
       "category": "ai_technology",
-      "keywords": ["thinking", "neural", "deep learning", "smart", "cognitive", "intelligence"],
+      "keywords": [
+        "thinking",
+        "neural",
+        "deep learning",
+        "smart",
+        "cognitive",
+        "intelligence"
+      ],
       "visual_description": "Brain symbol indicating deep thinking, smart models, and logic",
-      "suitable_content_types": ["ai_tutorial", "research", "study", "productivity"],
+      "suitable_content_types": [
+        "ai_tutorial",
+        "research",
+        "study",
+        "productivity"
+      ],
       "mood": "analytical",
       "style": "tech",
       "color": "#F472B6",
       "animation_type": "glow_expand",
-      "intended_purpose": "Emphasize smart synthesis or research reasoning"
+      "intended_purpose": "Emphasize smart synthesis or research reasoning",
+      "file": "elements/brain_ai.png"
     },
     "chip": {
-      "type": "emoji",
-      "char": "⚡",
+      "type": "png",
       "category": "ai_technology",
-      "keywords": ["fast", "speed", "hardware", "gpu", "engine", "performance"],
+      "keywords": [
+        "fast",
+        "speed",
+        "hardware",
+        "gpu",
+        "engine",
+        "performance"
+      ],
       "visual_description": "Lightning energy bolt for rapid generation and speed",
-      "suitable_content_types": ["ai_tutorial", "tech_review", "gaming"],
+      "suitable_content_types": [
+        "ai_tutorial",
+        "tech_review",
+        "gaming"
+      ],
       "mood": "high-energy",
       "style": "vibrant",
       "color": "#FACC15",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight lightning-fast results or performance"
+      "intended_purpose": "Highlight lightning-fast results or performance",
+      "file": "elements/chip.png"
     },
     "laptop": {
-      "type": "emoji",
-      "char": "💻",
+      "type": "png",
       "category": "ai_technology",
-      "keywords": ["computer", "laptop", "software", "website", "online", "coding", "work"],
+      "keywords": [
+        "computer",
+        "laptop",
+        "software",
+        "website",
+        "online",
+        "coding",
+        "work"
+      ],
       "visual_description": "Laptop computer symbol for digital workspaces and web apps",
-      "suitable_content_types": ["ai_tutorial", "coding", "productivity", "remote_work"],
+      "suitable_content_types": [
+        "ai_tutorial",
+        "coding",
+        "productivity",
+        "remote_work"
+      ],
       "mood": "professional",
       "style": "clean",
       "color": "#94A3B8",
       "animation_type": "soft_float",
-      "intended_purpose": "Indicate online software platform or desktop workflow"
+      "intended_purpose": "Indicate online software platform or desktop workflow",
+      "file": "elements/laptop.png"
     },
     "polaroid_frame": {
-      "type": "emoji",
-      "char": "📷",
+      "type": "svg",
+      "file": "elements/polaroid_frame.svg",
       "category": "scrapbook_decorative",
-      "keywords": ["polaroid", "photo", "camera", "memory", "snapshot", "aesthetic"],
+      "keywords": [
+        "polaroid",
+        "photo",
+        "camera",
+        "memory",
+        "snapshot",
+        "aesthetic"
+      ],
       "visual_description": "Classic camera snapshot representing framed photo moments",
-      "suitable_content_types": ["lifestyle", "fashion", "travel", "vlog", "aesthetic"],
+      "suitable_content_types": [
+        "lifestyle",
+        "fashion",
+        "travel",
+        "vlog",
+        "aesthetic"
+      ],
       "mood": "nostalgic",
       "style": "scrapbook",
       "color": "#F8FAFC",
@@ -101,12 +272,26 @@
       "intended_purpose": "Frame visual moments with vintage scrapbook warmth"
     },
     "flower_blossom": {
-      "type": "emoji",
-      "char": "🌸",
+      "type": "svg",
+      "file": "elements/flower_blossom.svg",
       "category": "fashion_lifestyle",
-      "keywords": ["flower", "bloom", "spring", "aesthetic", "outfit", "pretty", "cute", "nature"],
+      "keywords": [
+        "flower",
+        "bloom",
+        "spring",
+        "aesthetic",
+        "outfit",
+        "pretty",
+        "cute",
+        "nature"
+      ],
       "visual_description": "Soft pink cherry blossom petal for delicate aesthetic styling",
-      "suitable_content_types": ["fashion", "lifestyle", "beauty", "spring_vlog"],
+      "suitable_content_types": [
+        "fashion",
+        "lifestyle",
+        "beauty",
+        "spring_vlog"
+      ],
       "mood": "dreamy",
       "style": "pastel",
       "color": "#F472B6",
@@ -114,12 +299,25 @@
       "intended_purpose": "Add dreamy feminine or nature aesthetics to lifestyle footage"
     },
     "sparkle_stars": {
-      "type": "emoji",
-      "char": "⭐",
+      "type": "svg",
+      "file": "elements/sparkle_stars.svg",
       "category": "scrapbook_decorative",
-      "keywords": ["star", "sparkle", "magic", "glow", "cute", "favorite", "highlight"],
+      "keywords": [
+        "star",
+        "sparkle",
+        "magic",
+        "glow",
+        "cute",
+        "favorite",
+        "highlight"
+      ],
       "visual_description": "Golden star accent for playful highlights",
-      "suitable_content_types": ["lifestyle", "scrapbook", "tutorial", "highlight"],
+      "suitable_content_types": [
+        "lifestyle",
+        "scrapbook",
+        "tutorial",
+        "highlight"
+      ],
       "mood": "playful",
       "style": "cute",
       "color": "#FBBF24",
@@ -127,12 +325,24 @@
       "intended_purpose": "Emphasize key tips or aesthetic delight"
     },
     "doodle_heart": {
-      "type": "emoji",
-      "char": "💖",
+      "type": "svg",
+      "file": "elements/doodle_heart.svg",
       "category": "fashion_lifestyle",
-      "keywords": ["love", "favorite", "adore", "heart", "outfit", "cute"],
+      "keywords": [
+        "love",
+        "favorite",
+        "adore",
+        "heart",
+        "outfit",
+        "cute"
+      ],
       "visual_description": "Sparkling pink heart representing adored products and warm feelings",
-      "suitable_content_types": ["fashion", "lifestyle", "beauty", "vlog"],
+      "suitable_content_types": [
+        "fashion",
+        "lifestyle",
+        "beauty",
+        "vlog"
+      ],
       "mood": "affectionate",
       "style": "scrapbook",
       "color": "#FB7185",
@@ -140,168 +350,330 @@
       "intended_purpose": "Show love for a look, place, or recommended item"
     },
     "sun_warmth": {
-      "type": "emoji",
-      "char": "☀️",
+      "type": "png",
       "category": "fashion_lifestyle",
-      "keywords": ["sun", "daylight", "sunny", "morning", "golden hour", "outdoor"],
+      "keywords": [
+        "sun",
+        "daylight",
+        "sunny",
+        "morning",
+        "golden hour",
+        "outdoor"
+      ],
       "visual_description": "Warm sun icon for outdoor and golden-hour lifestyle shots",
-      "suitable_content_types": ["lifestyle", "travel", "vlog", "fashion"],
+      "suitable_content_types": [
+        "lifestyle",
+        "travel",
+        "vlog",
+        "fashion"
+      ],
       "mood": "bright",
       "style": "warm",
       "color": "#F59E0B",
       "animation_type": "soft_float",
-      "intended_purpose": "Complement sunny daylight outdoor scenes"
+      "intended_purpose": "Complement sunny daylight outdoor scenes",
+      "file": "elements/sun_warmth.png"
     },
     "recipe_dish": {
-      "type": "emoji",
-      "char": "🍲",
+      "type": "png",
       "category": "food_cooking",
-      "keywords": ["food", "recipe", "dish", "cooking", "meal", "dinner", "lunch", "eat", "delicious"],
+      "keywords": [
+        "food",
+        "recipe",
+        "dish",
+        "cooking",
+        "meal",
+        "dinner",
+        "lunch",
+        "eat",
+        "delicious"
+      ],
       "visual_description": "Steaming bowl of delicious food for culinary steps",
-      "suitable_content_types": ["food_cooking", "recipe", "restaurant"],
+      "suitable_content_types": [
+        "food_cooking",
+        "recipe",
+        "restaurant"
+      ],
       "mood": "appetizing",
       "style": "cozy",
       "color": "#F97316",
       "animation_type": "pop_in",
-      "intended_purpose": "Call out delicious meals or cooking results"
+      "intended_purpose": "Call out delicious meals or cooking results",
+      "file": "elements/recipe_dish.png"
     },
     "chef_hat": {
-      "type": "emoji",
-      "char": "👨‍🍳",
+      "type": "png",
       "category": "food_cooking",
-      "keywords": ["chef", "cook", "kitchen", "bake", "prepare", "ingredients", "tasty"],
+      "keywords": [
+        "chef",
+        "cook",
+        "kitchen",
+        "bake",
+        "prepare",
+        "ingredients",
+        "tasty"
+      ],
       "visual_description": "Chef icon for cooking steps, recipe instructions, and gourmet tips",
-      "suitable_content_types": ["food_cooking", "recipe", "baking"],
+      "suitable_content_types": [
+        "food_cooking",
+        "recipe",
+        "baking"
+      ],
       "mood": "culinary",
       "style": "clean",
       "color": "#FFFFFF",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight culinary technique or recipe step"
+      "intended_purpose": "Highlight culinary technique or recipe step",
+      "file": "elements/chef_hat.png"
     },
     "fresh_leaf": {
-      "type": "emoji",
-      "char": "🌿",
+      "type": "png",
       "category": "food_cooking",
-      "keywords": ["fresh", "organic", "herb", "ingredient", "healthy", "vegan", "green"],
+      "keywords": [
+        "fresh",
+        "organic",
+        "herb",
+        "ingredient",
+        "healthy",
+        "vegan",
+        "green"
+      ],
       "visual_description": "Fresh herbal leaf indicating organic quality and natural ingredients",
-      "suitable_content_types": ["food_cooking", "lifestyle", "wellness"],
+      "suitable_content_types": [
+        "food_cooking",
+        "lifestyle",
+        "wellness"
+      ],
       "mood": "healthy",
       "style": "organic",
       "color": "#22C55E",
       "animation_type": "soft_float",
-      "intended_purpose": "Mark fresh ingredients or wellness elements"
+      "intended_purpose": "Mark fresh ingredients or wellness elements",
+      "file": "elements/fresh_leaf.png"
     },
     "music_card": {
-      "type": "emoji",
-      "char": "🎵",
+      "type": "png",
       "category": "music_audio",
-      "keywords": ["music", "track", "song", "audio", "spotify", "listening", "playlist", "beat"],
+      "keywords": [
+        "music",
+        "track",
+        "song",
+        "audio",
+        "spotify",
+        "listening",
+        "playlist",
+        "beat"
+      ],
       "visual_description": "Musical note representing floating music track cards and playback",
-      "suitable_content_types": ["music_video", "lifestyle_vlog", "dance", "chill"],
+      "suitable_content_types": [
+        "music_video",
+        "lifestyle_vlog",
+        "dance",
+        "chill"
+      ],
       "mood": "rhythmic",
       "style": "glass_music",
       "color": "#1DB954",
       "animation_type": "glass_slide",
-      "intended_purpose": "Showcase currently playing music or audio mood"
+      "intended_purpose": "Showcase currently playing music or audio mood",
+      "file": "elements/music_card.png"
     },
     "headphones": {
-      "type": "emoji",
-      "char": "🎧",
+      "type": "png",
       "category": "music_audio",
-      "keywords": ["headphones", "podcast", "audiobook", "listen", "sound", "earphones"],
+      "keywords": [
+        "headphones",
+        "podcast",
+        "audiobook",
+        "listen",
+        "sound",
+        "earphones"
+      ],
       "visual_description": "Headphones icon indicating focused listening, podcasts, or sound immersion",
-      "suitable_content_types": ["podcast", "music", "audio_overview", "study"],
+      "suitable_content_types": [
+        "podcast",
+        "music",
+        "audio_overview",
+        "study"
+      ],
       "mood": "immersive",
       "style": "tech_dark",
       "color": "#A855F7",
       "animation_type": "soft_float",
-      "intended_purpose": "Highlight listening experience, podcast overview, or audio feature"
+      "intended_purpose": "Highlight listening experience, podcast overview, or audio feature",
+      "file": "elements/headphones.png"
     },
     "sound_wave": {
-      "type": "emoji",
-      "char": "〰️",
+      "type": "png",
       "category": "music_audio",
-      "keywords": ["waveform", "audio", "frequency", "voice", "conversation", "speech"],
+      "keywords": [
+        "waveform",
+        "audio",
+        "frequency",
+        "voice",
+        "conversation",
+        "speech"
+      ],
       "visual_description": "Sound frequency wave representing active voice synthesis or music beats",
-      "suitable_content_types": ["podcast", "audio", "ai_voice", "music"],
+      "suitable_content_types": [
+        "podcast",
+        "audio",
+        "ai_voice",
+        "music"
+      ],
       "mood": "dynamic",
       "style": "pulse",
       "color": "#38BDF8",
       "animation_type": "pulse_wave",
-      "intended_purpose": "Visual pulse indicating active speech synthesis or conversation"
+      "intended_purpose": "Visual pulse indicating active speech synthesis or conversation",
+      "file": "elements/sound_wave.png"
     },
     "book": {
-      "type": "emoji",
-      "char": "📚",
+      "type": "png",
       "category": "education_study",
-      "keywords": ["study", "exam", "reading", "research", "notes", "learning", "school", "college", "interview"],
+      "keywords": [
+        "study",
+        "exam",
+        "reading",
+        "research",
+        "notes",
+        "learning",
+        "school",
+        "college",
+        "interview"
+      ],
       "visual_description": "Stack of study books representing exam prep and research resources",
-      "suitable_content_types": ["education_study", "research", "student_tips", "ai_tutorial"],
+      "suitable_content_types": [
+        "education_study",
+        "research",
+        "student_tips",
+        "ai_tutorial"
+      ],
       "mood": "scholarly",
       "style": "clean",
       "color": "#6366F1",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight study resources, research sources, or exam prep"
+      "intended_purpose": "Highlight study resources, research sources, or exam prep",
+      "file": "elements/book.png"
     },
     "presentation": {
-      "type": "emoji",
-      "char": "📊",
+      "type": "png",
       "category": "education_study",
-      "keywords": ["ppt", "presentation", "slides", "chart", "report", "deck", "summary"],
+      "keywords": [
+        "ppt",
+        "presentation",
+        "slides",
+        "chart",
+        "report",
+        "deck",
+        "summary"
+      ],
       "visual_description": "Bar chart presentation graph representing PPT creation and reports",
-      "suitable_content_types": ["education_study", "business", "ai_tutorial", "productivity"],
+      "suitable_content_types": [
+        "education_study",
+        "business",
+        "ai_tutorial",
+        "productivity"
+      ],
       "mood": "professional",
       "style": "clean",
       "color": "#10B981",
       "animation_type": "slide_fade",
-      "intended_purpose": "Call out presentation slide deck generation or data summary"
+      "intended_purpose": "Call out presentation slide deck generation or data summary",
+      "file": "elements/presentation.png"
     },
     "quiz": {
-      "type": "emoji",
-      "char": "📝",
+      "type": "png",
       "category": "education_study",
-      "keywords": ["mcq", "quiz", "questions", "test", "practice", "notes", "exercises"],
+      "keywords": [
+        "mcq",
+        "quiz",
+        "questions",
+        "test",
+        "practice",
+        "notes",
+        "exercises"
+      ],
       "visual_description": "Notepad checklist representing practice MCQs, tests, and quizzes",
-      "suitable_content_types": ["education_study", "exam_prep", "ai_tutorial"],
+      "suitable_content_types": [
+        "education_study",
+        "exam_prep",
+        "ai_tutorial"
+      ],
       "mood": "focused",
       "style": "clean",
       "color": "#F59E0B",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight automated MCQ creation or quiz practice"
+      "intended_purpose": "Highlight automated MCQ creation or quiz practice",
+      "file": "elements/quiz.png"
     },
     "audio_mic": {
-      "type": "emoji",
-      "char": "🎙️",
+      "type": "png",
       "category": "education_study",
-      "keywords": ["podcast", "audio", "conversation", "listen", "discussion", "talk"],
+      "keywords": [
+        "podcast",
+        "audio",
+        "conversation",
+        "listen",
+        "discussion",
+        "talk"
+      ],
       "visual_description": "Studio microphone representing two-way audio conversations and podcasts",
-      "suitable_content_types": ["education_study", "ai_tutorial", "podcast"],
+      "suitable_content_types": [
+        "education_study",
+        "ai_tutorial",
+        "podcast"
+      ],
       "mood": "broadcast",
       "style": "clean",
       "color": "#EC4899",
       "animation_type": "pop_in",
-      "intended_purpose": "Emphasize audio podcast conversation feature"
+      "intended_purpose": "Emphasize audio podcast conversation feature",
+      "file": "elements/audio_mic.png"
     },
     "bulb": {
-      "type": "emoji",
-      "char": "💡",
+      "type": "png",
       "category": "education_study",
-      "keywords": ["idea", "tip", "hack", "insight", "solution", "inspiration"],
+      "keywords": [
+        "idea",
+        "tip",
+        "hack",
+        "insight",
+        "solution",
+        "inspiration"
+      ],
       "visual_description": "Illuminated lightbulb representing a smart tip, key hack, or breakthrough",
-      "suitable_content_types": ["education_study", "tutorial", "tips_and_tricks"],
+      "suitable_content_types": [
+        "education_study",
+        "tutorial",
+        "tips_and_tricks"
+      ],
       "mood": "inspiring",
       "style": "vibrant",
       "color": "#FDE047",
       "animation_type": "pop_in",
-      "intended_purpose": "Highlight an essential creator tip or key takeaway"
+      "intended_purpose": "Highlight an essential creator tip or key takeaway",
+      "file": "elements/bulb.png"
     },
     "glass_pill": {
-      "type": "emoji",
-      "char": "🔲",
+      "type": "svg",
+      "file": "elements/glass_pill.svg",
       "category": "glassmorphism",
-      "keywords": ["glass", "modern", "ui", "hud", "pill", "translucent", "frosted"],
+      "keywords": [
+        "glass",
+        "modern",
+        "ui",
+        "hud",
+        "pill",
+        "translucent",
+        "frosted"
+      ],
       "visual_description": "Frosted glass container with luminous borders and modern blur",
-      "suitable_content_types": ["glassmorphism", "tech", "modern_showcase"],
+      "suitable_content_types": [
+        "glassmorphism",
+        "tech",
+        "modern_showcase"
+      ],
       "mood": "sleek",
       "style": "glass",
       "color": "#06B6D4",
@@ -309,12 +681,24 @@
       "intended_purpose": "Provide sleek floating frosted card container"
     },
     "viewfinder": {
-      "type": "emoji",
-      "char": "🎯",
+      "type": "svg",
+      "file": "elements/viewfinder.svg",
       "category": "retro_camera",
-      "keywords": ["camera", "viewfinder", "hud", "focus", "lens", "retro", "target"],
+      "keywords": [
+        "camera",
+        "viewfinder",
+        "hud",
+        "focus",
+        "lens",
+        "retro",
+        "target"
+      ],
       "visual_description": "Camera viewfinder focus reticle",
-      "suitable_content_types": ["retro_camera", "photography", "vlog"],
+      "suitable_content_types": [
+        "retro_camera",
+        "photography",
+        "vlog"
+      ],
       "mood": "cinematic",
       "style": "retro",
       "color": "#FFFFFF",
@@ -322,92 +706,464 @@
       "intended_purpose": "Frame subject with camcorder target brackets"
     },
     "rec_dot": {
-      "type": "emoji",
-      "char": "🔴",
+      "type": "png",
       "category": "retro_camera",
-      "keywords": ["rec", "record", "live", "filming", "camcorder", "tape"],
+      "keywords": [
+        "rec",
+        "record",
+        "live",
+        "filming",
+        "camcorder",
+        "tape"
+      ],
       "visual_description": "Pulsing red recording dot from vintage camcorders",
-      "suitable_content_types": ["retro_camera", "vlog", "film"],
+      "suitable_content_types": [
+        "retro_camera",
+        "vlog",
+        "film"
+      ],
       "mood": "live",
       "style": "retro",
       "color": "#EF4444",
       "animation_type": "blink_in",
-      "intended_purpose": "Camcorder REC indicator overlay"
+      "intended_purpose": "Camcorder REC indicator overlay",
+      "file": "elements/rec_dot.png"
+    },
+    "music_player_card": {
+      "type": "svg",
+      "file": "elements/music_player_card.svg",
+      "category": "music_audio",
+      "keywords": [
+        "music",
+        "track",
+        "song",
+        "audio",
+        "playlist",
+        "player"
+      ],
+      "visual_description": "Floating music player with cover tile and progress bar",
+      "suitable_content_types": [
+        "music_video",
+        "podcast",
+        "lifestyle_vlog"
+      ],
+      "mood": "rhythmic",
+      "style": "glass_music",
+      "color": "#A78BFA",
+      "animation_type": "glass_slide",
+      "intended_purpose": "Show a music or audio segment in a compact player card"
+    },
+    "retro_recording_hud": {
+      "type": "svg",
+      "file": "elements/retro_recording_hud.svg",
+      "category": "retro_camera",
+      "keywords": [
+        "camera",
+        "recording",
+        "film",
+        "camcorder",
+        "rec",
+        "focus"
+      ],
+      "visual_description": "Camcorder recording HUD with REC light and focus brackets",
+      "suitable_content_types": [
+        "retro_camera",
+        "photography",
+        "vlog",
+        "film"
+      ],
+      "mood": "cinematic",
+      "style": "retro",
+      "color": "#75F0AD",
+      "animation_type": "blink_in",
+      "intended_purpose": "Give footage a restrained camcorder interface treatment"
+    },
+    "scrapbook_tape": {
+      "type": "svg",
+      "file": "elements/scrapbook_tape.svg",
+      "category": "scrapbook_decorative",
+      "keywords": [
+        "scrapbook",
+        "tape",
+        "paper",
+        "polaroid",
+        "memory",
+        "photo"
+      ],
+      "visual_description": "Translucent washi tape strip for layered scrapbook compositions",
+      "suitable_content_types": [
+        "scrapbook",
+        "lifestyle",
+        "fashion",
+        "travel",
+        "vlog"
+      ],
+      "mood": "nostalgic",
+      "style": "scrapbook",
+      "color": "#F7D794",
+      "animation_type": "soft_float",
+      "intended_purpose": "Attach floating photos and paper layers visually"
+    },
+    "tech_interface_card": {
+      "type": "svg",
+      "file": "elements/tech_interface_card.svg",
+      "category": "ai_technology",
+      "keywords": [
+        "ai",
+        "code",
+        "software",
+        "technology",
+        "interface",
+        "data",
+        "developer"
+      ],
+      "visual_description": "Compact technical interface card with code and status indicators",
+      "suitable_content_types": [
+        "ai_tutorial",
+        "tech_review",
+        "coding",
+        "productivity"
+      ],
+      "mood": "analytical",
+      "style": "tech",
+      "color": "#38BDF8",
+      "animation_type": "slide_fade",
+      "intended_purpose": "Support visible software, AI, or technical explanations"
+    },
+    "subject_cutout": {
+      "type": "dynamic",
+      "category": "subject_cutout",
+      "keywords": [
+        "person",
+        "subject",
+        "portrait",
+        "outline",
+        "cutout",
+        "transparent"
+      ],
+      "visual_description": "Model-segmented subject cutout generated from a selected video frame",
+      "suitable_content_types": [
+        "portrait",
+        "lifestyle",
+        "fashion",
+        "vlog"
+      ],
+      "mood": "editorial",
+      "style": "subject_cutout",
+      "color": "#FFFFFF",
+      "animation_type": "pop_in",
+      "intended_purpose": "Overlay a segmented person cutout with an optional white or colored edge"
+    },
+    "subject_outline": {
+      "type": "svg",
+      "file": "elements/subject_outline.svg",
+      "category": "scrapbook_decorative",
+      "keywords": [
+        "portrait",
+        "person",
+        "subject",
+        "outline",
+        "fashion",
+        "creator"
+      ],
+      "visual_description": "Hand-drawn contour accent for portrait-oriented layouts; not a segmentation cutout",
+      "suitable_content_types": [
+        "portrait",
+        "lifestyle",
+        "fashion",
+        "vlog"
+      ],
+      "mood": "playful",
+      "style": "scrapbook",
+      "color": "#FFFFFF",
+      "animation_type": "draw_on",
+      "intended_purpose": "Add a light portrait outline accent without claiming background removal"
+    },
+    "doodle_arrow": {
+      "type": "svg",
+      "file": "elements/doodle_arrow.svg",
+      "category": "scrapbook_decorative",
+      "keywords": [
+        "arrow",
+        "point",
+        "look",
+        "focus",
+        "highlight",
+        "doodle"
+      ],
+      "visual_description": "Hand-drawn curved arrow for pointing toward a visible detail",
+      "suitable_content_types": [
+        "scrapbook",
+        "tutorial",
+        "lifestyle",
+        "highlight"
+      ],
+      "mood": "playful",
+      "style": "scrapbook",
+      "color": "#FB7185",
+      "animation_type": "draw_on",
+      "intended_purpose": "Direct attention toward a visible subject or detail"
+    },
+    "torn_paper_frame": {
+      "type": "svg",
+      "file": "elements/torn_paper_frame.svg",
+      "category": "scrapbook_decorative",
+      "keywords": [
+        "paper",
+        "frame",
+        "scrapbook",
+        "photo",
+        "collage",
+        "memory"
+      ],
+      "visual_description": "Torn cream paper frame with an inset photo opening",
+      "suitable_content_types": [
+        "scrapbook",
+        "lifestyle",
+        "travel",
+        "fashion"
+      ],
+      "mood": "nostalgic",
+      "style": "scrapbook",
+      "color": "#FFF9E8",
+      "animation_type": "tilt_pop",
+      "intended_purpose": "Frame a photograph or title with paper texture"
+    },
+    "film_frame": {
+      "type": "svg",
+      "file": "elements/film_frame.svg",
+      "category": "retro_camera",
+      "keywords": [
+        "film",
+        "cinema",
+        "movie",
+        "frame",
+        "retro",
+        "camera"
+      ],
+      "visual_description": "Cinematic film border with sprocket-like perforations",
+      "suitable_content_types": [
+        "retro_camera",
+        "travel",
+        "film",
+        "vlog"
+      ],
+      "mood": "cinematic",
+      "style": "retro",
+      "color": "#F8FAFC",
+      "animation_type": "slide_fade",
+      "intended_purpose": "Add a restrained film-inspired border"
+    },
+    "kinetic_title_card": {
+      "type": "svg",
+      "file": "elements/kinetic_title_card.svg",
+      "category": "education_study",
+      "keywords": [
+        "title",
+        "headline",
+        "typography",
+        "highlight",
+        "tip",
+        "key point"
+      ],
+      "visual_description": "Bold angled title plate designed to support short kinetic text",
+      "suitable_content_types": [
+        "tutorial",
+        "education_study",
+        "highlight",
+        "social_video"
+      ],
+      "mood": "high-energy",
+      "style": "vibrant",
+      "color": "#FACC15",
+      "animation_type": "slide_fade",
+      "intended_purpose": "Emphasize a concise spoken title or takeaway"
     },
     "gamepad": {
-      "type": "emoji",
-      "char": "🎮",
+      "type": "png",
       "category": "gaming",
-      "keywords": ["gaming", "game", "esports", "playstation", "xbox", "gta", "fps", "stream"],
+      "keywords": [
+        "gaming",
+        "game",
+        "esports",
+        "playstation",
+        "xbox",
+        "gta",
+        "fps",
+        "stream"
+      ],
       "visual_description": "Gaming gamepad controller for video game walkthroughs and esports",
-      "suitable_content_types": ["gaming", "esports", "lets_play"],
+      "suitable_content_types": [
+        "gaming",
+        "esports",
+        "lets_play"
+      ],
       "mood": "gamer",
       "style": "neon",
       "color": "#8B5CF6",
       "animation_type": "pop_in",
-      "intended_purpose": "Strictly reserved for gaming clips, walkthroughs, and esports highlights"
+      "intended_purpose": "Strictly reserved for gaming clips, walkthroughs, and esports highlights",
+      "file": "elements/gamepad.png"
     },
     "money": {
-      "type": "emoji",
-      "char": "💰",
+      "type": "png",
       "category": "gaming",
-      "keywords": ["earn", "cash", "wealth", "revenue", "monetization", "rich"],
+      "keywords": [
+        "earn",
+        "cash",
+        "wealth",
+        "revenue",
+        "monetization",
+        "rich"
+      ],
       "visual_description": "Money bag icon for business revenue and monetization earnings",
-      "suitable_content_types": ["finance", "monetization_guide"],
+      "suitable_content_types": [
+        "finance",
+        "monetization_guide"
+      ],
       "mood": "prosperous",
       "style": "vibrant",
       "color": "#10B981",
       "animation_type": "pop_in",
-      "intended_purpose": "Call out earnings or monetization milestones"
+      "intended_purpose": "Call out earnings or monetization milestones",
+      "file": "elements/money.png"
     },
     "comment": {
-      "type": "emoji",
-      "char": "💬",
+      "type": "png",
       "category": "social_engagement",
-      "keywords": ["comment", "question", "ask", "reply", "discussion", "thoughts"],
+      "keywords": [
+        "comment",
+        "question",
+        "ask",
+        "reply",
+        "discussion",
+        "thoughts"
+      ],
       "visual_description": "Speech bubble inviting viewers to share comments below",
-      "suitable_content_types": ["all"],
+      "suitable_content_types": [
+        "all"
+      ],
       "mood": "engaging",
       "style": "clean",
       "color": "#38BDF8",
       "animation_type": "pop_in",
-      "intended_purpose": "Drive audience comments and replies"
+      "intended_purpose": "Drive audience comments and replies",
+      "file": "elements/comment.png"
     },
     "heart": {
-      "type": "emoji",
-      "char": "❤️",
+      "type": "png",
       "category": "social_engagement",
-      "keywords": ["like", "follow", "love", "support", "heart", "share"],
+      "keywords": [
+        "like",
+        "follow",
+        "love",
+        "support",
+        "heart",
+        "share"
+      ],
       "visual_description": "Red heart for like, follow, and engagement call-to-actions",
-      "suitable_content_types": ["all"],
+      "suitable_content_types": [
+        "all"
+      ],
       "mood": "friendly",
       "style": "clean",
       "color": "#EF4444",
       "animation_type": "soft_bounce",
-      "intended_purpose": "Drive likes and followers at video conclusion"
+      "intended_purpose": "Drive likes and followers at video conclusion",
+      "file": "elements/heart.png"
     },
     "bell": {
-      "type": "emoji",
-      "char": "🔔",
+      "type": "png",
       "category": "social_engagement",
-      "keywords": ["subscribe", "bell", "notify", "alert", "update"],
+      "keywords": [
+        "subscribe",
+        "bell",
+        "notify",
+        "alert",
+        "update"
+      ],
       "visual_description": "Notification bell for subscriber alerts",
-      "suitable_content_types": ["all"],
+      "suitable_content_types": [
+        "all"
+      ],
       "mood": "urgent",
       "style": "clean",
       "color": "#F59E0B",
       "animation_type": "pop_in",
-      "intended_purpose": "Prompt notification bell tap"
+      "intended_purpose": "Prompt notification bell tap",
+      "file": "elements/bell.png"
     }
   },
   "sfx": {
-    "bubble_pop": {"type": "sfx", "file": "bubble_pop.wav", "description": "Light, clean bubble pop for subtle modern UI reveals", "suitable_templates": ["aesthetic_lifestyle", "glassmorphism", "creative_minimal"]},
-    "pop": {"type": "sfx", "file": "pop.wav", "description": "Punchy pop sound for badges and stickers", "suitable_templates": ["pinterest_scrapbook", "auto_creative"]},
-    "whoosh": {"type": "sfx", "file": "whoosh.wav", "description": "Smooth airy whoosh for card transitions and camera pans", "suitable_templates": ["all"]},
-    "bell_chime": {"type": "sfx", "file": "bell_chime.wav", "description": "Gentle notification chime for tips and highlights", "suitable_templates": ["aesthetic_lifestyle", "glassmorphism", "education_study"]},
-    "ding": {"type": "sfx", "file": "ding.wav", "description": "Crisp ding for completed tasks and idea alerts", "suitable_templates": ["all"]},
-    "level_up": {"type": "sfx", "file": "level_up.wav", "description": "Retro melodic chime for achievements", "suitable_templates": ["gaming", "retro_camera"]},
-    "cash_register": {"type": "sfx", "file": "cash_register.wav", "description": "Classic register ching for finance callouts", "suitable_templates": ["finance"]},
-    "vine_boom": {"type": "sfx", "file": "vine_boom.wav", "description": "Heavy comedic bass boom", "suitable_templates": ["meme_comedy"]}
+    "bubble_pop": {
+      "type": "sfx",
+      "file": "bubble_pop.wav",
+      "description": "Light, clean bubble pop for subtle modern UI reveals",
+      "suitable_templates": [
+        "aesthetic_lifestyle",
+        "glassmorphism",
+        "creative_minimal"
+      ]
+    },
+    "pop": {
+      "type": "sfx",
+      "file": "pop.wav",
+      "description": "Punchy pop sound for badges and stickers",
+      "suitable_templates": [
+        "pinterest_scrapbook",
+        "auto_creative"
+      ]
+    },
+    "whoosh": {
+      "type": "sfx",
+      "file": "whoosh.wav",
+      "description": "Smooth airy whoosh for card transitions and camera pans",
+      "suitable_templates": [
+        "all"
+      ]
+    },
+    "bell_chime": {
+      "type": "sfx",
+      "file": "bell_chime.wav",
+      "description": "Gentle notification chime for tips and highlights",
+      "suitable_templates": [
+        "aesthetic_lifestyle",
+        "glassmorphism",
+        "education_study"
+      ]
+    },
+    "ding": {
+      "type": "sfx",
+      "file": "ding.wav",
+      "description": "Crisp ding for completed tasks and idea alerts",
+      "suitable_templates": [
+        "all"
+      ]
+    },
+    "level_up": {
+      "type": "sfx",
+      "file": "level_up.wav",
+      "description": "Retro melodic chime for achievements",
+      "suitable_templates": [
+        "gaming",
+        "retro_camera"
+      ]
+    },
+    "cash_register": {
+      "type": "sfx",
+      "file": "cash_register.wav",
+      "description": "Classic register ching for finance callouts",
+      "suitable_templates": [
+        "finance"
+      ]
+    },
+    "vine_boom": {
+      "type": "sfx",
+      "file": "vine_boom.wav",
+      "description": "Heavy comedic bass boom",
+      "suitable_templates": [
+        "meme_comedy"
+      ]
+    }
   }
 }

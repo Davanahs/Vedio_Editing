@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="Camcorder viewfinder brackets">
+  <g fill="none" stroke="#b6ffd4" stroke-width="6" stroke-linecap="square">
+    <path d="M12 40V12h34M114 12h34v28M12 80v28h34m68 0h34V80"/>
+    <circle cx="80" cy="60" r="19" stroke-width="3"/>
+  </g><circle cx="80" cy="60" r="3" fill="#b6ffd4"/>
+</svg>

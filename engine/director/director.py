@@ -105,7 +105,13 @@ async def generate_edl(
 
             # Validate
             try:
-                edl_obj = validate_edl(edl_obj, asset_ids=asset_ids, sfx_ids=sfx_ids)
+                edl_obj = validate_edl(
+                    edl_obj,
+                    asset_ids=asset_ids,
+                    sfx_ids=sfx_ids,
+                    canvas_width=int(video_metadata.get("width", 1080)),
+                    canvas_height=int(video_metadata.get("height", 1920)),
+                )
                 logger.info(
                     f"✅ EDL validated: {len(edl_obj.captions)} captions, "
                     f"{len(edl_obj.graphics)} graphics, "

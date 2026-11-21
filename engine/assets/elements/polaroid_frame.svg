@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220" role="img" aria-label="Cream Polaroid scrapbook frame">
+  <rect x="5" y="5" width="170" height="210" rx="3" fill="#fffdf6" stroke="#e8dfcc" stroke-width="3"/>
+  <rect x="20" y="20" width="140" height="145" fill="#e8eef0"/>
+  <path d="M20 134 60 87l28 31 25-39 47 55v31H20z" fill="#bfd7cf"/>
+  <circle cx="124" cy="54" r="17" fill="#f3cf83"/>
+  <path d="M20 145 63 104l29 30 25-26 43 38v19H20z" fill="#9ab9aa"/>
+  <path d="M52 190h76" stroke="#d7cbb5" stroke-width="4" stroke-linecap="round"/>
+</svg>

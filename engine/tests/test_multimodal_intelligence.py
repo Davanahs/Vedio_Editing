@@ -69,7 +69,16 @@ class TestMultimodalIntelligence(unittest.TestCase):
             asset_registry=self.asset_reg
         )
 
+        self.assertNotIn("GTA 6", plan["hook_title"])
+        self.assertNotIn("NotebookLM", plan["social_question"])
+        self.assertNotIn("@", plan["social_question"])
+
         chosen_assets = [d["chosen_asset_id"] for d in plan["decisions"] if d["chosen_asset_id"]]
+        for decision in plan["decisions"]:
+            if decision["chosen_asset_id"]:
+                self.assertGreater(decision["selection_score"], 0)
+                self.assertIn("matched_keywords", decision["selection_evidence"])
+                self.assertIn("visual_evidence", decision["selection_evidence"])
         # Must have tech/AI/study assets
         self.assertTrue(any(a in ["gemini", "laptop", "robot", "quiz", "presentation"] for a in chosen_assets), f"Expected AI assets, got {chosen_assets}")
         # Must NOT have Spotify music card or fashion flower

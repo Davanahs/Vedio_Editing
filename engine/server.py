@@ -9,14 +9,18 @@ import sys
 import time
 import json
 import shutil
+import logging
+import asyncio
+import uuid
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
+import cv2
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
 _ROOT = Path(__file__).resolve().parent.parent
@@ -29,9 +33,13 @@ from engine.analysis.video_probe import probe_video
 from engine.analysis.audio_extractor import extract_audio
 from engine.providers.registry import get_transcription_provider, get_director_chain
 from engine.director.director import generate_edl
+from engine.director.validator import apply_plan_composition
 from engine.assets.registry import AssetRegistry
 from engine.pipeline import group_words_into_bursts
 from engine.render.ffmpeg_reel_builder import render_reel_ffmpeg
+from engine.assets.subject_cutout import create_subject_cutout
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Reel Editor AI Web Studio", version="2.1.0")
 
@@ -51,7 +59,16 @@ from engine.templates.definitions import list_templates, get_template
 from engine.analysis.scene_detector import detect_scenes
 from engine.analysis.audio_segmenter import segment_audio_narration
 from engine.analysis.frame_analyzer import extract_representative_frames, analyze_frames_multimodal
+from engine.analysis.audio_signal import analyze_audio_signal
 from engine.analysis.multimodal_synthesizer import synthesize_multimodal_plan
+from engine.analysis.resource_analyzer import analyze_attached_resources
+from engine.analysis.silence_cutter import (
+    detect_gaps_from_words,
+    detect_false_starts_and_repeats,
+    compute_keep_segments,
+    retime_edl,
+)
+from engine.director.edl_schema import EditDecisionList, ZoomEvent
 
 WEB_DIR = _ROOT / "engine" / "web"
 RESOURCES_DIR = _ROOT / "Resources"
@@ -67,6 +84,7 @@ app.mount("/media/raw", StaticFiles(directory=str(RAW_DIR)), name="raw_media")
 app.mount("/media/export", StaticFiles(directory=str(EXPORT_DIR)), name="export_media")
 app.mount("/media/sfx", StaticFiles(directory=str(SFX_DIR)), name="sfx_media")
 app.mount("/media/logos", StaticFiles(directory=str(LOGOS_DIR)), name="logos_media")
+app.mount("/media/elements", StaticFiles(directory=str(_ROOT / "engine" / "assets" / "elements")), name="creative_elements")
 app.mount("/media/resources", StaticFiles(directory=str(RESOURCES_DIR)), name="resources_media")
 app.mount("/template_previews", StaticFiles(directory=str(WEB_DIR / "template_previews")), name="template_previews")
 
@@ -78,11 +96,23 @@ class ChatEditRequest(BaseModel):
     aspect_ratio: str = "16:9"
     additional_instructions: Optional[str] = ""
     resources: List[str] = []
+    remove_silence: bool = False
+    silence_threshold_ms: int = 380
+    cadence_zoom: bool = True
+    remove_repeats: bool = True
 
 class RenderRequest(BaseModel):
     filename: str
     edl: Dict[str, Any]
     aspect_ratio: str = "16:9"
+    background_mode: str = "blur"
+
+class SubjectCutoutRequest(BaseModel):
+    filename: str
+    timestamp: float = Field(ge=0)
+    aspect_ratio: str = "9:16"
+    outline_color: Optional[str] = None
+    outline_width: int = Field(default=0, ge=0, le=64)
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_studio():
@@ -125,8 +155,88 @@ async def get_assets():
         "success": True,
         "sfx": reg.list_available_sfx(),
         "logos": reg.list_available_logos(),
-        "stickers": reg.list_available_stickers()
+        "stickers": reg.list_available_stickers(),
+        "elements": [
+            {**metadata,
+             "preview_url": f"/media/elements/{Path(metadata['file']).with_suffix('.png').name}",
+             "previewable": True}
+            for asset_id in reg.list_available_stickers()
+            for metadata in [reg.get_asset_metadata(asset_id)]
+            if metadata and metadata.get("file") and (_ROOT / "engine" / "assets" / metadata["file"]).is_file()
+        ],
     }
+
+@app.post("/api/subject-cutout")
+async def make_subject_cutout(req: SubjectCutoutRequest):
+    """Generate a transparent person cutout from the selected source-video frame."""
+    filename = Path(req.filename).name
+    if filename != req.filename or Path(filename).suffix.lower() not in {".mp4", ".mov", ".mkv", ".webm"}:
+        raise HTTPException(status_code=400, detail="Select a supported source video")
+    source_path = (RAW_DIR / filename).resolve()
+    if not source_path.is_relative_to(RAW_DIR.resolve()) or not source_path.is_file():
+        raise HTTPException(status_code=404, detail="Source video not found")
+    if req.aspect_ratio not in {"9:16", "16:9", "1:1"}:
+        raise HTTPException(status_code=422, detail="Aspect ratio must be 9:16, 16:9, or 1:1")
+
+    probe = await probe_video(str(source_path))
+    timestamp = min(req.timestamp, max(0.0, float(probe.get("duration", 0.0)) - 0.04))
+    capture = cv2.VideoCapture(str(source_path))
+    try:
+        capture.set(cv2.CAP_PROP_POS_MSEC, timestamp * 1000.0)
+        ok, frame = capture.read()
+    finally:
+        capture.release()
+    if not ok or frame is None:
+        raise HTTPException(status_code=422, detail="Could not decode the selected video frame")
+
+    cutout_id = uuid.uuid4().hex
+    work_dir = _ROOT / "engine" / "temp" / "subject_cutouts"
+    work_dir.mkdir(parents=True, exist_ok=True)
+    frame_path = work_dir / f"{cutout_id}_source.jpg"
+    resource_path = Path("graphics") / "cutouts" / f"subject_{cutout_id}.png"
+    output_path = RESOURCES_DIR / resource_path
+    cv2.imwrite(str(frame_path), frame, [cv2.IMWRITE_JPEG_QUALITY, 96])
+    try:
+        result = await asyncio.to_thread(
+            create_subject_cutout,
+            frame_path,
+            output_path,
+            req.outline_color,
+            req.outline_width,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except (RuntimeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    finally:
+        frame_path.unlink(missing_ok=True)
+
+    if req.aspect_ratio == "16:9":
+        canvas_w, canvas_h = 1920, 1080
+    elif req.aspect_ratio == "1:1":
+        canvas_w = canvas_h = 1080
+    else:
+        canvas_w, canvas_h = 1080, 1920
+    graphic_width = int(canvas_w * 0.25)
+    graphic_height = max(80, round(graphic_width * result["height"] / max(1, result["width"])))
+    start = max(0.0, timestamp - 0.15)
+    end = min(float(probe.get("duration", timestamp + 2.4)), timestamp + 2.4)
+    graphic = {
+        "id": f"subject_cutout_{cutout_id[:8]}",
+        "asset_id": "subject_cutout",
+        "resource_path": resource_path.as_posix(),
+        "resource_url": f"/media/resources/{resource_path.as_posix()}",
+        "start": start,
+        "end": max(start + 0.1, end),
+        "x": int(canvas_w * 0.68),
+        "y": int(canvas_h * 0.18),
+        "width": graphic_width,
+        "height": graphic_height,
+        "animation": "pop_fade",
+        "title": "",
+        "subtitle": "",
+    }
+    return {"success": True, "graphic": graphic, "cutout": result}
 
 @app.post("/api/upload")
 async def upload_video(file: UploadFile = File(...)):
@@ -185,10 +295,17 @@ async def upload_resource(file: UploadFile = File(...), category: Optional[str] 
 @app.get("/api/resources")
 async def get_resources():
     items = []
+    allowed_extensions = {
+        "images": {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"},
+        "audio": {".mp3", ".wav", ".aac", ".ogg", ".m4a", ".flac"},
+        "graphics": {".svg", ".png"},
+    }
     for cat in ["images", "audio", "graphics"]:
         cat_dir = RESOURCES_DIR / cat
         if cat_dir.exists():
-            for f in cat_dir.glob("*.*"):
+            for f in cat_dir.iterdir():
+                if not f.is_file() or f.name.startswith(".") or f.suffix.lower() not in allowed_extensions[cat]:
+                    continue
                 items.append({
                     "filename": f.name,
                     "category": cat,
@@ -223,44 +340,83 @@ async def chat_edit(req: ChatEditRequest):
 
     temp_audio = _ROOT / "engine" / "temp" / f"{video_path.stem}_audio.wav"
     temp_audio.parent.mkdir(parents=True, exist_ok=True)
-    await extract_audio(str(video_path), str(temp_audio))
-
-    # 2. Transcribe via Groq (with exact word timestamps)
-    tx_provider = get_transcription_provider()
-    tx_result = await tx_provider.transcribe(str(temp_audio))
-    transcript_text = tx_result.text
-    words_list = [{"word": w.word, "start": w.start, "end": w.end} for w in tx_result.words]
+    audio_path = None
+    transcript_text = ""
+    words_list: list[dict[str, Any]] = []
+    transcription_status = "no_audio_stream"
+    transcription_provider = None
+    transcription_language = None
+    if probe.get("has_audio", False):
+        try:
+            audio_path = await extract_audio(str(video_path), str(temp_audio))
+            tx_provider = get_transcription_provider()
+            tx_result = await tx_provider.transcribe(str(audio_path))
+            transcript_text = tx_result.text or ""
+            words_list = [
+                {"word": w.word, "start": w.start, "end": w.end}
+                for w in tx_result.words
+            ]
+            transcription_status = "complete"
+            transcription_provider = tx_provider.name
+            transcription_language = getattr(tx_result, "language", None)
+        except Exception as exc:
+            logger.warning("Audio extraction/transcription failed for %s: %s", video_path.name, type(exc).__name__)
+            transcription_status = "failed"
     caption_bursts = group_words_into_bursts(words_list)
+    audio_signal = analyze_audio_signal(
+        str(audio_path) if audio_path else None,
+        words_list,
+    )
 
     # 3. Multimodal Analysis: Scene Detection & Representative Frame Sampling
-    scene_timestamps = await detect_scenes(str(video_path), threshold=0.4)
+    try:
+        scene_timestamps = await detect_scenes(str(video_path), threshold=0.4)
+    except Exception as exc:
+        logger.warning("Scene detection failed for %s: %s", video_path.name, type(exc).__name__)
+        scene_timestamps = []
     frames_dir = _ROOT / "engine" / "temp" / "frames" / video_path.stem
+    try:
+        max_frames = max(1, min(60, int(os.getenv("AURA_MAX_ANALYSIS_FRAMES", "24"))))
+    except ValueError:
+        max_frames = 24
     frame_tuples = extract_representative_frames(
         video_path=str(video_path),
         output_dir=frames_dir,
         scene_timestamps=scene_timestamps,
         interval_s=10.0,
-        total_duration=duration
+        total_duration=duration,
+        max_samples=max_frames,
     )
 
-    # 4. Multimodal Synthesis (Audio segments + Visual frame inspection)
+    # 4. Multimodal Synthesis (audio segments + visual frame inspection)
     audio_segments = segment_audio_narration(words_list, duration)
+    audio_context = [segment.to_dict() for segment in audio_segments]
+    resource_evidence = await asyncio.to_thread(analyze_attached_resources, req.resources, RESOURCES_DIR)
     visual_analyses = await analyze_frames_multimodal(
         frame_tuples=frame_tuples,
-        video_topic_hint=transcript_text[:150]
+        video_topic_hint=transcript_text[:300],
+        audio_segments=audio_context,
+        max_samples=max_frames,
     )
 
     target_template = req.template or req.style_preset or "auto_creative"
     asset_reg = AssetRegistry(str(_ROOT))
+    target_w, target_h = {
+        "16:9": (1920, 1080),
+        "1:1": (1080, 1080),
+        "9:16": (1080, 1920),
+    }[req.aspect_ratio]
 
     multimodal_plan = synthesize_multimodal_plan(
         audio_segments=audio_segments,
         visual_frames=visual_analyses,
-        video_metadata={"duration": duration, "width": probe.get("width", 1920), "height": probe.get("height", 1080)},
+        video_metadata={"duration": duration, "width": target_w, "height": target_h},
         template_id=target_template,
         main_prompt=req.prompt,
         additional_instructions=req.additional_instructions or "",
-        asset_registry=asset_reg
+        asset_registry=asset_reg,
+        available_resources=req.resources,
+        resource_evidence=resource_evidence,
     )
 
     # 5. Directing with Context & User Prompts
@@ -270,9 +426,6 @@ async def chat_edit(req: ChatEditRequest):
         res_info = f"\nUser Uploaded Additional Resources Available: {', '.join(req.resources)}"
     if req.prompt or res_info:
         user_style_note = f"\n\nUSER PROMPT INSTRUCTIONS:\n'{req.prompt}'{res_info}\nTarget Aspect Ratio: {req.aspect_ratio}"
-
-    target_w = 1920 if req.aspect_ratio == "16:9" else 1080
-    target_h = 1080 if req.aspect_ratio == "16:9" else 1920
 
     edl = await generate_edl(
         transcript=transcript_text + user_style_note,
@@ -284,9 +437,134 @@ async def chat_edit(req: ChatEditRequest):
         template_id=target_template,
         additional_instructions=req.additional_instructions or "",
     )
+    director_validation: dict[str, Any] = {}
+    edl = apply_plan_composition(edl, multimodal_plan, report=director_validation)
+    edl = edl.model_copy(update={
+        "template_id": multimodal_plan.get("applied_template", {}).get("id", target_template),
+    })
+    director_validation["template_id"] = edl.template_id
+    director_validation["source_audio_preserved"] = bool(probe.get("has_audio")) and edl.music is None
+
+    # 6. Smart Silence & Dead-Air Cutting (Automatic Jump-Cuts)
+    should_cut_silence = req.remove_silence or any(
+        k in (req.prompt + " " + (req.additional_instructions or "")).lower()
+        for k in ["cut silence", "remove gap", "jump cut", "tighten", "dead air", "fast paced", "remove pause"]
+    )
+    cut_intervals = []
+    keep_segments = None
+    trimmed_seconds = 0.0
+
+    if should_cut_silence and words_list:
+        cut_intervals = detect_gaps_from_words(
+            words_list,
+            min_gap_s=max(0.25, float(req.silence_threshold_ms) / 1000.0),
+            pad_s=0.065,
+            total_duration=duration,
+        )
+        if req.remove_repeats:
+            repeat_cuts = detect_false_starts_and_repeats(words_list)
+            cut_intervals.extend(repeat_cuts)
+
+        if cut_intervals:
+            keep_segments = compute_keep_segments(duration, cut_intervals)
+            raw_dict = edl.model_dump()
+            retimed_dict = retime_edl(raw_dict, keep_segments)
+            retimed_dict["keep_segments"] = keep_segments
+            retimed_dict["jump_cuts"] = cut_intervals
+            trimmed_seconds = round(duration - sum(e - s for s, e in keep_segments), 2)
+            edl = EditDecisionList(**retimed_dict)
+            logger.info("Smart Jump-Cuts: %d pauses trimmed (%.2fs dead air removed)", len(cut_intervals), trimmed_seconds)
+
+    # 7. Cadence Face Punch Zoom
+    if req.cadence_zoom:
+        current_zooms = list(edl.zoom_events)
+        edl_dur = float(edl.video_duration or duration)
+        if not current_zooms:
+            if edl_dur >= 7.0:
+                current_zooms.append(ZoomEvent(
+                    id="z_hook_punch",
+                    start=1.0,
+                    end=3.5,
+                    scale=1.12,
+                    target="face",
+                    ease="back.out(1.2)"
+                ))
+            if edl_dur >= 16.0:
+                current_zooms.append(ZoomEvent(
+                    id="z_mid_punch",
+                    start=min(edl_dur - 4.0, 11.0),
+                    end=min(edl_dur - 1.0, 14.5),
+                    scale=1.10,
+                    target="face",
+                    ease="power2.inOut"
+                ))
+            edl = edl.model_copy(update={"zoom_events": current_zooms})
 
     edl_dict = edl.model_dump()
     elapsed = round(time.perf_counter() - t0, 2)
+    frame_dicts = [frame.to_dict() for frame in visual_analyses]
+    segment_context = []
+    for segment in audio_segments:
+        overlapping = [
+            frame for frame in frame_dicts
+            if segment.start <= frame["timestamp"] <= segment.end
+        ]
+        if not overlapping and frame_dicts:
+            nearest = min(frame_dicts, key=lambda frame: abs(frame["timestamp"] - segment.start))
+            if abs(nearest["timestamp"] - segment.start) <= 5.0:
+                overlapping = [nearest]
+        segment_context.append({
+            **segment.to_dict(),
+            "visual_evidence": [
+                {
+                    "timestamp": frame["timestamp"],
+                    "summary": frame.get("visual_summary") or frame.get("subject_activity", ""),
+                    "objects": frame.get("objects_detected", []),
+                    "setting": frame.get("setting_environment", ""),
+                    "spoken_topics": frame.get("spoken_topics", []),
+                    "mentioned_entities": frame.get("mentioned_entities", []),
+                    "face_positions": frame.get("normalized_faces", []),
+                    "provider": frame.get("analysis_provider", "unknown"),
+                    "status": frame.get("analysis_status", "unknown"),
+                }
+                for frame in overlapping
+            ],
+            "model_topics": sorted({
+                topic
+                for frame in overlapping
+                for topic in frame.get("spoken_topics", [])
+            }),
+            "mentioned_entities": sorted({
+                entity
+                for frame in overlapping
+                for entity in frame.get("mentioned_entities", [])
+            }),
+        })
+    analysis_report = {
+        "schema_version": "1.0",
+        "source": {
+            "filename": video_path.name,
+            "duration": duration,
+            "width": probe.get("width"),
+            "height": probe.get("height"),
+            "fps": probe.get("fps"),
+            "rotation": probe.get("rotation", 0),
+            "has_audio": bool(probe.get("has_audio")),
+        },
+        "transcription": {
+            "status": transcription_status,
+            "provider": transcription_provider,
+            "language": transcription_language,
+            "text": transcript_text,
+            "words": words_list,
+        },
+        "audio_signal": audio_signal,
+        "scene_changes": scene_timestamps,
+        "frames": frame_dicts,
+        "segments": segment_context,
+        "attached_resources": resource_evidence,
+        "vision_providers_used": sorted({frame["analysis_provider"] for frame in frame_dicts}),
+    }
 
     # Generate friendly summary of decisions made
     graphics_list = [g.get("trigger_word", g.get("asset_id")) for g in edl_dict.get("graphics", [])]
@@ -303,8 +581,10 @@ async def chat_edit(req: ChatEditRequest):
         "edl": edl_dict,
         "transcript": transcript_text,
         "audio_segments": [seg.to_dict() for seg in audio_segments],
-        "visual_frames": [vf.to_dict() for vf in visual_analyses],
+        "visual_frames": frame_dicts,
+        "analysis_report": analysis_report,
         "multimodal_plan": multimodal_plan,
+        "director_validation": director_validation,
         "applied_template": applied_tmpl,
         "applied_instructions": req.additional_instructions or "",
         "caption_count": len(edl.captions),
@@ -334,7 +614,8 @@ async def render_video(req: RenderRequest):
         output_video=str(out_path),
         edl=req.edl,
         aspect_ratio=req.aspect_ratio,
-        sfx_dir=str(SFX_DIR)
+        sfx_dir=str(SFX_DIR),
+        background_mode=req.background_mode,
     )
 
     if not res.get("success"):
@@ -347,7 +628,9 @@ async def render_video(req: RenderRequest):
         "export_filename": out_filename,
         "download_url": f"/api/download/{out_filename}",
         "file_size_mb": size_mb,
-        "aspect_ratio": req.aspect_ratio
+        "aspect_ratio": req.aspect_ratio,
+        "audio_mode": res.get("audio_mode", "unknown"),
+        "audio_effects_mixed": res.get("audio_effects_mixed", 0),
     }
 
 @app.get("/api/download/{filename}")

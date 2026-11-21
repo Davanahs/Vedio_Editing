@@ -27,3 +27,17 @@
 The engine will fall back to:
 - Local faster-whisper for transcription (slow, ~3-5 min for 48s video)
 - No AI Director (captions only, no contextual graphics)
+
+
+## Vision analysis
+
+The web editor analyzes a bounded set of representative frames with Gemini when GEMINI_API_KEY is configured, then tries OpenRouter when OPENROUTER_API_KEY is configured. OpenRouter vision defaults to the free model router openrouter/free; set AURA_OPENROUTER_VISION_MODEL to an image-input model if desired. Requests send resized frame images and nearby transcript text to the selected provider. Without a configured vision key, Aura reports local OpenCV heuristics as fallback rather than presenting them as model analysis.
+
+Relevant optional settings:
+
+- AURA_MAX_ANALYSIS_FRAMES=24 caps frame/model analysis per edit.
+- AURA_VISION_CONCURRENCY=3 caps concurrent vision requests.
+- AURA_VISION_TIMEOUT_SECONDS=25 sets the provider timeout.
+- AURA_SILENCE_THRESHOLD_DBFS=-45 adjusts local silence detection.
+
+Silence is measured from extracted PCM audio. Music candidates are heuristic tonal non-speech intervals and may miss music under speech; they are not a confirmed music classifier. Cloud providers receive media when their keys are configured, so use provider data-handling settings appropriate for your footage.

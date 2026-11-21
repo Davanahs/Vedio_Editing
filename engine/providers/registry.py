@@ -67,8 +67,6 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                 "highlight_color": b.get("highlight_color", "#FFE600")
             })
 
-        import re
-
         def has_word(word_list: List[str], text: str) -> bool:
             for w in word_list:
                 if re.search(r'\b' + re.escape(w) + r'\b', text, re.IGNORECASE):
@@ -92,7 +90,7 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
             # Opening hook
             is_gaming_hook = ("GTA" in hook_title or "GAMING" in hook_title or "CLIPS" in hook_title or "MONEY" in hook_title)
             is_gemini_hook = ("GEMINI" in hook_title or "NOTEBOOK" in hook_title)
-            hook_asset = "gamepad" if is_gaming_hook else ("gemini" if is_gemini_hook else "star")
+            hook_asset = "gamepad" if is_gaming_hook else ("gemini" if is_gemini_hook else "sparkle_stars")
             hook_sub = "Trending Clips" if is_gaming_hook else ("AI Assistant" if is_gemini_hook else "AI Studio")
 
             graphics.append({
@@ -107,6 +105,7 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                 "y": 140 if is_landscape else 240,
                 "width": 500,
                 "height": 180,
+                "z_index": 40,
                 "animation": "spring_in",
                 "trigger_word": f"Title: {hook_title}"
             })
@@ -132,13 +131,32 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
                         "end": end_t,
                         "x": x_pos,
                         "y": y_pos,
-                        "width": 320,
-                        "height": 80,
+                        "width": placement.get("width", 180),
+                        "height": placement.get("height", 180),
+                        "z_index": placement.get("z_index", 50),
+                        "rotation": placement.get("rotation", 0),
                         "animation": anim,
                         "trigger_word": title,
                         "title": title,
                         "subtitle": subtitle
                     })
+                    for layer_index, layer in enumerate(dec.get("composition_layers", [])):
+                        graphics.append({
+                            "id": f"g_{layer.get('asset_id', 'accent')}_{idx}_{layer_index}",
+                            "asset_id": layer["asset_id"],
+                            "start": start_t,
+                            "end": end_t,
+                            "x": layer["x"],
+                            "y": layer["y"],
+                            "width": layer["width"],
+                            "height": layer["height"],
+                            "z_index": layer.get("z_index", 60),
+                            "rotation": layer.get("rotation", 0),
+                            "animation": layer.get("animation", anim),
+                            "trigger_word": "",
+                            "title": "",
+                            "subtitle": "",
+                        })
                     if sfx:
                         sound_effects.append({
                             "id": f"s_{asset_id}_{idx}",
@@ -199,7 +217,7 @@ class LocalHeuristicDirectorProvider(DirectorProvider):
 
         graphics.append({
             "id": "g_title_0",
-            "asset_id": "kinetic_title",
+            "asset_id": "sparkle_stars",
             "type": "kinetic_title",
             "title": intro_title,
             "subtitle": "AI Productivity",

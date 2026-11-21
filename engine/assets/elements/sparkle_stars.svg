@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100" role="img" aria-label="Gold sparkle cluster">
+  <g fill="#f8c85a" stroke="#fff2c7" stroke-width="2" stroke-linejoin="round">
+    <path d="M40 5 48 34 77 42 48 50 40 80 32 50 3 42 32 34z"/>
+    <path d="m112 31 5 18 18 5-18 5-5 18-5-18-18-5 18-5z"/>
+    <circle cx="91" cy="17" r="4"/><circle cx="82" cy="82" r="3"/><circle cx="148" cy="24" r="3"/>
+  </g>
+</svg>

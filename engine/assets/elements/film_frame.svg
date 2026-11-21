@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 170" role="img" aria-label="Cinematic film frame border">
+  <rect x="5" y="5" width="270" height="160" rx="8" fill="#111827" fill-opacity=".2" stroke="#f8fafc" stroke-width="8"/>
+  <path d="M18 30h244M18 140h244" stroke="#f8fafc" stroke-width="24" stroke-dasharray="20 15"/>
+  <path d="M32 53v64m216-64v64" stroke="#fbbf24" stroke-opacity=".85" stroke-width="3"/>
+</svg>

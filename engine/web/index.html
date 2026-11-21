@@ -647,11 +647,36 @@
     .canvas-1-1  { width: 440px; height: 440px; }
 
     #mainVideo {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      background: #000000;
+      background: transparent;
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+    }
+
+    #previewBackgroundVideo {
+      position: absolute;
+      inset: -18px;
+      z-index: 0;
+      width: calc(100% + 36px);
+      height: calc(100% + 36px);
+      object-fit: cover;
+      filter: blur(18px) brightness(.58);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #previewBackgroundVideo.visible { opacity: 1; }
+    #mainVideo.preview-fill { object-fit: cover; }
+    #mainVideo.preview-fit { object-fit: contain; }
+
+    .dynamic-overlays-container {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      overflow: hidden;
+      pointer-events: none;
     }
 
     /* Dynamic Zoom Punch */
@@ -1516,6 +1541,12 @@
       display: flex;
     }
 
+    .selection-evidence-card { margin-top: 4px; border-top: 1px solid var(--border-subtle); padding-top: 8px; }
+    .selection-evidence-title { color: #c4b5fd; font-size: 11px; font-weight: 800; margin-bottom: 6px; }
+    .selection-evidence-row { border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 7px; margin-top: 5px; background: rgba(0,0,0,.16); }
+    .selection-evidence-row strong { display: block; color: #f8fafc; font-size: 10px; }
+    .selection-evidence-row span { display: block; color: #a8b1c2; font-size: 9px; line-height: 1.4; margin-top: 3px; }
+
     .results-badge-header {
       font-size: 11px;
       font-weight: 800;
@@ -1784,6 +1815,17 @@
       }
     }
 
+    @keyframes motionFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes motionFadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes motionPop { from { opacity: 0; transform: scale(.05); } to { opacity: 1; transform: scale(1); } }
+    @keyframes motionPopFade { from { opacity: 0; transform: scale(.72); } to { opacity: 1; transform: scale(1); } }
+    @keyframes motionScale { from { opacity: 0; transform: scale(.72); } to { opacity: 1; transform: scale(1); } }
+    @keyframes motionScaleOut { from { transform: scale(1); } to { transform: scale(0); } }
+    @keyframes motionSlide { from { opacity: 0; transform: translateX(var(--slide-offset)); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes motionRotate { 0%,100% { transform: rotate(0); } 25% { transform: rotate(5.73deg); } 75% { transform: rotate(-5.73deg); } }
+    @keyframes motionFloat { 0%,100% { transform: translateY(0); } 25% { transform: translateY(var(--float-offset)); } 75% { transform: translateY(var(--float-up)); } }
+    @keyframes motionGlitter { 0%,100% { filter: brightness(1.1); } 25%,75% { filter: brightness(1.22) drop-shadow(0 0 3px #ffe680); } }
+
     /* Modal Dropzone */
     .modal-scrim {
       position: fixed;
@@ -2001,12 +2043,18 @@
           <option value="16:9">16:9 Landscape</option>
           <option value="1:1">1:1 Square</option>
         </select>
+        <select class="ratio-dropdown" id="backgroundModeSelect" aria-label="Video framing mode" onchange="applyPreviewFraming()">
+          <option value="blur" selected>Fill frame with blur</option>
+          <option value="fill">Crop to fill</option>
+          <option value="fit">Fit with bars</option>
+        </select>
       </div>
 
       <!-- Primary Video Canvas Viewport -->
       <div class="video-viewport-wrapper canvas-9-16 outline-white" id="videoCanvasWrapper">
 
         <!-- Main Video Element -->
+        <video id="previewBackgroundVideo" muted playsinline preload="auto" aria-hidden="true"></video>
         <video id="mainVideo" playsinline preload="auto" crossorigin="anonymous"></video>
 
         <!-- Unmute Warning Callout if Browser Mutes Autoplay -->
@@ -2225,6 +2273,7 @@
             <span style="font-size:11px; font-weight:800; color:var(--brand-primary);" id="inspectorTitle">Template Inspection</span>
             <span style="font-size:10px; color:var(--text-muted); cursor:pointer;" onclick="closeTemplateInspector()">✕ Close</span>
           </div>
+          <img id="inspectorPreviewImage" alt="Selected template preview" style="display:block; width:100%; max-height:220px; object-fit:contain; border-radius:8px; margin:0 0 8px; background:#07080b;">
           <div id="inspectorContent" style="font-size:10px; color:var(--text-secondary); line-height:1.4;"></div>
         </div>
       </div>
@@ -2285,6 +2334,25 @@
         <div class="stage-item-row" id="stage8"><span class="stage-indicator-dot"></span> 8. Preparing live preview</div>
       </div>
 
+      <!-- AI Automation & Video Intelligence Options -->
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">
+        <div style="font-size:11px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+          <span>⚡</span> AI Automation & Video Intelligence
+        </div>
+        <label style="font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="chkRemoveSilence" checked>
+          <span>✂️ <b>Smart Jump-Cuts:</b> Auto-trim dead air (>380ms)</span>
+        </label>
+        <label style="font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="chkCadenceZoom" checked>
+          <span>🔍 <b>Cadence Face Zoom:</b> 1.1x punch emphasis</span>
+        </label>
+        <label style="font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="chkRemoveRepeats" checked>
+          <span>🔄 <b>Retake Detection:</b> Auto-trim stumbles & restarts</span>
+        </label>
+      </div>
+
       <!-- Primary Action: Generate Edit Button -->
       <button class="btn-generate-hero" id="btnGenerateHero" onclick="executeAICreativeEdit()">
         <span>✦</span> Generate Creative Edit ➔
@@ -2297,6 +2365,10 @@
         </div>
         <div class="results-text-body" id="resultsSummaryText">
           Tailored composition generated with kinetic captions, visual triggers, and sound design.
+        </div>
+        <div class="selection-evidence-card" id="selectionEvidenceCard" style="display:none;">
+          <div class="selection-evidence-title">Why these graphics?</div>
+          <div id="selectionEvidenceList"></div>
         </div>
         <div id="resultsCardDownloadWrap" style="margin-top:12px; display:none;">
           <a id="btnSummaryDownloadLink" class="btn-timeline-download" style="display:inline-flex; width:100%; text-decoration:none; justify-content:center;" href="#" download>
@@ -2318,7 +2390,7 @@
       <div class="timeline-track-title"><span>👁</span> Captions</div>
       <div class="timeline-track-title"><span>🖼</span> Scrapbook</div>
       <div class="timeline-track-title"><span>🔊</span> SFX Hits</div>
-      <div class="timeline-track-title"><span>🎵</span> Music Master</div>
+      <div class="timeline-track-title"><span>🔊</span> Original Audio</div>
     </div>
 
     <div class="timeline-canvas-scroll" id="timelineScrollArea" onclick="handleTimelineCanvasClick(event)">
@@ -2335,7 +2407,7 @@
         <div class="timeline-row" id="tlTrackGraphics"></div>
         <div class="timeline-row" id="tlTrackSfx"></div>
         <div class="timeline-row" id="tlTrackMusic">
-          <div class="mastered-music-bar">✦ -14 LUFS Mastered Audio Track • Sidechain Ducking Active</div>
+          <div class="mastered-music-bar" id="audioTrackStatus">Original source audio is preserved on export.</div>
         </div>
       </div>
     </div>
@@ -2345,6 +2417,16 @@
       <button class="btn-timeline-preview" id="btnTimelinePreview" onclick="togglePlayPause()">
         <span>▶</span> Preview
       </button>
+
+      <button class="btn-timeline-preview" id="btnSubjectCutout" onclick="createSubjectCutout()" title="Remove the background from the current frame">
+        Subject cutout
+      </button>
+      <details id="cutoutAdjustments" style="display:none; width:165px; color:var(--text-secondary); font-size:10px; text-align:left;">
+        <summary style="cursor:pointer; color:#c4b5fd;">Position and size</summary>
+        <label>X <input id="cutoutX" type="range" min="0" max="100" value="68" oninput="updateSubjectCutoutControls()"></label>
+        <label>Y <input id="cutoutY" type="range" min="0" max="100" value="18" oninput="updateSubjectCutoutControls()"></label>
+        <label>Size <input id="cutoutScale" type="range" min="10" max="60" value="25" oninput="updateSubjectCutoutControls()"></label>
+      </details>
 
       <button class="btn-timeline-export" id="btnExportVideo" onclick="exportVideoFile()">
         <span>🚀</span> Export Reel
@@ -2391,9 +2473,14 @@
     // State
     let activeVideo = "WhatsApp_Video_2026-11-18_at_13.03.38.mp4";
     let activeDuration = 50.85;
+    let activeWidth = 848;
+    let activeHeight = 474;
     let currentAspect = "16:9";
+    let activeSubjectCutoutId = null;
+    let activeSubjectCutoutAspect = 1;
     let currentOutline = "white";
     let activeStylePreset = "pinterest_scrapbook";
+    let activeRenderTemplate = "pinterest_scrapbook";
     let viewMode = "edited"; // "edited" | "original"
     let edlData = null;
     let audioUnlocked = false;
@@ -2404,6 +2491,8 @@
 
     // DOM Cache
     const video = document.getElementById('mainVideo');
+    const previewBackgroundVideo = document.getElementById('previewBackgroundVideo');
+    applyTemplatePreviewTreatment(activeRenderTemplate);
     const miniThumbVideo = document.getElementById('miniThumbVideo');
     const videoCanvasWrapper = document.getElementById('videoCanvasWrapper');
     const timelineNeedle = document.getElementById('timelineNeedle');
@@ -2582,6 +2671,7 @@
       document.getElementById('videoLoadedCard').classList.add('visible');
 
       video.src = `/media/raw/${filename}`;
+      previewBackgroundVideo.src = video.src;
       miniThumbVideo.src = `/media/raw/${filename}`;
       video.load();
 
@@ -2613,7 +2703,33 @@
       else videoCanvasWrapper.classList.add("canvas-1-1");
 
       applyOutlineFilter();
+      applyPreviewFraming();
     }
+
+    function applyPreviewFraming() {
+      const mode = document.getElementById('backgroundModeSelect')?.value || 'blur';
+      video.classList.toggle('preview-fill', mode === 'fill');
+      video.classList.toggle('preview-fit', mode !== 'fill');
+      previewBackgroundVideo.classList.toggle('visible', mode === 'blur' && Boolean(video.src));
+      if (mode === 'blur' && video.src) {
+        previewBackgroundVideo.currentTime = video.currentTime || 0;
+        if (!video.paused) previewBackgroundVideo.play().catch(() => {});
+        else previewBackgroundVideo.pause();
+      } else previewBackgroundVideo.pause();
+    }
+
+    video.addEventListener('play', () => { if (document.getElementById('backgroundModeSelect').value === 'blur') previewBackgroundVideo.play().catch(() => {}); });
+    video.addEventListener('pause', () => previewBackgroundVideo.pause());
+    video.addEventListener('seeked', () => {
+      if (document.getElementById('backgroundModeSelect').value === 'blur') {
+        try { previewBackgroundVideo.currentTime = video.currentTime; } catch (_) {}
+      }
+    });
+    video.addEventListener('timeupdate', () => {
+      if (Math.abs(previewBackgroundVideo.currentTime - video.currentTime) > 0.2) {
+        try { previewBackgroundVideo.currentTime = video.currentTime; } catch (_) {}
+      }
+    });
 
     function cycleOutlineStyle() {
       currentOutline = (currentOutline === "white") ? "yellow" : (currentOutline === "yellow" ? "none" : "white");
@@ -2778,6 +2894,7 @@
       document.getElementById('videoLoadedCard').classList.add('visible');
 
       video.src = localBlobUrl;
+      previewBackgroundVideo.src = localBlobUrl;
       miniThumbVideo.src = localBlobUrl;
       video.load();
 
@@ -2823,6 +2940,8 @@
     // ── CREATIVE STYLE EXPLORER SELECTION & INSPECTION ──
     function chooseCreativeStyle(preset, cardEl) {
       activeStylePreset = preset;
+      activeRenderTemplate = preset;
+      applyTemplatePreviewTreatment(preset);
       document.querySelectorAll('.aesthetic-style-card').forEach(c => c.classList.remove('selected'));
       if (cardEl) cardEl.classList.add('selected');
 
@@ -2839,10 +2958,28 @@
       inspectTemplate(preset);
     }
 
+    function applyTemplatePreviewTreatment(templateId) {
+      const grades = {
+        pinterest_scrapbook: [1.06, 1.02, 1.12],
+        glassmorphism: [1.08, 1.01, 1.18],
+        retro_camera: [1.05, 1.00, 0.92],
+        aesthetic_lifestyle: [1.03, 1.02, 1.10],
+        creative_minimal: [1.04, 1.00, 1.02],
+        floating_music_player: [1.06, 1.00, 1.10],
+        auto_creative: [1.05, 1.00, 1.10]
+      };
+      const [contrast, brightness, saturation] = grades[templateId] || grades.auto_creative;
+      const filter = `contrast(${contrast}) brightness(${brightness}) saturate(${saturation})`;
+      for (const footage of [video, previewBackgroundVideo]) {
+        if (footage) footage.style.filter = filter;
+      }
+    }
+
     function inspectTemplate(preset) {
       const box = document.getElementById('templateInspectorBox');
       const titleEl = document.getElementById('inspectorTitle');
       const contentEl = document.getElementById('inspectorContent');
+      const previewEl = document.getElementById('inspectorPreviewImage');
       if (!box || !titleEl || !contentEl) return;
 
       const templateSpecs = {
@@ -2878,6 +3015,11 @@
 
       const spec = templateSpecs[preset] || templateSpecs.auto_creative;
       titleEl.innerText = spec.title;
+      if (previewEl) {
+        previewEl.src = `/template_previews/${preset}.jpg`;
+        previewEl.alt = `${preset.replace(/_/g, ' ')} visual preview`;
+        previewEl.onerror = () => { previewEl.src = "/template_previews/auto_creative.jpg"; };
+      }
       contentEl.innerHTML = `<div>${spec.desc}</div>`;
       box.style.display = "block";
     }
@@ -2890,6 +3032,48 @@
     function applyQuickPrompt(p) {
       directorPromptInput.value = p;
       executeAICreativeEdit();
+    }
+
+    function renderSelectionEvidence(plan) {
+      const card = document.getElementById('selectionEvidenceCard');
+      const list = document.getElementById('selectionEvidenceList');
+      if (!card || !list) return;
+      list.replaceChildren();
+      const decisions = plan?.decisions || [];
+      const rows = decisions.slice(0, 12).map((decision) => {
+        const evidence = decision.selection_evidence || {};
+        const asset = decision.chosen_asset_id || 'Clean moment';
+        const detail = decision.needs_visual_element
+          ? `${Math.round((decision.selection_score || 0) * 100)} ranking score · ${evidence.ranking_method || 'local ranking'}${evidence.semantic_similarity ? ` · semantic ${evidence.semantic_similarity}` : ''}${decision.composition_layers?.length ? ` · ${decision.composition_layers.length} supporting layer${decision.composition_layers.length === 1 ? '' : 's'}` : ''}`
+          : (decision.clean_reason || 'No overlay selected');
+        const matched = [...(evidence.matched_keywords || []), ...(evidence.matched_resource_terms || [])].slice(0, 5);
+        return { asset, detail, matched, scene: evidence.visual_evidence || '' };
+      });
+      if (!rows.length) {
+        card.style.display = 'none';
+        return;
+      }
+      for (const row of rows) {
+        const item = document.createElement('div');
+        item.className = 'selection-evidence-row';
+        const title = document.createElement('strong');
+        title.textContent = row.asset;
+        const detail = document.createElement('span');
+        detail.textContent = row.detail;
+        item.append(title, detail);
+        if (row.matched.length) {
+          const terms = document.createElement('small');
+          terms.textContent = `Matched: ${row.matched.join(', ')}`;
+          item.append(terms);
+        }
+        if (row.scene) {
+          const scene = document.createElement('small');
+          scene.textContent = `Scene: ${row.scene}`;
+          item.append(scene);
+        }
+        list.append(item);
+      }
+      card.style.display = 'block';
     }
 
     function previewCapability(name) {
@@ -2935,7 +3119,10 @@
             style_preset: activeStylePreset,
             aspect_ratio: currentAspect,
             additional_instructions: addInstructions,
-            resources: attachedResources
+            resources: attachedResources,
+            remove_silence: document.getElementById('chkRemoveSilence')?.checked ?? true,
+            cadence_zoom: document.getElementById('chkCadenceZoom')?.checked ?? true,
+            remove_repeats: document.getElementById('chkRemoveRepeats')?.checked ?? true
           })
         });
 
@@ -2954,6 +3141,10 @@
           await sleep(300);
 
           edlData = data.edl;
+          edlData.source_has_audio = Boolean(data.analysis_report?.source?.has_audio);
+          activeRenderTemplate = data.multimodal_plan?.applied_template?.id || activeStylePreset;
+          applyTemplatePreviewTreatment(activeRenderTemplate);
+          renderSelectionEvidence(data.multimodal_plan);
           renderTimelineClips(edlData);
           setViewMode('edited');
 
@@ -3025,24 +3216,26 @@
         return;
       }
 
-      const activeGraphics = edlData.graphics.filter(g => g.type !== "kinetic_title" && t >= g.start && t <= g.end);
+      const activeGraphics = edlData.graphics
+        .filter(g => g.type !== "kinetic_title" && t >= g.start && t <= Number(g.end) + 0.22)
+        .sort((a, b) => Number(a.z_index || 50) - Number(b.z_index || 50));
       if (activeGraphics.length === 0) {
         container.innerHTML = "";
         return;
       }
 
       let html = "";
-      const currentTemplate = activeStylePreset || "pinterest_scrapbook";
+      const currentTemplate = activeRenderTemplate || activeStylePreset || "pinterest_scrapbook";
 
       activeGraphics.forEach(g => {
         const title = (g.title || g.trigger_word || "").toUpperCase();
         const subtitle = g.subtitle || "";
         const asset = g.asset_id || "star";
         
-        const vidW = activeWidth || 1080;
-        const vidH = activeHeight || 1920;
-        const xPct = Math.max(5, Math.min(75, ((g.x || 200) / vidW) * 100));
-        const yPct = Math.max(12, Math.min(65, ((g.y || 400) / vidH) * 100));
+        const vidW = Number(edlData.video_metadata?.width) || (currentAspect === "16:9" ? 1920 : 1080);
+        const vidH = Number(edlData.video_metadata?.height) || (currentAspect === "16:9" || currentAspect === "1:1" ? 1080 : 1920);
+        const xPct = Math.max(0, Math.min(100, ((g.x ?? 200) / vidW) * 100));
+        const yPct = Math.max(0, Math.min(100, ((g.y ?? 400) / vidH) * 100));
 
         let icon = "✨";
         if (asset === "gemini") icon = "✨";
@@ -3060,9 +3253,40 @@
         else if (asset === "chip") icon = "⚡";
         else if (asset === "fire") icon = "🔥";
 
+        const vectorAssets = new Set(["polaroid_frame", "flower_blossom", "sparkle_stars", "doodle_heart", "glass_pill", "viewfinder", "music_player_card", "retro_recording_hud", "scrapbook_tape", "tech_interface_card", "subject_outline", "doodle_arrow", "torn_paper_frame", "film_frame", "kinetic_title_card", "gemini", "robot", "brain_ai", "chip", "laptop", "sun_warmth", "recipe_dish", "chef_hat", "fresh_leaf", "music_card", "headphones", "sound_wave", "book", "presentation", "quiz", "audio_mic", "bulb", "rec_dot", "gamepad", "money", "comment", "heart", "bell"]);
+        if (vectorAssets.has(asset)) {
+          icon = `<img src="/media/elements/${asset}.svg" alt="" style="width:24px;height:24px;object-fit:contain;vertical-align:middle;">`;
+        }
+
         const categoryBadge = (title.includes("GTA") || title.includes("CLIP") || title.includes("MONEY") || asset === "gamepad" || asset === "money" || asset === "youtube")
           ? "GAMING INTEL"
           : (asset === "gemini" || asset === "book" || title.includes("NOTEBOOK") ? "NOTEBOOKLM AI" : "KEY HIGHLIGHT");
+
+        if (vectorAssets.has(asset) || g.resource_url) {
+          const elementWidth = Number(g.width) || 180;
+          const outputWidth = currentAspect === "16:9" ? 1920 : 1080;
+          const outputHeight = currentAspect === "16:9" ? 1080 : currentAspect === "1:1" ? 1080 : 1920;
+          const canvasWidth = videoCanvasWrapper.clientWidth || container.clientWidth || outputWidth;
+          const canvasHeight = videoCanvasWrapper.clientHeight || outputHeight;
+          const displayWidth = Math.max(30, Math.min(canvasWidth * 0.8, elementWidth * canvasWidth / outputWidth));
+          const displayHeight = Math.max(30, Math.min(canvasHeight * 0.8, (Number(g.height) || 180) * canvasHeight / outputHeight));
+          const graphicUrl = g.resource_url || `/media/elements/${asset}.png`;
+          const animationNames = { fade: "motionFade", scale: "motionScale", slide: "motionSlide", rotate: "motionRotate", float: "motionFloat", pop: "motionPop", glitter: "motionGlitter", pop_fade: "motionPopFade" };
+          const animation = animationNames[g.animation] || animationNames[({pop_in:"pop", spring_in:"pop", bounce_in:"pop", tilt_pop:"pop_fade", glass_slide:"slide", slide_fade:"slide", soft_float:"float", soft_bounce:"pop", glow_expand:"glitter", pulse_wave:"glitter", blink_in:"fade", retro_snap:"pop_fade", draw_on:"slide"})[g.animation]] || "motionPop";
+          const elapsed = Math.max(0, t - Number(g.start || 0));
+          const loopMotion = { motionRotate: "2s", motionFloat: "2s", motionGlitter: ".65s" }[animation];
+          const entranceAnimations = loopMotion ? `motionFade .28s linear both,${animation} ${loopMotion} linear infinite` : `${animation} .28s linear both`;
+          const exitElapsed = Math.max(0, t - (Number(g.end) - 0.22));
+          const hasExitAnimation = exitElapsed > 0;
+          const scaleExits = hasExitAnimation && animation === "motionScale";
+          const animationStyle = hasExitAnimation ? `${entranceAnimations},${scaleExits ? "motionScaleOut .22s linear both," : ""}motionFadeOut .22s linear both` : entranceAnimations;
+          const delayList = (loopMotion ? `-${elapsed}s,-${elapsed}s` : `-${elapsed}s`) + (hasExitAnimation ? `${scaleExits ? `,-${exitElapsed}s` : ""},-${exitElapsed}s` : "");
+          const motionVars = `--slide-offset:${-80 * canvasWidth / outputWidth}px;--float-offset:${10 * canvasHeight / outputHeight}px;--float-up:${-10 * canvasHeight / outputHeight}px;`;
+          const rotation = Number(g.rotation) || 0;
+          const zIndex = Number(g.z_index) || 50;
+          html += `<img class="dynamic-render" src="${graphicUrl}" alt="${asset.replaceAll('_', ' ')}" style="${motionVars}position:absolute;display:block;left:${xPct}%;top:${yPct}%;width:${displayWidth}px;height:${displayHeight}px;object-fit:contain;rotate:${rotation}deg;z-index:${zIndex};animation:${animationStyle};animation-delay:${delayList};">`;
+          return;
+        }
 
         if (currentTemplate === "pinterest_scrapbook") {
           html += `
@@ -3236,6 +3460,15 @@
       const tCap = document.getElementById('tlTrackCaptions');
       const tGraph = document.getElementById('tlTrackGraphics');
       const tSfx = document.getElementById('tlTrackSfx');
+      const audioStatus = document.getElementById('audioTrackStatus');
+
+      if (audioStatus) {
+        const sfxCount = (edl.sound_effects || []).length;
+        const sourceHasAudio = edl.source_has_audio !== false;
+        audioStatus.textContent = sourceHasAudio
+          ? (sfxCount ? `Original audio preserved with ${sfxCount} timed sound effect${sfxCount === 1 ? '' : 's'}.` : 'Original source audio is preserved unchanged.')
+          : (sfxCount ? `No source audio; ${sfxCount} timed sound effect${sfxCount === 1 ? '' : 's'} will be rendered.` : 'Source video has no audio track.');
+      }
 
       tCap.innerHTML = "";
       tGraph.innerHTML = "";
@@ -3275,6 +3508,57 @@
     }
 
     // ── EXPORT VIDEO WITH FFMPEG ──
+    async function createSubjectCutout() {
+      if (!activeVideo || !edlData) {
+        showToast("Load a video and generate an edit first.", "!");
+        return;
+      }
+      const btn = document.getElementById('btnSubjectCutout');
+      btn.disabled = true;
+      btn.textContent = "Segmenting frame…";
+      try {
+        const response = await fetch("/api/subject-cutout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: activeVideo,
+            timestamp: video.currentTime || 0,
+            aspect_ratio: currentAspect,
+            outline_color: currentOutline === "white" ? "#FFFFFF" : "#FFE36E",
+            outline_width: 5
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Segmentation failed");
+        edlData.graphics = [...(edlData.graphics || []), data.graphic];
+        activeSubjectCutoutId = data.graphic.id;
+        activeSubjectCutoutAspect = data.cutout.height / Math.max(1, data.cutout.width);
+        document.getElementById('cutoutX').value = Math.round(data.graphic.x / (currentAspect === "16:9" ? 1920 : 1080) * 100);
+        document.getElementById('cutoutY').value = Math.round(data.graphic.y / (currentAspect === "16:9" || currentAspect === "1:1" ? 1080 : 1920) * 100);
+        document.getElementById('cutoutScale').value = Math.round(data.graphic.width / (currentAspect === "16:9" ? 1920 : 1080) * 100);
+        document.getElementById('cutoutAdjustments').style.display = 'block';
+        renderTimelineClips(edlData);
+        renderDynamicOverlays(video.currentTime || 0);
+        showToast("Transparent subject cutout added to the timeline.", "✓");
+      } catch (error) {
+        showToast(error.message || "Subject cutout failed.", "!");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Subject cutout";
+      }
+    }
+
+    function updateSubjectCutoutControls() {
+      const graphic = edlData?.graphics?.find(item => item.id === activeSubjectCutoutId);
+      if (!graphic) return;
+      const outputWidth = currentAspect === "16:9" ? 1920 : 1080;
+      graphic.x = Math.round(outputWidth * Number(document.getElementById('cutoutX').value) / 100);
+      graphic.y = Math.round((currentAspect === "16:9" || currentAspect === "1:1" ? 1080 : 1920) * Number(document.getElementById('cutoutY').value) / 100);
+      graphic.width = Math.round(outputWidth * Number(document.getElementById('cutoutScale').value) / 100);
+      graphic.height = Math.round(graphic.width * activeSubjectCutoutAspect);
+      renderDynamicOverlays(video.currentTime || 0);
+    }
+
     async function exportVideoFile() {
       if (!edlData) {
         showToast("Please click 'Generate Creative Edit' first!", "⚠️");
@@ -3293,7 +3577,8 @@
           body: JSON.stringify({
             filename: activeVideo,
             edl: edlData,
-            aspect_ratio: currentAspect
+            aspect_ratio: currentAspect,
+            background_mode: document.getElementById('backgroundModeSelect').value
           })
         });
 

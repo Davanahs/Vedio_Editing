@@ -5,13 +5,51 @@ Renders engaging vertical (9:16) or horizontal (16:9) reels with:
 - Floating social comment question card
 - Spoken pop-up badges (PS5/Gaming, Cash, YouTube, Comment, Follow)
 - Dual-size kinetic captions (White lead + Electric Neon Yellow keyword)
-- Mastered voiceover audio with loudness normalization (-14 LUFS) and mixed SFX transients.
+- Original source audio preserved by default, with optional timed SFX mixing.
 """
 import os
+import re
+import json
 import shutil
 import subprocess
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+
+from PIL import Image
+
+from engine.assets.registry import AssetRegistry
+from engine.render.animations import get_animation
+
+
+def _probe_display_size(video_path: Path, fallback_width: int, fallback_height: int) -> tuple[int, int]:
+    try:
+        result = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:stream_tags=rotate:stream_side_data=rotation", "-of", "json", str(video_path)],
+            capture_output=True, text=True, timeout=15,
+        )
+        stream = (json.loads(result.stdout).get("streams") or [{}])[0]
+        width, height = int(stream.get("width") or fallback_width), int(stream.get("height") or fallback_height)
+        rotation = int(stream.get("tags", {}).get("rotate", 0) or 0)
+        for side in stream.get("side_data_list", []):
+            if "rotation" in side:
+                rotation = int(round(float(side["rotation"])))
+        if abs(rotation) in (90, 270):
+            return height, width
+        return width, height
+    except Exception:
+        return max(1, fallback_width), max(1, fallback_height)
+
+
+def _has_audio_stream(video_path: Path) -> bool:
+    try:
+        result = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=codec_type", "-of", "json", str(video_path)],
+            capture_output=True, text=True, timeout=15,
+        )
+        streams = json.loads(result.stdout).get("streams") or []
+        return any(stream.get("codec_type") == "audio" for stream in streams)
+    except Exception:
+        return False
 
 def format_ass_time(seconds: float) -> str:
     h = int(seconds // 3600)
@@ -187,9 +225,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         )
 
     # 3. Dynamic Pop-Up Badges from Graphics list using Collision Engine Placements
+    vector_asset_ids = {"polaroid_frame", "flower_blossom", "sparkle_stars", "doodle_heart", "glass_pill", "viewfinder", "music_player_card", "retro_recording_hud", "scrapbook_tape", "tech_interface_card", "subject_outline", "doodle_arrow", "torn_paper_frame", "film_frame", "kinetic_title_card", "subject_cutout", "gemini", "robot", "brain_ai", "chip", "laptop", "sun_warmth", "recipe_dish", "chef_hat", "fresh_leaf", "music_card", "headphones", "sound_wave", "book", "presentation", "quiz", "audio_mic", "bulb", "rec_dot", "gamepad", "money", "comment", "heart", "bell"}
     for g in graphics:
         if g.get("type") == "kinetic_title":
             continue
+        if g.get("asset_id") in vector_asset_ids:
+            continue  # The corresponding transparent artwork is composited by FFmpeg.
         start_t = format_ass_time(float(g.get("start", 0.0)))
         end_t = format_ass_time(float(g.get("end", 0.0)))
         word = (g.get("title") or g.get("trigger_word", "")).upper()
@@ -276,7 +317,8 @@ def render_reel_ffmpeg(
     output_video: str,
     edl: Dict[str, Any],
     aspect_ratio: str = "16:9",
-    sfx_dir: Optional[str] = None
+    sfx_dir: Optional[str] = None,
+    background_mode: str = "blur",
 ) -> Dict[str, Any]:
     """
     Renders the complete video into the target aspect ratio (16:9, 9:16, 1:1)
@@ -304,6 +346,8 @@ def render_reel_ffmpeg(
     vm = edl.get("video_metadata") or {}
     src_w = vm.get("width")
     src_h = vm.get("height")
+    source_width, source_height = _probe_display_size(inp, int(src_w or target_w), int(src_h or target_h))
+    source_has_audio = _has_audio_stream(inp)
 
     generate_ass_subtitles(
         captions=edl.get("captions", []),
@@ -314,8 +358,8 @@ def render_reel_ffmpeg(
         hook_title=edl.get("hook_title"),
         social_question=edl.get("social_question"),
         template_id=template_id,
-        source_width=src_w,
-        source_height=src_h
+        source_width=src_w or target_w,
+        source_height=src_h or target_h
     )
 
     ass_escaped = str(ass_path).replace("\\", "/").replace(":", "\\:")
@@ -340,33 +384,186 @@ def render_reel_ffmpeg(
     else:
         grade_filter = "eq=contrast=1.05:saturation=1.10"
 
-    # Video Filter: Scale, Pad, Color Grade, and Burn Stylized Visual Layer
-    v_filters = [
-        f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease,pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black,{grade_filter},subtitles='{ass_escaped}'[vout]"
-    ]
-    
-    # Audio Filters: Master dialogue with loudness normalization to -14 LUFS (Style Sheet Section 7)
-    a_filters = ["[0:a]loudnorm=I=-14:TP=-1.0:LRA=7,volume=1.4[main_a]"]
-    mix_sources = ["[main_a]"]
+    # Aspect-ratio composition never distorts source pixels. "blur" preserves
+    # the full source in front of a blurred cover-scaled copy; "fill" crops;
+    # "fit" deliberately pads.
+    background_mode = background_mode if background_mode in {"blur", "fill", "fit"} else "blur"
+    focal = edl.get("focal_point") or vm.get("focal_point") or {}
+    focal_x = min(1.0, max(0.0, float(focal.get("x", 0.5)))) if isinstance(focal, dict) else 0.5
+    focal_y = min(1.0, max(0.0, float(focal.get("y", 0.5)))) if isinstance(focal, dict) else 0.5
+    fill_scale = max(target_w / source_width, target_h / source_height)
+    fit_scale = min(target_w / source_width, target_h / source_height)
+    scaled_w, scaled_h = round(source_width * fill_scale), round(source_height * fill_scale)
+    crop_x = round(max(0, scaled_w - target_w) * focal_x)
+    crop_y = round(max(0, scaled_h - target_h) * focal_y)
 
-    sfx_index = 1
+    # 1. Base Stream Pre-processing (Jump-cuts and Audio/Video PTS Synchronization)
+    keep_segments = edl.get("keep_segments")
+    v_prep_filters = []
+    a_prep_filters = []
+
+    if keep_segments and len(keep_segments) > 0:
+        cond = "+".join(f"between(t,{s:.3f},{e:.3f})" for s, e in keep_segments)
+        v_prep_filters.append(f"[0:v]select='{cond}',setpts=N/FRAME_RATE/TB[v_raw]")
+        if source_has_audio:
+            a_prep_filters.append(f"[0:a:0]aselect='{cond}',asetpts=N/SR/TB,aresample=async=1000:first_pts=0[src_a]")
+        v_in = "v_raw"
+    else:
+        v_prep_filters.append("[0:v]setpts=PTS-STARTPTS[v_raw]")
+        if source_has_audio:
+            a_prep_filters.append("[0:a:0]asetpts=PTS-STARTPTS,aresample=async=1000:first_pts=0[src_a]")
+        v_in = "v_raw"
+
+    if background_mode == "fill":
+        base_video_filter = (
+            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
+            f"crop={target_w}:{target_h}:{crop_x}:{crop_y},{grade_filter},subtitles='{ass_escaped}'[vbase]"
+        )
+    elif background_mode == "blur":
+        base_video_filter = (
+            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
+            f"crop={target_w}:{target_h}:{crop_x}:{crop_y},boxblur=24:12[background];"
+            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease[foreground];"
+            f"[background][foreground]overlay=(W-w)/2:(H-h)/2,{grade_filter},subtitles='{ass_escaped}'[vbase]"
+        )
+    else:
+        base_video_filter = (
+            f"[{v_in}]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease,"
+            f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black,{grade_filter},subtitles='{ass_escaped}'[vbase]"
+        )
+
+    # Find safe, in-project PNGs for static library art or generated cutouts.
+    element_dir = Path(__file__).resolve().parents[1] / "assets" / "elements"
+    resources_root = Path(__file__).resolve().parents[2] / "Resources" / "graphics" / "cutouts"
+    vector_graphics = []
+    for graphic in edl.get("graphics", []):
+        asset_id = str(graphic.get("asset_id", ""))
+        if graphic.get("resource_path") and asset_id == "subject_cutout":
+            relative = Path(str(graphic["resource_path"]))
+            resource_path = (resources_root.parent.parent / relative).resolve()
+            if resource_path.is_relative_to(resources_root.resolve()) and resource_path.suffix.lower() == ".png" and resource_path.is_file():
+                vector_graphics.append((graphic, resource_path))
+        elif re.fullmatch(r"[a-z0-9_]+", asset_id):
+            metadata = AssetRegistry().get_asset_metadata(asset_id)
+            artwork_file = metadata.get("file", "") if metadata else ""
+            png_path = (element_dir / Path(artwork_file).with_suffix(".png").name).resolve()
+            if not png_path.is_relative_to(element_dir.resolve()):
+                continue
+            if png_path.is_file():
+                vector_graphics.append((graphic, png_path))
+
+    # Composite lower layers first so preview and export share explicit depth.
+    vector_graphics.sort(key=lambda pair: int(pair[0].get("z_index", 50)))
+
+    # Add raster counterparts of the SVG library as image inputs. Browser and
+    # FFmpeg use the same artwork; the alpha channel preserves transparent edges.
+    vector_input_indices = []
+    next_input_index = 1
+    for graphic, png_path in vector_graphics:
+        vector_input_indices.append(next_input_index)
+        next_input_index += 1
+        duration = max(0.1, float(graphic.get("end", 0.0)) - float(graphic.get("start", 0.0)))
+        start = max(0.0, float(graphic.get("start", 0.0)))
+        cmd_inputs.extend(["-itsoffset", f"{start:.3f}", "-loop", "1", "-framerate", "30", "-t", f"{duration:.3f}", "-i", str(png_path)])
+
+    if not vector_graphics:
+        base_video_filter = base_video_filter.replace("[vbase]", "[vout]")
+    initial_label = "vbase" if vector_graphics else "vout"
+    v_filters = [base_video_filter]
+    v_filters = v_prep_filters + [base_video_filter]
+    current_video_label = initial_label
+    for index, ((graphic, _png_path), input_index) in enumerate(zip(vector_graphics, vector_input_indices)):
+        width = max(48, min(target_w, int(graphic.get("width") or 180)))
+        height = max(48, min(target_h, int(graphic.get("height") or 180)))
+        with Image.open(_png_path) as artwork:
+            artwork_width, artwork_height = artwork.size
+        box_scale = min(width / max(1, artwork_width), height / max(1, artwork_height))
+        width = max(2, round(artwork_width * box_scale))
+        height = max(2, round(artwork_height * box_scale))
+        coordinate_width = max(1, int(src_w or target_w))
+        coordinate_height = max(1, int(src_h or target_h))
+        x = int(float(graphic.get("x", coordinate_width * 0.72)) * target_w / coordinate_width)
+        y = int(float(graphic.get("y", coordinate_height * 0.22)) * target_h / coordinate_height)
+        start = max(0.0, float(graphic.get("start", 0.0)))
+        end = max(start, float(graphic.get("end", start)))
+        rotation = float(graphic.get("rotation", 0.0))
+        spec = get_animation(graphic.get("animation"))
+        asset_label = f"element_{index}"
+        output_label = "vout" if index == len(vector_graphics) - 1 else f"vcomp_{index}"
+        animation_filters = [f"[{input_index}:v]scale={width}:{height},format=rgba"]
+        if abs(rotation) > 0.01:
+            angle = rotation * 3.141592653589793 / 180
+            animation_filters.append(f"rotate={angle:.6f}:c=none:ow=rotw(iw):oh=roth(ih)")
+        if spec.kind in {"scale", "pop", "pop_fade"}:
+            entry = spec.entrance_seconds
+            start_scale = "0.05" if spec.kind == "pop" else "0.72"
+            entry_scale = f"({start_scale}+(1-{start_scale})*min(1,max(0,(t-{start:.3f})/{entry:.3f})))"
+            exit_scale = f"min(1,max(0,({end:.3f}-t)/{spec.exit_seconds:.3f}))" if spec.kind == "scale" else "1"
+            animation_filters.append(
+                f"scale=w='max(2,iw*{entry_scale}*{exit_scale})':"
+                f"h='max(2,ih*{entry_scale}*{exit_scale})':eval=frame"
+            )
+        if spec.kind == "rotate":
+            animation_filters.append(f"rotate='0.10*sin(2*PI*(t-{start:.3f})/2)':c=none:ow=rotw(iw):oh=roth(ih)")
+        if spec.kind == "glitter":
+            animation_filters.append(f"eq=brightness='0.10+0.12*abs(sin(2*PI*(t-{start:.3f})/0.65))':eval=frame")
+        animation_filters.append(f"fade=t=in:st={start:.3f}:d={spec.entrance_seconds:.3f}:alpha=1")
+        animation_filters.append(f"fade=t=out:st={max(start, end - spec.exit_seconds):.3f}:d={spec.exit_seconds:.3f}:alpha=1[{asset_label}]")
+        v_filters.append(",".join(animation_filters))
+        x_expr, y_expr = str(x), str(y)
+        if spec.kind == "slide":
+            x_expr = f"{x}-80*(1-min(1,max(0,(t-{start:.3f})/{spec.entrance_seconds:.3f})))"
+        elif spec.kind == "float":
+            y_expr = f"{y}+10*sin(2*PI*(t-{start:.3f})/2)"
+        elif spec.kind == "rotate":
+            x_expr = f"{x}-(w-{width})/2"
+            y_expr = f"{y}-(h-{height})/2"
+        elif spec.kind in {"scale", "pop", "pop_fade"}:
+            x_expr = f"{x}-(w-{width})/2"
+            y_expr = f"{y}-(h-{height})/2"
+        elif abs(rotation) > 0.01:
+            x_expr = f"{x}-(w-{width})/2"
+            y_expr = f"{y}-(h-{height})/2"
+        v_filters.append(
+            f"[{current_video_label}][{asset_label}]overlay=x='{x_expr}':y='{y_expr}':eof_action=pass:enable='between(t,{start:.3f},{end:.3f})'[{output_label}]"
+        )
+        current_video_label = output_label
+    
+    # Audio synchronization & mixing.
+    # We guarantee sample-accurate A/V sync by normalizing timestamps and resampling to 48kHz.
+    a_filters = list(a_prep_filters)
+    mix_sources = ["[src_a]"] if source_has_audio else []
+    sfx_index = next_input_index
+    added_sfx = 0
     for s in sound_effects:
         s_id = s.get("asset_id", "")
         start_ms = int(float(s.get("start", 0.0)) * 1000)
         sfx_file = sfx_base / f"{s_id}.wav"
         if sfx_file.exists():
             cmd_inputs.extend(["-i", str(sfx_file)])
+            volume = min(1.0, max(0.0, float(s.get("volume", 0.8))))
             a_filters.append(
-                f"[{sfx_index}:a]adelay={start_ms}|{start_ms},volume=0.9[sfx_{sfx_index}]"
+                f"[{sfx_index}:a]adelay={start_ms}|{start_ms},volume={volume:.3f}[sfx_{sfx_index}]"
             )
             mix_sources.append(f"[sfx_{sfx_index}]")
             sfx_index += 1
+            added_sfx += 1
 
-    if len(mix_sources) > 1:
-        mix_expr = "".join(mix_sources) + f"amix=inputs={len(mix_sources)}:dropout_transition=2:normalize=0[aout]"
-        a_filters.append(mix_expr)
+    if source_has_audio and added_sfx == 0:
+        a_filters.append(f"{mix_sources[0]}anull[aout]")
+        audio_map_args = ["-map", "[aout]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
+        audio_mode = "original_synced"
+    elif mix_sources:
+        if len(mix_sources) == 1:
+            a_filters.append(f"{mix_sources[0]}anull[aout]")
+        else:
+            mix_expr = "".join(mix_sources) + f"amix=inputs={len(mix_sources)}:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.98[aout]"
+            a_filters.append(mix_expr)
+        audio_map_args = ["-map", "[aout]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
+        audio_mode = "original_plus_sfx" if source_has_audio else "sfx_only"
     else:
-        a_filters.append("[main_a]acopy[aout]")
+        audio_map_args = ["-an"]
+        audio_mode = "silent_source"
 
     full_filtergraph = ";".join(v_filters + a_filters)
 
@@ -376,14 +573,12 @@ def render_reel_ffmpeg(
         *cmd_inputs,
         "-filter_complex", full_filtergraph,
         "-map", "[vout]",
-        "-map", "[aout]",
+        *audio_map_args,
         "-c:v", "libx264",
         "-preset", "faster",
         "-crf", "18",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        "-ar", "48000",
+        "-fps_mode", "cfr",
         "-shortest",
         str(out)
     ]
@@ -395,6 +590,8 @@ def render_reel_ffmpeg(
             "success": success,
             "output_path": str(out),
             "file_size": out.stat().st_size if out.exists() else 0,
+            "audio_mode": audio_mode,
+            "audio_effects_mixed": added_sfx,
             "stderr": proc.stderr if not success else ""
         }
     except Exception as e:

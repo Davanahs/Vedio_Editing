@@ -75,7 +75,7 @@ class SafeZoneCollisionEngine:
         )
 
         # 3. Define Face Exclusion Zones with safety padding
-        self.face_zones: List[BoundingBox] = []
+        self.face_zones: List[Tuple[Optional[float], Optional[float], BoundingBox]] = []
         if face_boxes:
             for fb in face_boxes:
                 # Add 30px padding around face so graphics never touch hair or chin
@@ -83,7 +83,14 @@ class SafeZoneCollisionEngine:
                 fy = max(0, fb.get("y", 0) - 30)
                 fw = fb.get("w", 200) + 60
                 fh = fb.get("h", 200) + 60
-                self.face_zones.append(BoundingBox(x=fx, y=fy, w=fw, h=fh))
+                timestamp = fb.get("timestamp")
+                frame_start = fb.get("start", timestamp)
+                frame_end = fb.get("end", timestamp)
+                self.face_zones.append((
+                    float(frame_start) if frame_start is not None else None,
+                    float(frame_end) if frame_end is not None else None,
+                    BoundingBox(x=fx, y=fy, w=fw, h=fh),
+                ))
 
         self.scheduled: List[ScheduledElement] = []
 
@@ -111,6 +118,8 @@ class SafeZoneCollisionEngine:
                 return None
 
         # Candidate placement quadrants depending on orientation
+        width = max(1, min(int(width), self.canvas_w))
+        height = max(1, min(int(height), self.canvas_h))
         candidate_positions = self._get_candidate_positions(width, height, preferred_side)
 
         for (cx, cy) in candidate_positions:
@@ -126,7 +135,12 @@ class SafeZoneCollisionEngine:
 
             # Check 3: Collides with any detected face?
             face_collision = False
-            for fz in self.face_zones:
+            for face_start, face_end, fz in self.face_zones:
+                # Frame-local face detections only protect the time range
+                # around that frame. Untimed boxes remain global constraints.
+                if face_start is not None and face_end is not None:
+                    if end_t < face_start - 1.0 or start_t > face_end + 1.0:
+                        continue
                 if candidate_box.intersects(fz, padding=25):
                     face_collision = True
                     break

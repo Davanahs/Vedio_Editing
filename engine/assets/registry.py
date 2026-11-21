@@ -111,6 +111,20 @@ class AssetRegistry:
         topic_low = (topic or "").lower()
         scene_low = (scene_visuals or "").lower()
         instr_low = (additional_instructions or "").lower()
+        asset_terms = " ".join([asset_id.replace("_", " "), cat, " ".join(keywords)]).lower()
+
+        # Respect explicit negative instructions at asset level (e.g. "no flowers",
+        # "avoid music cards"). Plural forms are normalized for simple catalog terms.
+        exclusions = re.findall(
+            r"\b(?:no|avoid|without|exclude|don't use|do not use)\s+([a-z][a-z0-9_-]*(?:\s+[a-z][a-z0-9_-]*)?)",
+            instr_low,
+        )
+        for exclusion in exclusions:
+            terms = [word for word in re.split(r"[\s_-]+", exclusion) if word not in {"and", "or", "please", "the", "any"}]
+            for term in terms:
+                normalized = term[:-1] if term.endswith("s") and len(term) > 3 else term
+                if normalized and re.search(r"\b" + re.escape(normalized) + r"\w*\b", asset_terms):
+                    return {"relevant": False, "reason": f"User explicitly excluded '{term}'"}
 
         # Check negative rule: Never place gaming or cash stickers on non-gaming/non-finance topics
         if cat == "gaming" and not any(w in topic_low or w in scene_low for w in ["game", "gaming", "esports", "gta", "playstation", "xbox", "fps", "stream"]):
@@ -147,6 +161,15 @@ class AssetRegistry:
         # If template is explicitly selected, check if style matches
         if template_id == "pinterest_scrapbook" and cat in ["scrapbook_decorative", "fashion_lifestyle"]:
             return {"relevant": True, "score": 0.8, "reason": "Matches Pinterest scrapbook visual style"}
+
+        if template_id == "glassmorphism" and cat == "glassmorphism":
+            return {"relevant": True, "score": 0.72, "reason": "Matches selected glassmorphism treatment"}
+
+        if template_id == "retro_camera" and cat == "retro_camera":
+            return {"relevant": True, "score": 0.72, "reason": "Matches selected retro camera treatment"}
+
+        if template_id == "aesthetic_lifestyle" and cat in {"fashion_lifestyle", "scrapbook_decorative"}:
+            return {"relevant": True, "score": 0.68, "reason": "Matches selected lifestyle treatment"}
 
         return {"relevant": False, "reason": "No semantic relevance to audio or visual scene"}
 
